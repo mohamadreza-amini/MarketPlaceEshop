@@ -18,8 +18,8 @@ public class ProductSupplier : BaseEntity<Guid>
     public Supplier Supplier { get; set; }
     public Guid ProductId { get; set; }
     public Product Product { get; set; }
-    public ICollection<Comment> comments { get; set; }
-    public ICollection<Score> scores { get; set; }
+    public ICollection<Comment> Comments { get; set; }
+    public ICollection<Score> Scores { get; set; }
     public ICollection<Price> Prices { get; set; }
     public ICollection<OrderItem> OrderItems { get; set; }
     public ICollection<CartItem> CartItems { get; set; }

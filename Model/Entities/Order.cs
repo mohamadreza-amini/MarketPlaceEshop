@@ -10,8 +10,8 @@ public class Order : BaseEntity<Guid>
 {
     public decimal TotalCost { get; set; }
     public decimal TotalDiscount { get; set; }
-    public DateTime OrderDate { get; set; }
     public bool IsCanceled {  get; set; }
+    public DateTime OrderDate { get; set; }
     public DateTime ShippedDate { get; set; }
     public Guid AddressId { get; set; }
     public Address Address { get; set; }

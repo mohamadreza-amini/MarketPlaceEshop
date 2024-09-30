@@ -14,7 +14,6 @@ public class BaseConfig<T, KeyTypeId> : IEntityTypeConfiguration<T> where T : Ba
 {
     protected bool GeneratedValueForKey { get; set; } = false;
     protected bool UseForTracable { get; set; } = false;
-    
     protected bool RequireTraceable { get; set; } = false;
     protected bool NeedConfirmation { get; set; } = false;
 

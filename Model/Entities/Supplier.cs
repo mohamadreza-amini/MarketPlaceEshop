@@ -19,5 +19,5 @@ public class Supplier : BaseEntity<Guid>
     public string CompanyRegistrationNumber { get; set; }
     //
     
-
+    public ICollection<ProductSupplier> ProductSuppliers { get; set; }
 }

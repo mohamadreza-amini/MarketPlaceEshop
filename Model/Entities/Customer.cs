@@ -8,7 +8,7 @@ namespace Model.Entities;
 
 public class Customer : BaseEntity<Guid>
 {
-    public String FirstName { get; set; }
+    public string FirstName { get; set; }
     public string LastName { get; set; }
     public string PhoneNumber {  get; set; }
     //پایینی یونیک یا ایندکس برا لاگین

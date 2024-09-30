@@ -9,11 +9,11 @@ namespace Model.Entities;
 public class Cart : BaseEntity<Guid>
 {
     public DateTime StartFrom { get; set; }
-    public DateTime ExpiredFrom { get; set; }
+    public DateTime? ExpiredFrom { get; set; }
     // اینجوری درسته؟ enum
-    public Status Status {  get; set; }
+    public Status Status { get; set; }
     public ICollection<CartItem> CartItems { get; set; }
-    public Guid CustomerId {  get; set; }
+    public Guid CustomerId { get; set; }
     public Customer Customer { get; set; }
 
 }
@@ -21,7 +21,7 @@ public class Cart : BaseEntity<Guid>
 
 public enum Status
 {
-    Open,
-    Canceled,
-    Finalized
+    Open = 0,
+    Canceled = 1,
+    Finalized = 2
 }

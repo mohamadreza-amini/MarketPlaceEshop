@@ -10,7 +10,6 @@ public class CategoryFeature : BaseEntity<int>
 {
     public string FeatureName {  get; set; }
     public byte Priority {  get; set; }
-    public int CategoryId { get; set; }
 
 /*      فقط مولفه هایی که این مقدار رو یک داشته باشن قابل اومدن در فیلترهای محصولات هستن و
  *     موقع مقدار دادن به اون ویژگی برای اون محصول که اینو یک داره یک مودال به وارد کننده
@@ -18,6 +17,9 @@ public class CategoryFeature : BaseEntity<int>
  *     ..یا یکی رو کپی کنه یا توی همون فرمت ها بزنه و تکراری به رمت دیگه نزنه مثلا 8 پیکسل 8 و
 */   
     public bool Filterable { get; set; }
+    public int CategoryId { get; set; }
     public Category Category { get; set; }
+
+    public ICollection<ProductFeatureValue> ProductFeatureValues { get; set; }
 
 }
