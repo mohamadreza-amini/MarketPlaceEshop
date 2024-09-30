@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Repository
+namespace Infrastructure.Contracts
 {
-    public class CommentRepository
+    internal interface IBaseRepository
     {
     }
 }

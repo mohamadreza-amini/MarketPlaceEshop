@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Repository
+namespace Infrastructure.TableConfigs
 {
-    public class CommentRepository
+    internal class CommentConfig
     {
+
     }
 }

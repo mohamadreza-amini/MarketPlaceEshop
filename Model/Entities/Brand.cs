@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Repository
+namespace Model.Entities;
+
+public class Brand : BaseEntity<int>
 {
-    public class CommentRepository
-    {
-    }
+    public string BrandName {  get; set; }
+
+    
 }

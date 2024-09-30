@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repository
 {
-    public class CommentRepository
+    internal class SupplierRepository
     {
     }
 }
