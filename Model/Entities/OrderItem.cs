@@ -15,7 +15,7 @@ public class OrderItem : BaseEntity<Guid>
     public int Quantity { get; set; }
     public bool Sent { get; set; }
     public bool IsCanceled { get; set; }
-    public DateTime DateOfPosting { get; set; }
+    public DateTime? DateOfPosting { get; set; }
     public Guid ProductSupplierId { get; set; }
     public ProductSupplier ProductSupplier { get; set; }
     public Guid OrderId {  get; set; }

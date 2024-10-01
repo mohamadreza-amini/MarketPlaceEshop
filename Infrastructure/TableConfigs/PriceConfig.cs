@@ -18,7 +18,7 @@ public class PriceConfig:BaseConfig<Price,Guid>
         builder.Property(x=>x.StartTime).IsRequired();
         builder.Property(x=>x.ExpiredTime).IsRequired(false);
 
-        builder.HasOne(x=>x.productSupplier).WithMany(x=>x.Prices).HasForeignKey(x=>x.productSupplier).IsRequired().OnDelete(DeleteBehavior.NoAction);
+        builder.HasOne(x=>x.ProductSupplier).WithMany(x=>x.Prices).HasForeignKey(x=>x.ProductSupplierId).IsRequired().OnDelete(DeleteBehavior.NoAction);
 
         base.RequireTraceable=true;
         base.UseForTracable=true;

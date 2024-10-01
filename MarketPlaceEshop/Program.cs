@@ -1,3 +1,6 @@
+using Infrastructure;
+using Microsoft.EntityFrameworkCore;
+
 namespace MarketPlaceEshop
 {
     public class Program
@@ -8,6 +11,7 @@ namespace MarketPlaceEshop
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            
 
             var app = builder.Build();
 

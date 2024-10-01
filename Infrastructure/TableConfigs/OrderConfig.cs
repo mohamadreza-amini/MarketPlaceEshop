@@ -21,7 +21,7 @@ public class OrderConfig : BaseConfig<Order, Guid>
         builder.Property(x => x.ShippedDate).IsRequired();
 
         builder.HasOne(x=>x.Address).WithMany(x=>x.Orders).HasForeignKey(x=>x.AddressId).IsRequired();
-        builder.HasOne(x=>x.Customer).WithMany(x=>x.Orders).HasForeignKey(x=>x.CustomerId).IsRequired();
+        builder.HasOne(x=>x.Customer).WithMany(x=>x.Orders).HasForeignKey(x=>x.CustomerId).IsRequired().OnDelete(DeleteBehavior.NoAction);
 
         base.RequireTraceable = true;
         base.UseForTracable = true;

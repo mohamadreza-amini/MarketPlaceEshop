@@ -11,9 +11,9 @@ public class Price : BaseEntity<Guid>
     public decimal PriceValue {  get; set; }
     public DateTime StartTime { get; set; }
     //پایینی nullable
-    public DateTime ExpiredTime { get; set; }
+    public DateTime? ExpiredTime { get; set; }
     public Guid ProductSupplierId { get; set; }
-    public ProductSupplier productSupplier { get; set; }
+    public ProductSupplier ProductSupplier { get; set; }
+    
     //
-
 }
