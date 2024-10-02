@@ -14,4 +14,10 @@
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contracts\" />
+    <Folder Include="Repository\Classes\" />
+    <Folder Include="Repository\Interfaces\" />
+  </ItemGroup>
+
 </Project>
