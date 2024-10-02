@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,9 +27,3 @@ public class BaseEntity<T> where T : struct
 }
 
 
-public enum ConfirmationStatus
-{
-    Unchecked = 0,
-    Confirmed = 1,
-    Rejected = 2
-}

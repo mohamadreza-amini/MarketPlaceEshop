@@ -15,7 +15,7 @@ public class CartConfig:BaseConfig<Cart,Guid>
     {
         builder.Property(x => x.StartFrom).IsRequired();
         builder.Property(X=>X.ExpiredFrom).IsRequired(false);
-        builder.Property(x=>x.Status).IsRequired();
+        builder.Property(x=>x.StatusCart).IsRequired();
 
         builder.HasOne(x=>x.Customer).WithMany(x=>x.Carts).HasForeignKey(x=>x.CustomerId).IsRequired().OnDelete(DeleteBehavior.NoAction);
 
