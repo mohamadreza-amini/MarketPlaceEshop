@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Model.Entities;
+using Model.Entities.Orders;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,8 +20,6 @@ public class CartItemConfig:BaseConfig<CartItem,Guid>
 
         builder.HasOne(x=>x.Cart).WithMany(x=>x.CartItems).HasForeignKey(x=>x.CartId).IsRequired();
         builder.HasOne(x=>x.ProductSupplier).WithMany(x=>x.CartItems).HasForeignKey(x=>x.ProductSupplierId).IsRequired();
-
-
   
         base.RequireTraceable=true;
         base.UseForTracable=true;

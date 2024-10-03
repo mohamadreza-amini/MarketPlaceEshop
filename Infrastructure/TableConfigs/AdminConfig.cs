@@ -14,19 +14,11 @@ public class AdminConfig : BaseConfig<Admin, Guid>
 {
     public override void Configure(EntityTypeBuilder<Admin> builder)
     {
-
-        builder.Property(x => x.FirstName).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(50).IsRequired();
-
-        builder.Property(x => x.LastName).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(50).IsRequired();
-        builder.Property(x => x.Password).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(100).IsRequired();
-        builder.Property(x => x.MobileNumber).HasColumnType(SqlDbType.VarChar.ToString()).HasMaxLength(30).IsRequired();
-
-        builder.HasIndex(x => x.MobileNumber).IsUnique();
-
+        builder.HasOne(x=>x.User).WithOne().HasForeignKey<Admin>(x=>x.UserId).IsRequired().OnDelete(DeleteBehavior.NoAction);
+        
         base.UseForTracable = true;
         base.RequireTraceable = true;
-       // base.NeedConfirmation = true;
-        
+      
         base.Configure(builder);
     }
 }

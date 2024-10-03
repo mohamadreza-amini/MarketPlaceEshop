@@ -8,11 +8,6 @@ namespace Model.Entities;
 
 public class Admin : BaseEntity<Guid>
 {
-    public string FirstName {  get; set; }
-    public string LastName { get; set; }
-    public string Password {  get; set; }
-    //یونیک باشه یا ایندکس
-    public string MobileNumber { get; set; }
-
-
+    public Guid UserId { get; set; }
+    public virtual User User { get; set; }
 }

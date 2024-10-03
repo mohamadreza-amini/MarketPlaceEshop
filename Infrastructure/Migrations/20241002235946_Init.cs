@@ -12,23 +12,55 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Admins",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "NVarChar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "NVarChar(50)", maxLength: 50, nullable: false),
-                    Password = table.Column<string>(type: "NVarChar(100)", maxLength: 100, nullable: false),
                     MobileNumber = table.Column<string>(type: "VarChar(30)", maxLength: 30, nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "VarChar(30)", maxLength: 30, nullable: false),
+                    Password = table.Column<string>(type: "NVarChar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "VarChar(100)", maxLength: 100, nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NationalCode = table.Column<string>(type: "VarChar(10)", maxLength: 10, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Admins",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Admins", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Admins_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Admins_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Admins_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -36,24 +68,32 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FirstName = table.Column<string>(type: "NVarChar(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "NVarChar(50)", maxLength: 50, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "VarChar(30)", maxLength: 30, nullable: false),
-                    MobileNumber = table.Column<string>(type: "VarChar(30)", maxLength: 30, nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RegisterDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateOfRegistration = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Password = table.Column<string>(type: "NVarChar(100)", maxLength: 100, nullable: false),
-                    NationalCode = table.Column<string>(type: "NVarChar(20)", maxLength: 20, nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customers_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Customers_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Customers_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -63,15 +103,25 @@ namespace Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RoleName = table.Column<string>(type: "VarChar(50)", maxLength: 50, nullable: false),
                     RoleDescription = table.Column<string>(type: "VarChar(500)", maxLength: 500, nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Roles_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Roles_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -81,11 +131,11 @@ namespace Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BrandName = table.Column<string>(type: "NVarChar(50)", maxLength: 50, nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsConfirmed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AdminConfirmedId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -98,6 +148,16 @@ namespace Infrastructure.Migrations
                         column: x => x.AdminConfirmedId,
                         principalTable: "Admins",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Brands_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Brands_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -109,11 +169,11 @@ namespace Infrastructure.Migrations
                     CategoryName = table.Column<string>(type: "NVarChar(50)", maxLength: 50, nullable: false),
                     Level = table.Column<byte>(type: "TinyInt", nullable: false),
                     ParentCategoryId = table.Column<int>(type: "int", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsConfirmed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AdminConfirmedId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -131,6 +191,16 @@ namespace Infrastructure.Migrations
                         column: x => x.ParentCategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Categories_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Categories_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -138,19 +208,16 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "NVarChar(50)", maxLength: 50, nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "VarChar(50)", maxLength: 50, nullable: false),
-                    MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "NVarChar(100)", maxLength: 100, nullable: false),
                     BankAccountNumber = table.Column<string>(type: "VarChar(50)", maxLength: 50, nullable: false),
-                    ChairmanName = table.Column<string>(type: "NVarChar(50)", maxLength: 50, nullable: false),
+                    CompanyName = table.Column<string>(type: "NVarChar(50)", maxLength: 50, nullable: false),
                     CompanyRegistrationNumber = table.Column<string>(type: "VarChar(50)", maxLength: 50, nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsConfirmed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AdminConfirmedId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -162,6 +229,21 @@ namespace Infrastructure.Migrations
                         name: "FK_Suppliers_Admins_AdminConfirmedId",
                         column: x => x.AdminConfirmedId,
                         principalTable: "Admins",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Suppliers_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Suppliers_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Suppliers_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id");
                 });
 
@@ -178,11 +260,11 @@ namespace Infrastructure.Migrations
                     UnitNumber = table.Column<int>(type: "Int", nullable: false),
                     PostalCode = table.Column<string>(type: "NVarChar(50)", maxLength: 50, nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -193,6 +275,16 @@ namespace Infrastructure.Migrations
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Addresses_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -202,9 +294,9 @@ namespace Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartFrom = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpiredFrom = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    StatusCart = table.Column<int>(type: "int", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -226,11 +318,11 @@ namespace Infrastructure.Migrations
                     Priority = table.Column<byte>(type: "TinyInt", nullable: false),
                     Filterable = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsConfirmed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AdminConfirmedId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -248,6 +340,16 @@ namespace Infrastructure.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Categoryfeatures_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Categoryfeatures_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -263,11 +365,11 @@ namespace Infrastructure.Migrations
                     IsDisable = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsConfirmed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AdminConfirmedId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -290,6 +392,16 @@ namespace Infrastructure.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Products_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Products_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -304,11 +416,11 @@ namespace Infrastructure.Migrations
                     ShippedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsConfirmed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AdminConfirmedId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -332,6 +444,16 @@ namespace Infrastructure.Migrations
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -342,11 +464,11 @@ namespace Infrastructure.Migrations
                     Path = table.Column<string>(type: "NVarChar(30)", maxLength: 30, nullable: false),
                     Priority = table.Column<byte>(type: "TinyInt", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsConfirmed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AdminConfirmedId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -364,6 +486,16 @@ namespace Infrastructure.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Images_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Images_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -375,11 +507,11 @@ namespace Infrastructure.Migrations
                     FeatureValue = table.Column<string>(type: "NVarChar(500)", maxLength: 500, nullable: false),
                     CategoryFeatureId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsConfirmed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AdminConfirmedId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -402,6 +534,16 @@ namespace Infrastructure.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductFeatureValues_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductFeatureValues_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -414,11 +556,11 @@ namespace Infrastructure.Migrations
                     IsDisable = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     SupplierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -433,6 +575,16 @@ namespace Infrastructure.Migrations
                         column: x => x.SupplierId,
                         principalTable: "Suppliers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductSuppliers_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductSuppliers_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -444,11 +596,11 @@ namespace Infrastructure.Migrations
                     IsCanceled = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductSupplierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -465,6 +617,16 @@ namespace Infrastructure.Migrations
                         principalTable: "ProductSuppliers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CartItems_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CartItems_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -476,7 +638,7 @@ namespace Infrastructure.Migrations
                     DateOfRegistration = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductSupplierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IsConfirmed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AdminConfirmedId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -518,11 +680,11 @@ namespace Infrastructure.Migrations
                     DateOfPosting = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ProductSupplierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -537,6 +699,16 @@ namespace Infrastructure.Migrations
                         column: x => x.ProductSupplierId,
                         principalTable: "ProductSuppliers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -548,11 +720,11 @@ namespace Infrastructure.Migrations
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpiredTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ProductSupplierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdaterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatorUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdaterUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDatetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsConfirmed = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AdminConfirmedId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -570,6 +742,16 @@ namespace Infrastructure.Migrations
                         column: x => x.ProductSupplierId,
                         principalTable: "ProductSuppliers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Prices_Users_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Prices_Users_UpdaterUserId",
+                        column: x => x.UpdaterUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -580,7 +762,7 @@ namespace Infrastructure.Migrations
                     StarRating = table.Column<byte>(type: "TinyInt", nullable: false, defaultValue: (byte)0),
                     ProductSupplierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -598,14 +780,34 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Addresses_CreatorUserId",
+                table: "Addresses",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Addresses_CustomerId",
                 table: "Addresses",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Admins_MobileNumber",
+                name: "IX_Addresses_UpdaterUserId",
+                table: "Addresses",
+                column: "UpdaterUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Admins_CreatorUserId",
                 table: "Admins",
-                column: "MobileNumber",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Admins_UpdaterUserId",
+                table: "Admins",
+                column: "UpdaterUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Admins_UserId",
+                table: "Admins",
+                column: "UserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -614,14 +816,34 @@ namespace Infrastructure.Migrations
                 column: "AdminConfirmedId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Brands_CreatorUserId",
+                table: "Brands",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Brands_UpdaterUserId",
+                table: "Brands",
+                column: "UpdaterUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CartItems_CartId",
                 table: "CartItems",
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartItems_CreatorUserId",
+                table: "CartItems",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CartItems_ProductSupplierId",
                 table: "CartItems",
                 column: "ProductSupplierId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItems_UpdaterUserId",
+                table: "CartItems",
+                column: "UpdaterUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Carts_CustomerId",
@@ -634,9 +856,19 @@ namespace Infrastructure.Migrations
                 column: "AdminConfirmedId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Categories_CreatorUserId",
+                table: "Categories",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categories_ParentCategoryId",
                 table: "Categories",
                 column: "ParentCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Categories_UpdaterUserId",
+                table: "Categories",
+                column: "UpdaterUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categoryfeatures_AdminConfirmedId",
@@ -647,6 +879,16 @@ namespace Infrastructure.Migrations
                 name: "IX_Categoryfeatures_CategoryId",
                 table: "Categoryfeatures",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Categoryfeatures_CreatorUserId",
+                table: "Categoryfeatures",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Categoryfeatures_UpdaterUserId",
+                table: "Categoryfeatures",
+                column: "UpdaterUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_AdminConfirmedId",
@@ -664,9 +906,19 @@ namespace Infrastructure.Migrations
                 column: "ProductSupplierId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Customers_MobileNumber",
+                name: "IX_Customers_CreatorUserId",
                 table: "Customers",
-                column: "MobileNumber",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_UpdaterUserId",
+                table: "Customers",
+                column: "UpdaterUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_UserId",
+                table: "Customers",
+                column: "UserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -675,9 +927,24 @@ namespace Infrastructure.Migrations
                 column: "AdminConfirmedId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Images_CreatorUserId",
+                table: "Images",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Images_ProductId",
                 table: "Images",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_UpdaterUserId",
+                table: "Images",
+                column: "UpdaterUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_CreatorUserId",
+                table: "OrderItems",
+                column: "CreatorUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
@@ -690,6 +957,11 @@ namespace Infrastructure.Migrations
                 column: "ProductSupplierId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_UpdaterUserId",
+                table: "OrderItems",
+                column: "UpdaterUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_AddressId",
                 table: "Orders",
                 column: "AddressId");
@@ -700,9 +972,19 @@ namespace Infrastructure.Migrations
                 column: "AdminConfirmedId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_CreatorUserId",
+                table: "Orders",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UpdaterUserId",
+                table: "Orders",
+                column: "UpdaterUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prices_AdminConfirmedId",
@@ -710,9 +992,19 @@ namespace Infrastructure.Migrations
                 column: "AdminConfirmedId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Prices_CreatorUserId",
+                table: "Prices",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Prices_ProductSupplierId",
                 table: "Prices",
                 column: "ProductSupplierId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prices_UpdaterUserId",
+                table: "Prices",
+                column: "UpdaterUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductFeatureValues_AdminConfirmedId",
@@ -726,9 +1018,19 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductFeatureValues_CreatorUserId",
+                table: "ProductFeatureValues",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductFeatureValues_ProductId",
                 table: "ProductFeatureValues",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductFeatureValues_UpdaterUserId",
+                table: "ProductFeatureValues",
+                column: "UpdaterUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_AdminConfirmedId",
@@ -746,6 +1048,21 @@ namespace Infrastructure.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Products_CreatorUserId",
+                table: "Products",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_UpdaterUserId",
+                table: "Products",
+                column: "UpdaterUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductSuppliers_CreatorUserId",
+                table: "ProductSuppliers",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductSuppliers_ProductId",
                 table: "ProductSuppliers",
                 column: "ProductId");
@@ -754,6 +1071,21 @@ namespace Infrastructure.Migrations
                 name: "IX_ProductSuppliers_SupplierId",
                 table: "ProductSuppliers",
                 column: "SupplierId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductSuppliers_UpdaterUserId",
+                table: "ProductSuppliers",
+                column: "UpdaterUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Roles_CreatorUserId",
+                table: "Roles",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Roles_UpdaterUserId",
+                table: "Roles",
+                column: "UpdaterUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Scores_CustomerId_ProductSupplierId",
@@ -772,9 +1104,25 @@ namespace Infrastructure.Migrations
                 column: "AdminConfirmedId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Suppliers_PhoneNumber",
+                name: "IX_Suppliers_CreatorUserId",
                 table: "Suppliers",
-                column: "PhoneNumber",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Suppliers_UpdaterUserId",
+                table: "Suppliers",
+                column: "UpdaterUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Suppliers_UserId",
+                table: "Suppliers",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_MobileNumber",
+                table: "Users",
+                column: "MobileNumber",
                 unique: true);
         }
 
@@ -837,6 +1185,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Admins");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

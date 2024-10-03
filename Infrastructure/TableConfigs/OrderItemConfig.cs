@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Model.Entities;
+using Model.Entities.Orders;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -23,11 +23,9 @@ public class OrderItemConfig:BaseConfig<OrderItem,Guid>
         builder.Property(x=>x.DateOfPosting).IsRequired(false);
         builder.Property(x => x.IsCanceled).HasDefaultValue(false).IsRequired();
 
-
         builder.HasOne(x=>x.ProductSupplier).WithMany(x=>x.OrderItems).HasForeignKey(x=>x.ProductSupplierId).IsRequired().OnDelete(DeleteBehavior.NoAction);
         builder.HasOne(x=>x.Order).WithMany(x=>x.OrderItems).HasForeignKey(x=>x.OrderId).IsRequired().OnDelete(DeleteBehavior.NoAction);
 
-        //تایید اردر در اردر هست در ایتم نیاوردم
         base.RequireTraceable=true;
         base.UseForTracable=true;
         base.Configure(builder);

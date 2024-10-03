@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Model.Enums;
 
 namespace Infrastructure.TableConfigs;
 
@@ -21,6 +22,7 @@ public class BaseConfig<T, KeyTypeId> : IEntityTypeConfiguration<T> where T : Ba
     {
 
         builder.HasKey(x => x.Id);
+        builder.Property(x=>x.IsDeleted).HasDefaultValue(false).IsRequired();
 
         if (GeneratedValueForKey)
         {
@@ -29,17 +31,21 @@ public class BaseConfig<T, KeyTypeId> : IEntityTypeConfiguration<T> where T : Ba
 
         if (!UseForTracable)
         {
-            builder.Ignore(x => x.CreatorId);
-            builder.Ignore(x => x.UpdaterId);
+            builder.Ignore(x => x.CreatorUserId);
+            builder.Ignore(x => x.CreatorUser);
+            builder.Ignore(x => x.UpdaterUserId);
+            builder.Ignore(x => x.UpdaterUser);
             builder.Ignore(x => x.CreateDatetime);
             builder.Ignore(x => x.UpdateDatetime);
         }
         else
         {
-            builder.Property(x => x.CreatorId).IsRequired(RequireTraceable);
+            
             builder.Property(x => x.CreateDatetime).IsRequired(RequireTraceable);
-            builder.Property(x => x.UpdaterId).IsRequired(RequireTraceable);
             builder.Property(x => x.UpdateDatetime).IsRequired(RequireTraceable);
+
+            builder.HasOne(x=>x.CreatorUser).WithMany().HasForeignKey(x=>x.CreatorUserId).IsRequired(RequireTraceable).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.UpdaterUser).WithMany().HasForeignKey(x => x.UpdaterUserId).IsRequired(RequireTraceable).OnDelete(DeleteBehavior.NoAction);
         }
 
 
@@ -53,10 +59,10 @@ public class BaseConfig<T, KeyTypeId> : IEntityTypeConfiguration<T> where T : Ba
         }
         else
         {
-
+            builder.Property(x => x.ConfirmedDate).IsRequired(false);
             builder.Property(x => x.IsConfirmed).HasDefaultValue(ConfirmationStatus.Unchecked).IsRequired();
 
-            builder.HasOne(x => x.AdminConfirmed).WithMany().HasForeignKey(x => x.AdminConfirmedId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.AdminConfirmed).WithMany().HasForeignKey(x => x.AdminConfirmedId).OnDelete(DeleteBehavior.NoAction).IsRequired(false);
         }
 
     }

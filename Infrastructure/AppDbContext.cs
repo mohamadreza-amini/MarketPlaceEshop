@@ -1,6 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Model.Entities;
+using Model.Entities.Categories;
+using Model.Entities.Customers;
+using Model.Entities.Orders;
+using Model.Entities.Products;
+using Model.Entities.Review;
+using Model.Entities.Suppliers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +43,7 @@ namespace Infrastructure
         public DbSet<Role> Roles { get; set; }
         public DbSet<Score> Scores { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

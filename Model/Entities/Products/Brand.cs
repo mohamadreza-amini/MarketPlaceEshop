@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.Entities;
+namespace Model.Entities.Products;
 
 public class Brand : BaseEntity<int>
 {
-    public string BrandName {  get; set; }
-    public ICollection<Product> products { get;}
+    public string BrandName { get; set; }
+    public virtual ICollection<Product>? products { get; }
 
-    
 }
