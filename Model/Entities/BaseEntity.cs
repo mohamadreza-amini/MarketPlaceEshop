@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Model.Entities;
 
-public class BaseEntity<T> where T : struct
+public abstract class BaseEntity<T> where T : struct
 {
     public T Id { get; set; }
     public bool IsDeleted { get; set; } = false;

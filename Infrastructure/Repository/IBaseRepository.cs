@@ -11,7 +11,7 @@ namespace Infrastructure.Repository.Interfaces;
 
 public interface IBaseRepository<T, KeyTypeId> where T : BaseEntity<KeyTypeId> where KeyTypeId : struct
 {
-    Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null);
+    Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null, bool isNoTracking = true);
     Task<IQueryable<TResult>> GetAll<TResult>(Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, bool isNoTracking = true);
     Task<T> GetByIdAsync(KeyTypeId id);
     Task<T> GetAsync(Expression<Func<T, bool>> predicate);

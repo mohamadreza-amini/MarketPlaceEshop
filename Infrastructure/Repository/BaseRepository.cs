@@ -22,14 +22,14 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         _entitySet = appDbContext.Set<T>();
     }
 
-    public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null)
+    public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null, bool isNoTracking = true)
     {
         if (predicate == null)
         {
-            return await Task.Run(() => _entitySet.AsQueryable());
+            return await Task.Run(() =>isNoTracking? _entitySet.AsNoTracking() : _entitySet.AsQueryable());
         }
 
-        return await Task.Run(() => _entitySet.Where(predicate));
+        return await Task.Run(() => isNoTracking ? _entitySet.Where(predicate).AsNoTracking():_entitySet.Where(predicate));
     }
 
     public async Task<IQueryable<TResult>> GetAll<TResult>(Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, bool isNoTracking = true)
