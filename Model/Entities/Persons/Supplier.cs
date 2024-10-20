@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Model.Entities.Products;
 
-namespace Model.Entities.Suppliers;
+namespace Model.Entities.Person;
 
 public class Supplier : BaseEntity<Guid>
 {
@@ -12,7 +13,6 @@ public class Supplier : BaseEntity<Guid>
     public string BankAccountNumber { get; set; }
     public string CompanyName { get; set; }
     public string CompanyRegistrationNumber { get; set; }
-    public Guid UserId { get; set; }
     public virtual User User { get; set; }
     public virtual ICollection<ProductSupplier>? ProductSuppliers { get; set; }
 }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Model.Entities.Orders;
-using Model.Entities.Products;
+using Model.Entities.Person;
 using Model.Entities.Review;
 
-namespace Model.Entities.Suppliers;
+namespace Model.Entities.Products;
 
 public class ProductSupplier : BaseEntity<Guid>
 {

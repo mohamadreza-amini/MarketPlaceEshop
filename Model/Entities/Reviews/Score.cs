@@ -4,10 +4,8 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using Model.Entities.Customers;
-using Model.Entities.Suppliers;
-
-
+using Model.Entities.Person;
+using Model.Entities.Products;
 
 namespace Model.Entities.Review;
 

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Model.Entities.Categories;
-using Model.Entities.Suppliers;
 
 namespace Model.Entities.Products;
 

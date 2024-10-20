@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.Enums;
+namespace Model.Entities.Person;
 
-public enum ConfirmationStatus
+public class Admin : BaseEntity<Guid>
 {
-    Unchecked = 0,
-    Confirmed = 1,
-    Rejected = 2
+    public virtual User User { get; set; }
 }
