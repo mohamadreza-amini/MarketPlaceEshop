@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241011065119_add_identity")]
+    partial class add_identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,19 +128,10 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Model.Entities.Addresses.Address", b =>
+            modelBuilder.Entity("Model.Entities.Admin", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AddressDetail")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("NVarChar");
-
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("CreateDatetime")
                         .IsRequired()
@@ -147,29 +141,10 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("HouseNumber")
-                        .HasColumnType("Int");
-
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
-
-                    b.Property<string>("Neighborhood")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("NVarChar");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("NVarChar");
-
-                    b.Property<int>("UnitNumber")
-                        .HasColumnType("Int");
 
                     b.Property<DateTime?>("UpdateDatetime")
                         .IsRequired()
@@ -181,66 +156,11 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
-
                     b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("UpdaterUserId");
 
-                    b.ToTable("Addresses");
-                });
-
-            modelBuilder.Entity("Model.Entities.Addresses.City", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CityName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("NVarChar");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<int>("ProvinceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProvinceId");
-
-                    b.ToTable("Cities");
-                });
-
-            modelBuilder.Entity("Model.Entities.Addresses.Province", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("ProvinceName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("NVarChar");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Provinces");
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("Model.Entities.Categories.Category", b =>
@@ -270,10 +190,10 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<byte>("IsConfirmed")
+                    b.Property<int>("IsConfirmed")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -342,10 +262,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<byte>("IsConfirmed")
+                    b.Property<int>("IsConfirmed")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -406,10 +326,10 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("NVarChar");
 
-                    b.Property<byte>("IsConfirmed")
+                    b.Property<int>("IsConfirmed")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -443,44 +363,144 @@ namespace Infrastructure.Migrations
                     b.ToTable("ProductFeatureValues");
                 });
 
-            modelBuilder.Entity("Model.Entities.ExceptionLog", b =>
+            modelBuilder.Entity("Model.Entities.Customers.Address", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("AddressDetail")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("NVarChar");
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVarChar");
+
+                    b.Property<DateTime?>("CreateDatetime")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ExceptionType")
+                    b.Property<Guid?>("CreatorUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("InnerException")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("HouseNumber")
+                        .HasColumnType("Int");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<string>("Message")
+                    b.Property<string>("Neighborhood")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("NVarChar");
 
-                    b.Property<string>("StackTrace")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVarChar");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVarChar");
+
+                    b.Property<int>("UnitNumber")
+                        .HasColumnType("Int");
+
+                    b.Property<DateTime?>("UpdateDatetime")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdaterUserId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("CreatorUserId");
 
-                    b.ToTable("ExceptionLogs");
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("UpdaterUserId");
+
+                    b.ToTable("Addresses");
+                });
+
+            modelBuilder.Entity("Model.Entities.Customers.Customer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreateDatetime")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatorUserId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("RegisterDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdateDatetime")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdaterUserId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("UpdaterUserId");
+
+                    b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("Model.Entities.Orders.Cart", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ExpiredFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("StartFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StatusCart")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Model.Entities.Orders.CartItem", b =>
@@ -489,8 +509,21 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<Guid>("CartId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreateDatetime")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatorUserId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsCanceled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -503,11 +536,23 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("UpdateDatetime")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdaterUserId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("CreatorUserId");
 
                     b.HasIndex("ProductSupplierId");
+
+                    b.HasIndex("UpdaterUserId");
 
                     b.ToTable("CartItems");
                 });
@@ -538,10 +583,15 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<byte>("IsConfirmed")
+                    b.Property<bool>("IsCanceled")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("IsConfirmed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -553,6 +603,14 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime>("ShippedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("TotalCost")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("Decimal");
+
+                    b.Property<decimal>("TotalDiscount")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("Decimal");
 
                     b.Property<DateTime?>("UpdateDatetime")
                         .IsRequired()
@@ -647,10 +705,24 @@ namespace Infrastructure.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("Model.Entities.Person.Admin", b =>
+            modelBuilder.Entity("Model.Entities.Products.Brand", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid?>("AdminConfirmedId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BrandName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVarChar");
+
+                    b.Property<DateTime?>("ConfirmedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("CreateDatetime")
                         .IsRequired()
@@ -659,6 +731,11 @@ namespace Infrastructure.Migrations
                     b.Property<Guid?>("CreatorUserId")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("IsConfirmed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -675,17 +752,26 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AdminConfirmedId");
+
                     b.HasIndex("CreatorUserId");
 
                     b.HasIndex("UpdaterUserId");
 
-                    b.ToTable("Admins");
+                    b.ToTable("Brands");
                 });
 
-            modelBuilder.Entity("Model.Entities.Person.Customer", b =>
+            modelBuilder.Entity("Model.Entities.Products.Image", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AdminConfirmedId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ConfirmedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("CreateDatetime")
                         .IsRequired()
@@ -695,12 +781,89 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("IsConfirmed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<DateTime>("RegisterDate")
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("NVarChar");
+
+                    b.Property<byte>("Priority")
+                        .HasColumnType("TinyInt");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdateDatetime")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdaterUserId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminConfirmedId");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UpdaterUserId");
+
+                    b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("Model.Entities.Products.Price", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AdminConfirmedId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ConfirmedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CreateDatetime")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatorUserId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ExpiredTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IsConfirmed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<decimal>("PriceValue")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("Decimal");
+
+                    b.Property<Guid>("ProductSupplierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("UpdateDatetime")
@@ -713,14 +876,182 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AdminConfirmedId");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("ProductSupplierId");
+
+                    b.HasIndex("UpdaterUserId");
+
+                    b.ToTable("Prices");
+                });
+
+            modelBuilder.Entity("Model.Entities.Products.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AdminConfirmedId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("BrandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ConfirmedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CreateDatetime")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatorUserId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IsConfirmed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsDisable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVarChar");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Titel")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVarChar");
+
+                    b.Property<DateTime?>("UpdateDatetime")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdaterUserId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("View")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminConfirmedId");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("CreatorUserId");
 
                     b.HasIndex("UpdaterUserId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Model.Entities.Person.Role", b =>
+            modelBuilder.Entity("Model.Entities.Review.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AdminConfirmedId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CommentText")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("NVarChar");
+
+                    b.Property<DateTime?>("ConfirmedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateOfRegistration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IsConfirmed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid>("ProductSupplierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminConfirmedId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ProductSupplierId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Model.Entities.Review.Score", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid>("ProductSupplierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte>("StarRating")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TinyInt")
+                        .HasDefaultValue((byte)0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductSupplierId");
+
+                    b.HasIndex("CustomerId", "ProductSupplierId")
+                        .IsUnique();
+
+                    b.ToTable("Scores");
+                });
+
+            modelBuilder.Entity("Model.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -739,14 +1070,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("VarChar");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
@@ -755,6 +1083,11 @@ namespace Infrastructure.Migrations
                     b.Property<string>("RoleDescription")
                         .IsRequired()
                         .HasMaxLength(500)
+                        .HasColumnType("VarChar");
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("VarChar");
 
                     b.Property<DateTime?>("UpdateDatetime")
@@ -779,7 +1112,69 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Model.Entities.Person.Supplier", b =>
+            modelBuilder.Entity("Model.Entities.Suppliers.ProductSupplier", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreateDatetime")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatorUserId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Discount")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(12, 2)
+                        .HasColumnType("Decimal")
+                        .HasDefaultValue(0m);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsDisable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdateDatetime")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdaterUserId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Ventory")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.HasIndex("UpdaterUserId");
+
+                    b.ToTable("ProductSuppliers");
+                });
+
+            modelBuilder.Entity("Model.Entities.Suppliers.Supplier", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -813,10 +1208,10 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<byte>("IsConfirmed")
+                    b.Property<int>("IsConfirmed")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -845,7 +1240,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Suppliers");
                 });
 
-            modelBuilder.Entity("Model.Entities.Person.User", b =>
+            modelBuilder.Entity("Model.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -857,14 +1252,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatorUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
@@ -933,24 +1320,11 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("UpdateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdaterUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.HasIndex("MobileNumber")
                         .IsUnique();
@@ -963,447 +1337,12 @@ namespace Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("UpdaterUserId");
-
-                    b.HasIndex("UserName")
-                        .IsUnique()
-                        .HasFilter("[UserName] IS NOT NULL");
-
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Model.Entities.Products.Brand", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid?>("AdminConfirmedId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("BrandName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("NVarChar");
-
-                    b.Property<DateTime?>("ConfirmedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("CreateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatorUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte>("IsConfirmed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<DateTime?>("UpdateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdaterUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdminConfirmedId");
-
-                    b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("UpdaterUserId");
-
-                    b.ToTable("Brands");
-                });
-
-            modelBuilder.Entity("Model.Entities.Products.Image", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("AdminConfirmedId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ConfirmedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("CreateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatorUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte>("IsConfirmed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("NVarChar");
-
-                    b.Property<byte>("Priority")
-                        .HasColumnType("TinyInt");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdaterUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdminConfirmedId");
-
-                    b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UpdaterUserId");
-
-                    b.ToTable("Images");
-                });
-
-            modelBuilder.Entity("Model.Entities.Products.Price", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatorUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ExpiredTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<decimal>("PriceValue")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("Decimal");
-
-                    b.Property<Guid>("ProductSupplierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdaterUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("ProductSupplierId");
-
-                    b.HasIndex("UpdaterUserId");
-
-                    b.ToTable("Prices");
-                });
-
-            modelBuilder.Entity("Model.Entities.Products.Product", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("AdminConfirmedId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("BrandId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ConfirmedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("CreateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatorUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("IsConfirmed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<bool>("IsDisable")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("NVarChar");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Titel")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("NVarChar");
-
-                    b.Property<DateTime?>("UpdateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdaterUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("View")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdminConfirmedId");
-
-                    b.HasIndex("BrandId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("UpdaterUserId");
-
-                    b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("Model.Entities.Products.ProductSupplier", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatorUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Discount")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(12, 2)
-                        .HasColumnType("Decimal")
-                        .HasDefaultValue(0m);
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<bool>("IsDisable")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SupplierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdateDatetime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdaterUserId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Ventory")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("SupplierId");
-
-                    b.HasIndex("UpdaterUserId");
-
-                    b.ToTable("ProductSuppliers");
-                });
-
-            modelBuilder.Entity("Model.Entities.Review.Comment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("AdminConfirmedId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CommentText")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("NVarChar");
-
-                    b.Property<DateTime?>("ConfirmedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DateOfRegistration")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte>("IsConfirmed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<Guid>("ProductSupplierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdminConfirmedId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("ProductSupplierId");
-
-                    b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("Model.Entities.Review.Score", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<Guid>("ProductSupplierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte>("StarRating")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TinyInt")
-                        .HasDefaultValue((byte)0);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductSupplierId");
-
-                    b.HasIndex("CustomerId", "ProductSupplierId")
-                        .IsUnique();
-
-                    b.ToTable("Scores");
-                });
-
-            modelBuilder.Entity("Model.Entities.ViewLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("IP")
-                        .IsRequired()
-                        .HasColumnType("VarChar");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("VarChar");
-
-                    b.Property<Guid?>("userId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("userId");
-
-                    b.ToTable("ViewLogs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Model.Entities.Person.Role", null)
+                    b.HasOne("Model.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1412,7 +1351,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Model.Entities.Person.User", null)
+                    b.HasOne("Model.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1421,7 +1360,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("Model.Entities.Person.User", null)
+                    b.HasOne("Model.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1430,13 +1369,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("Model.Entities.Person.Role", null)
+                    b.HasOne("Model.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", null)
+                    b.HasOne("Model.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1445,67 +1384,48 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("Model.Entities.Person.User", null)
+                    b.HasOne("Model.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Model.Entities.Addresses.Address", b =>
+            modelBuilder.Entity("Model.Entities.Admin", b =>
                 {
-                    b.HasOne("Model.Entities.Addresses.City", "City")
-                        .WithMany("Addresses")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
+                    b.HasOne("Model.Entities.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.Customer", "Customer")
-                        .WithMany("Addresses")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Model.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("Model.Entities.Admin", "Id")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
                         .WithMany()
                         .HasForeignKey("UpdaterUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("City");
-
                     b.Navigation("CreatorUser");
 
-                    b.Navigation("Customer");
-
                     b.Navigation("UpdaterUser");
-                });
 
-            modelBuilder.Entity("Model.Entities.Addresses.City", b =>
-                {
-                    b.HasOne("Model.Entities.Addresses.Province", "Province")
-                        .WithMany("cities")
-                        .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Province");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Model.Entities.Categories.Category", b =>
                 {
-                    b.HasOne("Model.Entities.Person.Admin", "AdminConfirmed")
+                    b.HasOne("Model.Entities.Admin", "AdminConfirmed")
                         .WithMany()
                         .HasForeignKey("AdminConfirmedId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
+                    b.HasOne("Model.Entities.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1516,7 +1436,7 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("ParentCategoryId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
                         .WithMany()
                         .HasForeignKey("UpdaterUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1533,7 +1453,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Model.Entities.Categories.CategoryFeature", b =>
                 {
-                    b.HasOne("Model.Entities.Person.Admin", "AdminConfirmed")
+                    b.HasOne("Model.Entities.Admin", "AdminConfirmed")
                         .WithMany()
                         .HasForeignKey("AdminConfirmedId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1544,13 +1464,13 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
+                    b.HasOne("Model.Entities.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
                         .WithMany()
                         .HasForeignKey("UpdaterUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1567,7 +1487,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Model.Entities.Categories.ProductFeatureValue", b =>
                 {
-                    b.HasOne("Model.Entities.Person.Admin", "AdminConfirmed")
+                    b.HasOne("Model.Entities.Admin", "AdminConfirmed")
                         .WithMany()
                         .HasForeignKey("AdminConfirmedId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1575,10 +1495,10 @@ namespace Infrastructure.Migrations
                     b.HasOne("Model.Entities.Categories.CategoryFeature", "CategoryFeature")
                         .WithMany("ProductFeatureValues")
                         .HasForeignKey("CategoryFeatureId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
+                    b.HasOne("Model.Entities.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1587,10 +1507,10 @@ namespace Infrastructure.Migrations
                     b.HasOne("Model.Entities.Products.Product", "Product")
                         .WithMany("ProductFeatureValues")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
                         .WithMany()
                         .HasForeignKey("UpdaterUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1607,61 +1527,132 @@ namespace Infrastructure.Migrations
                     b.Navigation("UpdaterUser");
                 });
 
-            modelBuilder.Entity("Model.Entities.ExceptionLog", b =>
+            modelBuilder.Entity("Model.Entities.Customers.Address", b =>
                 {
-                    b.HasOne("Model.Entities.Person.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Model.Entities.Orders.CartItem", b =>
-                {
-                    b.HasOne("Model.Entities.Person.Customer", "Customer")
-                        .WithMany("CartItem")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Products.ProductSupplier", "ProductSupplier")
-                        .WithMany("CartItems")
-                        .HasForeignKey("ProductSupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("ProductSupplier");
-                });
-
-            modelBuilder.Entity("Model.Entities.Orders.Order", b =>
-                {
-                    b.HasOne("Model.Entities.Addresses.Address", "Address")
-                        .WithMany("Orders")
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.Admin", "AdminConfirmed")
-                        .WithMany()
-                        .HasForeignKey("AdminConfirmedId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
+                    b.HasOne("Model.Entities.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.Customer", "Customer")
-                        .WithMany("Orders")
+                    b.HasOne("Model.Entities.Customers.Customer", "Customer")
+                        .WithMany("Addresses")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
+                        .WithMany()
+                        .HasForeignKey("UpdaterUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("UpdaterUser");
+                });
+
+            modelBuilder.Entity("Model.Entities.Customers.Customer", b =>
+                {
+                    b.HasOne("Model.Entities.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("Model.Entities.Customers.Customer", "Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
+                        .WithMany()
+                        .HasForeignKey("UpdaterUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("UpdaterUser");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Model.Entities.Orders.Cart", b =>
+                {
+                    b.HasOne("Model.Entities.Customers.Customer", "Customer")
+                        .WithMany("Carts")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("Model.Entities.Orders.CartItem", b =>
+                {
+                    b.HasOne("Model.Entities.Orders.Cart", "Cart")
+                        .WithMany("CartItems")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.Suppliers.ProductSupplier", "ProductSupplier")
+                        .WithMany("CartItems")
+                        .HasForeignKey("ProductSupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
+                        .WithMany()
+                        .HasForeignKey("UpdaterUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("ProductSupplier");
+
+                    b.Navigation("UpdaterUser");
+                });
+
+            modelBuilder.Entity("Model.Entities.Orders.Order", b =>
+                {
+                    b.HasOne("Model.Entities.Customers.Address", "Address")
+                        .WithMany("Orders")
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.Admin", "AdminConfirmed")
+                        .WithMany()
+                        .HasForeignKey("AdminConfirmedId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Model.Entities.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.Customers.Customer", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
                         .WithMany()
                         .HasForeignKey("UpdaterUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1680,7 +1671,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Model.Entities.Orders.OrderItem", b =>
                 {
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
+                    b.HasOne("Model.Entities.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1689,16 +1680,16 @@ namespace Infrastructure.Migrations
                     b.HasOne("Model.Entities.Orders.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Products.ProductSupplier", "ProductSupplier")
+                    b.HasOne("Model.Entities.Suppliers.ProductSupplier", "ProductSupplier")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductSupplierId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
                         .WithMany()
                         .HasForeignKey("UpdaterUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1713,146 +1704,20 @@ namespace Infrastructure.Migrations
                     b.Navigation("UpdaterUser");
                 });
 
-            modelBuilder.Entity("Model.Entities.Person.Admin", b =>
-                {
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
-                        .WithMany()
-                        .HasForeignKey("CreatorUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.User", "User")
-                        .WithOne()
-                        .HasForeignKey("Model.Entities.Person.Admin", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
-                        .WithMany()
-                        .HasForeignKey("UpdaterUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("CreatorUser");
-
-                    b.Navigation("UpdaterUser");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Model.Entities.Person.Customer", b =>
-                {
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
-                        .WithMany()
-                        .HasForeignKey("CreatorUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.User", "User")
-                        .WithOne()
-                        .HasForeignKey("Model.Entities.Person.Customer", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
-                        .WithMany()
-                        .HasForeignKey("UpdaterUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("CreatorUser");
-
-                    b.Navigation("UpdaterUser");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Model.Entities.Person.Role", b =>
-                {
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
-                        .WithMany()
-                        .HasForeignKey("CreatorUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
-                        .WithMany()
-                        .HasForeignKey("UpdaterUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("CreatorUser");
-
-                    b.Navigation("UpdaterUser");
-                });
-
-            modelBuilder.Entity("Model.Entities.Person.Supplier", b =>
-                {
-                    b.HasOne("Model.Entities.Person.Admin", "AdminConfirmed")
-                        .WithMany()
-                        .HasForeignKey("AdminConfirmedId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
-                        .WithMany()
-                        .HasForeignKey("CreatorUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.User", "User")
-                        .WithOne()
-                        .HasForeignKey("Model.Entities.Person.Supplier", "Id")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
-                        .WithMany()
-                        .HasForeignKey("UpdaterUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("AdminConfirmed");
-
-                    b.Navigation("CreatorUser");
-
-                    b.Navigation("UpdaterUser");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Model.Entities.Person.User", b =>
-                {
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
-                        .WithMany()
-                        .HasForeignKey("CreatorUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
-                        .WithMany()
-                        .HasForeignKey("UpdaterUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("CreatorUser");
-
-                    b.Navigation("UpdaterUser");
-                });
-
             modelBuilder.Entity("Model.Entities.Products.Brand", b =>
                 {
-                    b.HasOne("Model.Entities.Person.Admin", "AdminConfirmed")
+                    b.HasOne("Model.Entities.Admin", "AdminConfirmed")
                         .WithMany()
                         .HasForeignKey("AdminConfirmedId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
+                    b.HasOne("Model.Entities.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
                         .WithMany()
                         .HasForeignKey("UpdaterUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1867,12 +1732,12 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Model.Entities.Products.Image", b =>
                 {
-                    b.HasOne("Model.Entities.Person.Admin", "AdminConfirmed")
+                    b.HasOne("Model.Entities.Admin", "AdminConfirmed")
                         .WithMany()
                         .HasForeignKey("AdminConfirmedId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
+                    b.HasOne("Model.Entities.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1881,10 +1746,10 @@ namespace Infrastructure.Migrations
                     b.HasOne("Model.Entities.Products.Product", "Product")
                         .WithMany("Images")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
                         .WithMany()
                         .HasForeignKey("UpdaterUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1901,23 +1766,30 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Model.Entities.Products.Price", b =>
                 {
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
+                    b.HasOne("Model.Entities.Admin", "AdminConfirmed")
+                        .WithMany()
+                        .HasForeignKey("AdminConfirmedId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Model.Entities.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Products.ProductSupplier", "ProductSupplier")
+                    b.HasOne("Model.Entities.Suppliers.ProductSupplier", "ProductSupplier")
                         .WithMany("Prices")
                         .HasForeignKey("ProductSupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
                         .WithMany()
                         .HasForeignKey("UpdaterUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("AdminConfirmed");
 
                     b.Navigation("CreatorUser");
 
@@ -1928,7 +1800,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Model.Entities.Products.Product", b =>
                 {
-                    b.HasOne("Model.Entities.Person.Admin", "AdminConfirmed")
+                    b.HasOne("Model.Entities.Admin", "AdminConfirmed")
                         .WithMany()
                         .HasForeignKey("AdminConfirmedId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1945,13 +1817,13 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
+                    b.HasOne("Model.Entities.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
                         .WithMany()
                         .HasForeignKey("UpdaterUserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1968,55 +1840,20 @@ namespace Infrastructure.Migrations
                     b.Navigation("UpdaterUser");
                 });
 
-            modelBuilder.Entity("Model.Entities.Products.ProductSupplier", b =>
-                {
-                    b.HasOne("Model.Entities.Person.User", "CreatorUser")
-                        .WithMany()
-                        .HasForeignKey("CreatorUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Products.Product", "Product")
-                        .WithMany("productSuppliers")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.Supplier", "Supplier")
-                        .WithMany("ProductSuppliers")
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Model.Entities.Person.User", "UpdaterUser")
-                        .WithMany()
-                        .HasForeignKey("UpdaterUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("CreatorUser");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Supplier");
-
-                    b.Navigation("UpdaterUser");
-                });
-
             modelBuilder.Entity("Model.Entities.Review.Comment", b =>
                 {
-                    b.HasOne("Model.Entities.Person.Admin", "AdminConfirmed")
+                    b.HasOne("Model.Entities.Admin", "AdminConfirmed")
                         .WithMany()
                         .HasForeignKey("AdminConfirmedId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Model.Entities.Person.Customer", "Customer")
+                    b.HasOne("Model.Entities.Customers.Customer", "Customer")
                         .WithMany("Comments")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Products.ProductSupplier", "ProductSupplier")
+                    b.HasOne("Model.Entities.Suppliers.ProductSupplier", "ProductSupplier")
                         .WithMany("Comments")
                         .HasForeignKey("ProductSupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2031,16 +1868,16 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Model.Entities.Review.Score", b =>
                 {
-                    b.HasOne("Model.Entities.Person.Customer", "Customer")
+                    b.HasOne("Model.Entities.Customers.Customer", "Customer")
                         .WithMany("Scores")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Model.Entities.Products.ProductSupplier", "ProductSupplier")
+                    b.HasOne("Model.Entities.Suppliers.ProductSupplier", "ProductSupplier")
                         .WithMany("Scores")
                         .HasForeignKey("ProductSupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Customer");
@@ -2048,29 +1885,92 @@ namespace Infrastructure.Migrations
                     b.Navigation("ProductSupplier");
                 });
 
-            modelBuilder.Entity("Model.Entities.ViewLog", b =>
+            modelBuilder.Entity("Model.Entities.Role", b =>
                 {
-                    b.HasOne("Model.Entities.Person.User", "User")
+                    b.HasOne("Model.Entities.User", "CreatorUser")
                         .WithMany()
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CreatorUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
+                        .WithMany()
+                        .HasForeignKey("UpdaterUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("UpdaterUser");
+                });
+
+            modelBuilder.Entity("Model.Entities.Suppliers.ProductSupplier", b =>
+                {
+                    b.HasOne("Model.Entities.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.Products.Product", "Product")
+                        .WithMany("productSuppliers")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.Suppliers.Supplier", "Supplier")
+                        .WithMany("ProductSuppliers")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
+                        .WithMany()
+                        .HasForeignKey("UpdaterUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Supplier");
+
+                    b.Navigation("UpdaterUser");
+                });
+
+            modelBuilder.Entity("Model.Entities.Suppliers.Supplier", b =>
+                {
+                    b.HasOne("Model.Entities.Admin", "AdminConfirmed")
+                        .WithMany()
+                        .HasForeignKey("AdminConfirmedId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Model.Entities.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("Model.Entities.Suppliers.Supplier", "Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Model.Entities.User", "UpdaterUser")
+                        .WithMany()
+                        .HasForeignKey("UpdaterUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AdminConfirmed");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("UpdaterUser");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Model.Entities.Addresses.Address", b =>
-                {
-                    b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("Model.Entities.Addresses.City", b =>
-                {
-                    b.Navigation("Addresses");
-                });
-
-            modelBuilder.Entity("Model.Entities.Addresses.Province", b =>
-                {
-                    b.Navigation("cities");
                 });
 
             modelBuilder.Entity("Model.Entities.Categories.Category", b =>
@@ -2087,16 +1987,16 @@ namespace Infrastructure.Migrations
                     b.Navigation("ProductFeatureValues");
                 });
 
-            modelBuilder.Entity("Model.Entities.Orders.Order", b =>
+            modelBuilder.Entity("Model.Entities.Customers.Address", b =>
                 {
-                    b.Navigation("OrderItems");
+                    b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Model.Entities.Person.Customer", b =>
+            modelBuilder.Entity("Model.Entities.Customers.Customer", b =>
                 {
                     b.Navigation("Addresses");
 
-                    b.Navigation("CartItem");
+                    b.Navigation("Carts");
 
                     b.Navigation("Comments");
 
@@ -2105,9 +2005,14 @@ namespace Infrastructure.Migrations
                     b.Navigation("Scores");
                 });
 
-            modelBuilder.Entity("Model.Entities.Person.Supplier", b =>
+            modelBuilder.Entity("Model.Entities.Orders.Cart", b =>
                 {
-                    b.Navigation("ProductSuppliers");
+                    b.Navigation("CartItems");
+                });
+
+            modelBuilder.Entity("Model.Entities.Orders.Order", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("Model.Entities.Products.Brand", b =>
@@ -2124,7 +2029,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("productSuppliers");
                 });
 
-            modelBuilder.Entity("Model.Entities.Products.ProductSupplier", b =>
+            modelBuilder.Entity("Model.Entities.Suppliers.ProductSupplier", b =>
                 {
                     b.Navigation("CartItems");
 
@@ -2135,6 +2040,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("Prices");
 
                     b.Navigation("Scores");
+                });
+
+            modelBuilder.Entity("Model.Entities.Suppliers.Supplier", b =>
+                {
+                    b.Navigation("ProductSuppliers");
                 });
 #pragma warning restore 612, 618
         }

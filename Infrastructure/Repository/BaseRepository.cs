@@ -15,7 +15,7 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
 {
     private readonly AppDbContext _appDbContext;
     private readonly DbSet<T> _entitySet;
-
+ 
     public BaseRepository(AppDbContext appDbContext)
     {
         _appDbContext = appDbContext;
@@ -24,6 +24,7 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
 
     public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null, bool isNoTracking = true)
     {
+       
         if (predicate == null)
         {
             return await Task.Run(() =>isNoTracking? _entitySet.AsNoTracking() : _entitySet.AsQueryable());
@@ -55,6 +56,8 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
     public async Task<T> CreateDataAsync(T data)
     {
         await _entitySet.AddAsync(data);
+        //_entitySet.Add(data);
+        await CommitAsync();
         return data;
     }
 

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Model.Enums;
+
 
 namespace Infrastructure.TableConfigs;
 
@@ -60,7 +60,7 @@ public class BaseConfig<T, KeyTypeId> : IEntityTypeConfiguration<T> where T : Ba
         else
         {
             builder.Property(x => x.ConfirmedDate).IsRequired(false);
-            builder.Property(x => x.IsConfirmed).HasDefaultValue(ConfirmationStatus.Unchecked).IsRequired();
+            builder.Property(x => x.IsConfirmed).HasDefaultValue(1).IsRequired();
 
             builder.HasOne(x => x.AdminConfirmed).WithMany().HasForeignKey(x => x.AdminConfirmedId).OnDelete(DeleteBehavior.NoAction).IsRequired(false);
         }
