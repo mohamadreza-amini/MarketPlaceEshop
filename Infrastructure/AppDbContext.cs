@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure
 {
-    public class AppDbContext : IdentityDbContext<User,Role,Guid>
+    public class AppDbContext : IdentityDbContext<User, Role, Guid>
     {
         public AppDbContext()
         {
@@ -57,12 +57,43 @@ namespace Infrastructure
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
 
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            PrepareEntity();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+        public override int SaveChanges()
+        {
+            PrepareEntity();
+            return base.SaveChanges();
+        }
 
+        private void PrepareEntity()
+        {
+            foreach (var entity in ChangeTracker.Entries())
+            {
+                if (entity.State == EntityState.Modified || entity.State == EntityState.Deleted)
+                {
+                    if (entity.GetType().IsSubclassOf(typeof(BaseEntity<>)))
+                    {
+                        entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
+                    }
+                }
+
+                if (entity.State == EntityState.Added)
+                {
+                    if (entity.GetType().IsSubclassOf(typeof(BaseEntity<>)))
+                    {
+                        entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
+                        entity.Property("CreateDatetime").CurrentValue = DateTime.Now;
+                    }
+                }
+            }
         }
     }
 }
