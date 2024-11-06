@@ -20,10 +20,7 @@ namespace Infrastructure
 {
     public class AppDbContext : IdentityDbContext<User, Role, Guid>
     {
-        public AppDbContext()
-        {
-
-        }
+        public AppDbContext() { }
         public AppDbContext(DbContextOptions<AppDbContext> option) : base(option) { }
 
         public DbSet<Address> Addresses { get; set; }
