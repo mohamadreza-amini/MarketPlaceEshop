@@ -15,6 +15,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.ChangeInterceptors;
+
 
 namespace Infrastructure
 {
@@ -50,6 +52,7 @@ namespace Infrastructure
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=MarketPlace1;TrustServerCertificate=True;Integrated Security=SSPI;");
+            optionsBuilder.AddInterceptors(new ChangeInterceptor());
 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -59,7 +62,7 @@ namespace Infrastructure
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+       /* public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             PrepareEntity();
             return base.SaveChangesAsync(cancellationToken);
@@ -98,6 +101,6 @@ namespace Infrastructure
                     }
                 }
             }
-        }
+        }*/
     }
 }
