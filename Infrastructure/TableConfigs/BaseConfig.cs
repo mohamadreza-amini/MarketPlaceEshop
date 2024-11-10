@@ -13,7 +13,7 @@ namespace Infrastructure.TableConfigs;
 
 public class BaseConfig<T, KeyTypeId> : IEntityTypeConfiguration<T> where T : BaseEntity<KeyTypeId> where KeyTypeId : struct
 {
-    protected bool GeneratedValueForKey { get; set; } = false;
+    protected bool GeneratedValueForKey { get; set; } = true;
     protected bool UseForTracable { get; set; } = false;
     protected bool RequireTraceable { get; set; } = false;
     protected bool NeedConfirmation { get; set; } = false;

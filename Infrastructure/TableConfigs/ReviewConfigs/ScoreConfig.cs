@@ -21,8 +21,6 @@ public class ScoreConfig : BaseConfig<Score, Guid>
 
         builder.HasIndex(x => new { x.CustomerId, x.ProductSupplierId }).IsUnique();
 
-
         base.Configure(builder);
-
     }
 }

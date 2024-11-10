@@ -22,7 +22,6 @@ public class ExceptionLogConfig:BaseConfig<ExceptionLog,int>
 
         builder.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).IsRequired(false).OnDelete(DeleteBehavior.SetNull);
 
-        base.GeneratedValueForKey= true;
         base.Configure(builder);
     }
 }

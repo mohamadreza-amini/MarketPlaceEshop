@@ -18,11 +18,7 @@ public class CategoryConfig : BaseConfig<Category, int>
         builder.Property(x => x.Level).HasColumnType(SqlDbType.TinyInt.ToString()).IsRequired();
         //برای ریشه nullable
         builder.HasOne(x => x.ParentCategory).WithMany(x => x.ChildCategories).HasForeignKey(x => x.ParentCategoryId).OnDelete(DeleteBehavior.NoAction).IsRequired(false);
-
-        RequireTraceable = true;
-        UseForTracable = true;
-        NeedConfirmation = true;
-        GeneratedValueForKey = true;
+       
         base.Configure(builder);
     }
 

@@ -44,17 +44,17 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
 
     public async Task<T?> GetAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellation)
     {
-        return await _availableEntities.FirstOrDefaultAsync(predicate,cancellation);
+        return await _availableEntities.FirstOrDefaultAsync(predicate, cancellation);
     }
 
     public async Task<T?> GetByIdAsync(KeyTypeId id, CancellationToken cancellation)
     {
-        return await GetAsync(x => x.Id.Equals(id),cancellation);
+        return await GetAsync(x => x.Id.Equals(id), cancellation);
     }
 
     public async Task<T> CreateAsync(T data, CancellationToken cancellation)
     {
-        await _entitySet.AddAsync(data,cancellation);
+        await _entitySet.AddAsync(data, cancellation);
         await CommitAsync(cancellation);
         return data;
     }
@@ -89,7 +89,10 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         }
         return false;
     }
-
+    public async Task<bool> IsExist(T data, CancellationToken cancellation)
+    {
+        return await _availableEntities.AnyAsync(x => x.Id.Equals(data.Id),cancellation);
+    }
     public async Task<int> CommitAsync(CancellationToken cancellation) => await _appDbContext.SaveChangesAsync(cancellation);
 
 }

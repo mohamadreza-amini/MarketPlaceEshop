@@ -49,7 +49,7 @@ namespace Infrastructure
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=Market3;TrustServerCertificate=True;Integrated Security=SSPI;");
+            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=MarketPlace1;TrustServerCertificate=True;Integrated Security=SSPI;");
 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -76,18 +76,25 @@ namespace Infrastructure
             {
                 if (entity.State == EntityState.Modified || entity.State == EntityState.Deleted)
                 {
-                    if (entity.GetType().IsSubclassOf(typeof(BaseEntity<>)))
+                    try
                     {
                         entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
                     }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error while setting properties: {ex.Message}");
+                    }
                 }
-
                 if (entity.State == EntityState.Added)
                 {
-                    if (entity.GetType().IsSubclassOf(typeof(BaseEntity<>)))
+                    try
                     {
                         entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
                         entity.Property("CreateDatetime").CurrentValue = DateTime.Now;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error while setting properties: {ex.Message}");
                     }
                 }
             }

@@ -16,7 +16,6 @@ public class ProvinceConfig : BaseConfig<Province, int>
     {
         builder.Property(x => x.ProvinceName).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(50).IsRequired();
 
-        GeneratedValueForKey = true;
         base.Configure(builder);
     }
 }

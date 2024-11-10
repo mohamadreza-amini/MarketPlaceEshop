@@ -21,7 +21,6 @@ public class ProductSupplierConfig : BaseConfig<ProductSupplier, Guid>
         builder.HasOne(x => x.Supplier).WithMany(x => x.ProductSuppliers).HasForeignKey(x => x.SupplierId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(x => x.Product).WithMany(x => x.productSuppliers).HasForeignKey(x => x.ProductId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
-
         RequireTraceable = true;
         UseForTracable = true;
         base.Configure(builder);

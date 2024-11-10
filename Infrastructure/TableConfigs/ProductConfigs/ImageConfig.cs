@@ -19,9 +19,6 @@ public class ImageConfig : BaseConfig<Image, Guid>
 
         builder.HasOne(x => x.Product).WithMany(x => x.Images).HasForeignKey(x => x.ProductId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
-        RequireTraceable = true;
-        UseForTracable = true;
-        NeedConfirmation = true;
         base.Configure(builder);
     }
 }

@@ -24,10 +24,6 @@ public class ProductFeatureValueConfig : BaseConfig<ProductFeatureValue, int>
 
         builder.HasIndex(x => new { x.CategoryFeatureId, x.ProductId }).IsUnique();
 
-        GeneratedValueForKey = true;
-        RequireTraceable = true;
-        UseForTracable = true;
-        NeedConfirmation = true;
         base.Configure(builder);
     }
 }

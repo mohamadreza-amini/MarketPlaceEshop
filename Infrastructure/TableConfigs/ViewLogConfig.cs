@@ -24,9 +24,6 @@ public class ViewLogConfig:BaseConfig<ViewLog,int>
 
         builder.HasOne(x=>x.User).WithMany().HasForeignKey(x=>x.userId).IsRequired(false).OnDelete(DeleteBehavior.SetNull);
 
-
-        base.GeneratedValueForKey=true;
-
         base.Configure(builder);
     }
 

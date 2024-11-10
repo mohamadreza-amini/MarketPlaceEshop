@@ -20,11 +20,6 @@ public class CategoryFeatureConfig : BaseConfig<CategoryFeature, int>
 
         builder.HasOne(x => x.Category).WithMany(x => x.CategoryFeatures).HasForeignKey(x => x.CategoryId).IsRequired().OnDelete(DeleteBehavior.NoAction);
 
-        RequireTraceable = true;
-        UseForTracable = true;
-        NeedConfirmation = true;
-        GeneratedValueForKey = true;
-
         base.Configure(builder);
 
     }

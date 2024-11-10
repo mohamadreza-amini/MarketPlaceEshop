@@ -16,12 +16,7 @@ public class BrandConfig : BaseConfig<Brand, int>
     {
         builder.Property(x => x.BrandName).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(50).IsRequired();
 
-
-        GeneratedValueForKey = true;
         NeedConfirmation = true;
-        RequireTraceable = true;
-        UseForTracable = true;
         base.Configure(builder);
     }
-
 }

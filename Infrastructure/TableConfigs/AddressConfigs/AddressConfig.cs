@@ -23,9 +23,6 @@ public class AddressConfig : BaseConfig<Address, Guid>
         builder.HasOne(x => x.City).WithMany(x => x.Addresses).HasForeignKey(x => x.CityId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(x => x.Customer).WithMany(x => x.Addresses).HasForeignKey(x => x.CustomerId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
-        UseForTracable = true;
-        RequireTraceable = true;
-
         base.Configure(builder);
     }
 }

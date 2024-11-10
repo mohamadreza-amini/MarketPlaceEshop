@@ -24,8 +24,6 @@ public class ProductConfig : BaseConfig<Product, Guid>
         builder.HasOne(x => x.Category).WithMany(x => x.Products).HasForeignKey(x => x.CategoryId).IsRequired().OnDelete(DeleteBehavior.NoAction);
         builder.HasOne(x => x.Brand).WithMany(x => x.products).HasForeignKey(x => x.BrandId).IsRequired().OnDelete(DeleteBehavior.NoAction);
 
-
-
         RequireTraceable = true;
         UseForTracable = true;
         NeedConfirmation = true;

@@ -18,7 +18,6 @@ public class CityConfig : BaseConfig<City, int>
 
         builder.HasOne(x => x.Province).WithMany(x => x.cities).HasForeignKey(x => x.ProvinceId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
-        GeneratedValueForKey = true;
         base.Configure(builder);
     }
 }

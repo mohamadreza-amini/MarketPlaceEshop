@@ -22,7 +22,6 @@ public class PriceConfig : BaseConfig<Price, Guid>
 
         RequireTraceable = true;
         UseForTracable = true;
-        //base.NeedConfirmation=true;
         base.Configure(builder);
     }
 }

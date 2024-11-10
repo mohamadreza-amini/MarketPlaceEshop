@@ -18,7 +18,6 @@ public class AdminConfig : BaseConfig<Admin, Guid>
 
         UseForTracable = true;
         RequireTraceable = true;
-
         base.Configure(builder);
     }
 }
