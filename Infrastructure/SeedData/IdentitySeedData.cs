@@ -1,4 +1,4 @@
-﻿using Infrastructure.Repository.Interfaces;
+﻿using Infrastructure.Contracts.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Model.Entities.Person;
@@ -36,7 +36,7 @@ public class IdentitySeedData
             }
             , "Aa@123456");
         }
-
+        
         var user = await userManger.FindByEmailAsync("mohamadreza@gmail.com");
 
         if (!await roleManager.RoleExistsAsync("Admin"))

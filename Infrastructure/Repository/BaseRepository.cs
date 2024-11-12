@@ -1,4 +1,4 @@
-﻿using Infrastructure.Repository.Interfaces;
+﻿using Infrastructure.Contracts.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Model.Entities;
@@ -52,18 +52,16 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         return await GetAsync(x => x.Id.Equals(id), cancellation);
     }
 
-    public async Task<T> CreateAsync(T data, CancellationToken cancellation)
+    public async Task<int> CreateAsync(T data, CancellationToken cancellation)
     {
         await _entitySet.AddAsync(data, cancellation);
-        await CommitAsync(cancellation);
-        return data;
+        return await CommitAsync(cancellation);
     }
 
-    public async Task<T> UpdateAsync(T data, CancellationToken cancellation)
+    public async Task<int> UpdateAsync(T data, CancellationToken cancellation)
     {
         _entitySet.Update(data);
-        await CommitAsync(cancellation);
-        return data;
+        return await CommitAsync(cancellation); 
     }
 
     public async Task<bool> HardDeleteAsync(KeyTypeId id, CancellationToken cancellation)
