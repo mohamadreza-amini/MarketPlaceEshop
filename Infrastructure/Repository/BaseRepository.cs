@@ -15,27 +15,24 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
 {
     private readonly AppDbContext _appDbContext;
     private readonly DbSet<T> _entitySet;
-    private readonly IQueryable<T> _availableEntities;
-
     public BaseRepository(AppDbContext appDbContext)
     {
         _appDbContext = appDbContext;
-        _entitySet = appDbContext.Set<T>();
-        _availableEntities = _entitySet.Where(x => !x.IsDeleted);
+        _entitySet = appDbContext.Set<T>();  
     }
 
     public IQueryable<T> GetAll(Expression<Func<T, bool>> predicate = null, bool isNoTracking = true)
     {
         if (predicate == null)
         {
-            return isNoTracking ? _availableEntities.AsNoTracking() : _availableEntities.AsQueryable();
+            return isNoTracking ? _entitySet.AsNoTracking() : _entitySet.AsQueryable();
         }
-        return isNoTracking ? _availableEntities.Where(predicate).AsNoTracking() : _availableEntities.Where(predicate);
+        return isNoTracking ? _entitySet.Where(predicate).AsNoTracking() : _entitySet.Where(predicate);
     }
 
     public async Task<IQueryable<TResult>?> GetAllData<TResult>(Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, bool isNoTracking = true)
     {
-        IQueryable<T> query = _availableEntities;
+        IQueryable<T> query = _entitySet;
         query = isNoTracking == true ? query.AsNoTracking() : query.AsQueryable();
         query = predicate != null ? query.Where(predicate) : query;
         query = include != null ? include(query) : query;
@@ -44,7 +41,7 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
 
     public async Task<T?> GetAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellation)
     {
-        return await _availableEntities.FirstOrDefaultAsync(predicate, cancellation);
+        return await _entitySet.FirstOrDefaultAsync(predicate, cancellation);
     }
 
     public async Task<T?> GetByIdAsync(KeyTypeId id, CancellationToken cancellation)
@@ -89,7 +86,7 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
     }
     public async Task<bool> IsExist(T data, CancellationToken cancellation)
     {
-        return await _availableEntities.AnyAsync(x => x.Id.Equals(data.Id),cancellation);
+        return await _entitySet.AnyAsync(x => x.Id.Equals(data.Id),cancellation);
     }
     public async Task<int> CommitAsync(CancellationToken cancellation) => await _appDbContext.SaveChangesAsync(cancellation);
 

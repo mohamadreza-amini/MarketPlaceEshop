@@ -60,47 +60,72 @@ namespace Infrastructure
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            modelBuilder.Entity<Address>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Admin>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Brand>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<CartItem>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Category>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<CategoryFeature>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<City>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Comment>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Customer>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<ExceptionLog>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Image>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<OrderItem>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Price>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Product>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<ProductFeatureValue>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<ProductSupplier>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Province>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Role>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Score>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Supplier>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<User>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<ViewLog>().HasQueryFilter(x => !x.IsDeleted);
+
         }
 
-       /* public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            PrepareEntity();
-            return base.SaveChangesAsync(cancellationToken);
-        }
-        public override int SaveChanges()
-        {
-            PrepareEntity();
-            return base.SaveChanges();
-        }
+        /* public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+         {
+             PrepareEntity();
+             return base.SaveChangesAsync(cancellationToken);
+         }
+         public override int SaveChanges()
+         {
+             PrepareEntity();
+             return base.SaveChanges();
+         }
 
-        private void PrepareEntity()
-        {
-            foreach (var entity in ChangeTracker.Entries())
-            {
-                if (entity.State == EntityState.Modified || entity.State == EntityState.Deleted)
-                {
-                    try
-                    {
-                        entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error while setting properties: {ex.Message}");
-                    }
-                }
-                if (entity.State == EntityState.Added)
-                {
-                    try
-                    {
-                        entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
-                        entity.Property("CreateDatetime").CurrentValue = DateTime.Now;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error while setting properties: {ex.Message}");
-                    }
-                }
-            }
-        }*/
+         private void PrepareEntity()
+         {
+             foreach (var entity in ChangeTracker.Entries())
+             {
+                 if (entity.State == EntityState.Modified || entity.State == EntityState.Deleted)
+                 {
+                     try
+                     {
+                         entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
+                     }
+                     catch (Exception ex)
+                     {
+                         Console.WriteLine($"Error while setting properties: {ex.Message}");
+                     }
+                 }
+                 if (entity.State == EntityState.Added)
+                 {
+                     try
+                     {
+                         entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
+                         entity.Property("CreateDatetime").CurrentValue = DateTime.Now;
+                     }
+                     catch (Exception ex)
+                     {
+                         Console.WriteLine($"Error while setting properties: {ex.Message}");
+                     }
+                 }
+             }
+         }*/
     }
 }
