@@ -33,13 +33,13 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         return isNoTracking ? _availableEntities.Where(predicate).AsNoTracking() : _availableEntities.Where(predicate);
     }
 
-    public IQueryable<TResult>? GetAll<TResult>(Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, bool isNoTracking = true)
+    public async Task<IQueryable<TResult>?> GetAllData<TResult>(Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, bool isNoTracking = true)
     {
         IQueryable<T> query = _availableEntities;
         query = isNoTracking == true ? query.AsNoTracking() : query.AsQueryable();
         query = predicate != null ? query.Where(predicate) : query;
         query = include != null ? include(query) : query;
-        return query != null && query.Any() ? query.Select(selector) : default;
+        return query != null && await query.AnyAsync() ? query.Select(selector) : default;
     }
 
     public async Task<T?> GetAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellation)

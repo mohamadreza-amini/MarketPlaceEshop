@@ -16,7 +16,7 @@ public class CachedData:ICachedData
         _memoryCache = iMemoryCache;
     }
 
-    public T Set<T>(string key,T data,MemoryCacheEntryOptions options = null)
+    public T Set<T>(string key,T data,MemoryCacheEntryOptions? options = null)
     {
         if(options == null)
         {
