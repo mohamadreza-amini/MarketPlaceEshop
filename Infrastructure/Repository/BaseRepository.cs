@@ -30,13 +30,13 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         return isNoTracking ? _entitySet.Where(predicate).AsNoTracking() : _entitySet.Where(predicate);
     }
 
-    public async Task<IQueryable<TResult>?> GetAllData<TResult>(Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, bool isNoTracking = true)
+    public async Task<IQueryable<TResult>?> GetAllData<TResult>(Expression<Func<T, TResult>> selector, CancellationToken cancellationToken, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, bool isNoTracking = true)
     {
         IQueryable<T> query = _entitySet;
         query = isNoTracking == true ? query.AsNoTracking() : query.AsQueryable();
         query = predicate != null ? query.Where(predicate) : query;
         query = include != null ? include(query) : query;
-        return query != null && await query.AnyAsync() ? query.Select(selector) : default;
+        return query != null && await query.AnyAsync(cancellationToken) ? query.Select(selector) : default;
     }
 
     public async Task<T?> GetAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellation)
@@ -49,16 +49,16 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         return await GetAsync(x => x.Id.Equals(id), cancellation);
     }
 
-    public async Task<int> CreateAsync(T data, CancellationToken cancellation)
+    public async Task<T> CreateAsync(T data, CancellationToken cancellation)
     {
         await _entitySet.AddAsync(data, cancellation);
-        return await CommitAsync(cancellation);
+        return data;
     }
 
-    public async Task<int> UpdateAsync(T data, CancellationToken cancellation)
+    public T Update(T data)
     {
         _entitySet.Update(data);
-        return await CommitAsync(cancellation); 
+        return data;
     }
 
     public async Task<bool> HardDeleteAsync(KeyTypeId id, CancellationToken cancellation)
@@ -67,7 +67,6 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         if (data != null)
         {
             _entitySet.Remove(data);
-            await CommitAsync(cancellation);
             return true;
         }
         return false;
@@ -79,7 +78,6 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         if (data != null)
         {
             data.IsDeleted = true;
-            await CommitAsync(cancellation);
             return true;
         }
         return false;

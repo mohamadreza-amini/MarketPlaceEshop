@@ -76,6 +76,7 @@ public class IdentitySeedData
         if (!await adminRepository.IsExist(admin,CancellationToken.None))
         {
             await adminRepository.CreateAsync(admin, CancellationToken.None);
+            await adminRepository.CommitAsync(CancellationToken.None);
         }
     }
 }
