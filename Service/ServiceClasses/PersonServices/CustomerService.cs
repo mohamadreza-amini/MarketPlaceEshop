@@ -45,4 +45,9 @@ public class CustomerService : ServiceBase<Customer, UserCommand, Guid>, ICustom
     {    
         return await _userService.SignInAsync(loginDto,"Customer");
     }
+
+    public async Task LogOutAsync()
+    {
+        await _userService.LogOutAsync();
+    }
 }

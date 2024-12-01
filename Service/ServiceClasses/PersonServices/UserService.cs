@@ -108,6 +108,11 @@ public class UserService : ServiceBase<User, UserCommand, Guid>, IUserService
         return null;
     }
 
+    public async Task LogOutAsync()
+    {
+        await _signInManager.SignOutAsync();
+    }
+
 
 
 

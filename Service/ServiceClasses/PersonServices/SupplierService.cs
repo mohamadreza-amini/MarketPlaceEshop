@@ -1,6 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Person.Commands;
 using DataTransferObject.DTOClasses.Person.Results;
 using Infrastructure.Contracts.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Person;
 using Model.Exceptions;
@@ -113,5 +114,10 @@ public class SupplierService : ServiceBase<Supplier, UserCommand, Guid>, ISuppli
         }
 
         return await _userService.SignInAsync(loginDto, "Supplier");
+    }
+
+    public async Task LogOutAsync()
+    {
+        await _userService.LogOutAsync();
     }
 }

@@ -20,8 +20,8 @@ public interface IUserService//:IServiceBase<User,,>
     bool IsRequesterUser(Guid userId);
     Task<bool> CreateAsync(UserCommand userDTO);
     Task<bool> SignInAsync(LoginCommand loginDTO,string role);
-    Task<UserResult?> GetUserbyEmailAsync(string email); 
-
+    Task<UserResult?> GetUserbyEmailAsync(string email);
+    Task LogOutAsync();
 
     /*  Task<IdentityResult> Create(UserDTO userDTO);
       Task<UserDTO> GetUser(Guid id);
