@@ -1,4 +1,4 @@
-﻿using DataTransferObject.DTOClasses.Address;
+﻿using DataTransferObject.DTOClasses.Address.Results;
 using Infrastructure.Contracts.Cache;
 using Infrastructure.Contracts.Repository;
 using Mapster;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.AddressService;
 
-public class ProvinceService : ServiceBase<Province, ProvinceDTO, int>, IProvinceService
+public class ProvinceService : ServiceBase<Province, ProvinceResult, int>, IProvinceService
 {
     private readonly ICachedData _cachedData;
     private readonly IBaseRepository<Province, int> _provinceRepository;
@@ -23,7 +23,7 @@ public class ProvinceService : ServiceBase<Province, ProvinceDTO, int>, IProvinc
         _cachedData = cachedData;
         _provinceRepository = baseRepository;
     }
-    public async Task<List<ProvinceDTO>> GetAll(CancellationToken cancellation)
+    public async Task<List<ProvinceResult>> GetAll(CancellationToken cancellation)
     {
         var provinces = _cachedData.Get<List<Province>>("Provinces");
         if (provinces == null)
@@ -31,6 +31,6 @@ public class ProvinceService : ServiceBase<Province, ProvinceDTO, int>, IProvinc
             provinces = await _provinceRepository.GetAll().ToListAsync(cancellation);
             _cachedData.Set("Provinces", provinces);
         }
-        return Translate<List<Province>, List<ProvinceDTO>>(provinces);
+        return Translate<List<Province>, List<ProvinceResult>>(provinces);
     }
 }

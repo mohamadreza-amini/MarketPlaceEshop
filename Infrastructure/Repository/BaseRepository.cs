@@ -30,7 +30,7 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         return isNoTracking ? _entitySet.Where(predicate).AsNoTracking() : _entitySet.Where(predicate);
     }
 
-    public async Task<IQueryable<TResult>?> GetAllData<TResult>(Expression<Func<T, TResult>> selector, CancellationToken cancellationToken, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, bool isNoTracking = true)
+    public async Task<IQueryable<TResult>?> GetAllDataAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken cancellationToken, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, bool isNoTracking = true)
     {
         IQueryable<T> query = _entitySet;
         query = isNoTracking == true ? query.AsNoTracking() : query.AsQueryable();
@@ -82,7 +82,7 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         }
         return false;
     }
-    public async Task<bool> IsExist(T data, CancellationToken cancellation)
+    public async Task<bool> IsExistAsync(T data, CancellationToken cancellation)
     {
         return await _entitySet.AnyAsync(x => x.Id.Equals(data.Id),cancellation);
     }

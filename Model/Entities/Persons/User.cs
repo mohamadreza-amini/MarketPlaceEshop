@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Model.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +21,25 @@ public class User : IdentityUser<Guid>
     public virtual User? UpdaterUser { get; set; }
     public DateTime? CreateDatetime { get; set; }
     public DateTime? UpdateDatetime { get; set; }
+
+
+
+
+
+    public void Validate()
+    {
+        if(string.IsNullOrWhiteSpace(FirstName)||
+            string.IsNullOrWhiteSpace(LastName)||
+            string.IsNullOrEmpty(MobileNumber)||
+            string.IsNullOrWhiteSpace(NationalCode)||
+            string.IsNullOrEmpty(Email)||
+            string.IsNullOrEmpty(UserName)){
+            throw new ModelValidationException("User");
+        }
+    }
+
+
+
+
 
 }

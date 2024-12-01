@@ -20,6 +20,8 @@ public class RoleConfig : IEntityTypeConfiguration<Role>
         builder.Property(x => x.IsDeleted).HasDefaultValue(false).IsRequired();
         builder.Property(x => x.CreateDatetime).IsRequired();
         builder.Property(x => x.UpdateDatetime).IsRequired();
+        
+        builder.HasQueryFilter(x => !x.IsDeleted);
 
         builder.HasOne(x => x.CreatorUser).WithMany().HasForeignKey(x => x.CreatorUserId).IsRequired().OnDelete(DeleteBehavior.NoAction);
         builder.HasOne(x => x.UpdaterUser).WithMany().HasForeignKey(x => x.UpdaterUserId).IsRequired().OnDelete(DeleteBehavior.NoAction);

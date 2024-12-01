@@ -1,4 +1,4 @@
-﻿using DataTransferObject.DTOClasses.Address;
+﻿using DataTransferObject.DTOClasses.Address.Results;
 using Model.Entities.Addresses;
 using System;
 using System.Collections.Generic;
@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceInterfaces.AddressServices;
 
-public interface IProvinceService:IServiceBase<Province,ProvinceDTO,int>
+public interface IProvinceService:IServiceBase<Province,ProvinceResult,int>
 {
     
-    Task<List<ProvinceDTO>> GetAll(CancellationToken cancellation);
+    Task<List<ProvinceResult>> GetAll(CancellationToken cancellation);
 }

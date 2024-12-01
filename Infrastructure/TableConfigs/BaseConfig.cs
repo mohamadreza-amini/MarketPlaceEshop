@@ -24,6 +24,8 @@ public class BaseConfig<T, KeyTypeId> : IEntityTypeConfiguration<T> where T : Ba
         builder.HasKey(x => x.Id);
         builder.Property(x=>x.IsDeleted).HasDefaultValue(false).IsRequired();
 
+        builder.HasQueryFilter(x=>!x.IsDeleted);
+
         if (GeneratedValueForKey)
         {
             builder.Property(x => x.Id).ValueGeneratedOnAdd();

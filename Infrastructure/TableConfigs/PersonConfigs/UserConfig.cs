@@ -30,6 +30,8 @@ public class UserConfig : IEntityTypeConfiguration<User>
         builder.HasIndex(x => x.Email).IsUnique();
         builder.HasIndex(x => x.UserName).IsUnique();
 
+        builder.HasQueryFilter(x => !x.IsDeleted);
+
         builder.HasOne(x => x.CreatorUser).WithMany().HasForeignKey(x => x.CreatorUserId).IsRequired().OnDelete(DeleteBehavior.NoAction);
         builder.HasOne(x => x.UpdaterUser).WithMany().HasForeignKey(x => x.UpdaterUserId).IsRequired().OnDelete(DeleteBehavior.NoAction);
 

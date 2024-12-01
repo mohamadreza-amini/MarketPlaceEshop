@@ -1,4 +1,4 @@
-﻿using DataTransferObject.DTOClasses.Address;
+﻿using DataTransferObject.DTOClasses.Address.Results;
 using Model.Entities.Addresses;
 using System;
 using System.Collections.Generic;
@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceInterfaces.AddressServices;
 
-public interface ICityService:IServiceBase<City,CityDTO,int>
+public interface ICityService:IServiceBase<City,CityResult,int>
 {
  
-    Task<List<CityDTO>> GetAll(CancellationToken cancellation);
-    Task<List<CityDTO>> GetCityByProvinceId(int provinceId,CancellationToken cancellation);
+    Task<List<CityResult>> GetAllAsync(CancellationToken cancellation);
+    Task<List<CityResult>> GetCityByProvinceIdAsync(int provinceId,CancellationToken cancellation);
 }

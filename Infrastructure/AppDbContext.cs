@@ -61,29 +61,6 @@ namespace Infrastructure
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            modelBuilder.Entity<Address>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Admin>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Brand>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<CartItem>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Category>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<CategoryFeature>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<City>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Comment>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Customer>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<ExceptionLog>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Image>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<OrderItem>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Price>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Product>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<ProductFeatureValue>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<ProductSupplier>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Province>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Role>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Score>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Supplier>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<User>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<ViewLog>().HasQueryFilter(x => !x.IsDeleted);
 
         }
 

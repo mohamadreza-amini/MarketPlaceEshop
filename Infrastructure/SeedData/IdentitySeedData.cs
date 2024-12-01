@@ -73,7 +73,7 @@ public class IdentitySeedData
             UpdaterUserId = user.Id
         };
 
-        if (!await adminRepository.IsExist(admin,CancellationToken.None))
+        if (!await adminRepository.IsExistAsync(admin,CancellationToken.None))
         {
             await adminRepository.CreateAsync(admin, CancellationToken.None);
             await adminRepository.CommitAsync(CancellationToken.None);

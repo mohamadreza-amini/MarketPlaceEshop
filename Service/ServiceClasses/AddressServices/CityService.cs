@@ -1,4 +1,4 @@
-﻿using DataTransferObject.DTOClasses.Address;
+﻿using DataTransferObject.DTOClasses.Address.Results;
 using Infrastructure.Contracts.Cache;
 using Infrastructure.Contracts.Repository;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.AddressService;
 
-public class CityService : ServiceBase<City, CityDTO, int>, ICityService
+public class CityService : ServiceBase<City, CityResult, int>, ICityService
 {
     private readonly ICachedData _cachedData;
     private readonly IBaseRepository<City, int> _cityRepository;
@@ -23,7 +23,7 @@ public class CityService : ServiceBase<City, CityDTO, int>, ICityService
         _cityRepository = baseRepository;
     }
 
-    public async Task<List<CityDTO>> GetAll(CancellationToken cancellation)
+    public async Task<List<CityResult>> GetAllAsync(CancellationToken cancellation)
     {
         var cities = _cachedData.Get<List<City>>("cities");
         if (cities == null)
@@ -31,13 +31,13 @@ public class CityService : ServiceBase<City, CityDTO, int>, ICityService
             cities = await _cityRepository.GetAll().ToListAsync(cancellation);
             _cachedData.Set("cities", cities);
         }
-        return Translate<List<City>, List<CityDTO>>(cities);
+        return Translate<List<City>, List<CityResult>>(cities);
     }
 
-    public async Task<List<CityDTO>> GetCityByProvinceId(int provinceId, CancellationToken cancellation)
+    public async Task<List<CityResult>> GetCityByProvinceIdAsync(int provinceId, CancellationToken cancellation)
     {
         var cities = await _cityRepository.GetAll(x => x.ProvinceId == provinceId).ToListAsync(cancellation);
 
-        return Translate<List<City>, List<CityDTO>>(cities);
+        return Translate<List<City>, List<CityResult>>(cities);
     }
 }
