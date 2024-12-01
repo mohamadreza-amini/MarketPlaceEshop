@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.PersonServices;
 
-public class UserService : ServiceBase<User, UserCommand, Guid>, IUserService
+public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
 {
     private readonly UserManager<User> _userManager;
 
@@ -69,7 +69,7 @@ public class UserService : ServiceBase<User, UserCommand, Guid>, IUserService
 
     public async Task<bool> CreateAsync(UserCommand userDTO)
     {
-        var user = TranslateToEntity(userDTO);
+        var user = Translate<UserCommand,User>(userDTO);
         user.Validate();
         if (_userManager.FindByNameAsync(userDTO.Email) != null)
             throw new RegisterException("حسابی با مشخصات کاربر موجود است");

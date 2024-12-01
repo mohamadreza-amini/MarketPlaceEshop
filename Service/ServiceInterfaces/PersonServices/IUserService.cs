@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace Service.ServiceInterfaces.PersonServices;
 
-public interface IUserService//:IServiceBase<User,,>
+public interface IUserService:IServiceBase<User,UserResult,Guid>
 {
     Task<User?> GetRequesterUserAsync(HttpContext httpContext);
     string? RequesterId();

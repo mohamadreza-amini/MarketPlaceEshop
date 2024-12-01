@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataTransferObject.DTOClasses.Person.Commands;
 
-public class UserCommand : BaseDTO<Guid>
+public class UserCommand :BaseDTO<Guid>
 {
 
     [Length(1, 50)]

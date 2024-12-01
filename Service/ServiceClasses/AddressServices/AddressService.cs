@@ -1,5 +1,6 @@
 ﻿using DataTransferObject.DTOClasses;
 using DataTransferObject.DTOClasses.Address.Commands;
+using DataTransferObject.DTOClasses.Address.Results;
 using Infrastructure.Contracts.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.AddressService;
 
-public class AddressService : ServiceBase<Address, AddressCommand, Guid>, IAdressService
+public class AddressService : ServiceBase<Address, AddressResult, Guid>, IAdressService
 {
     private readonly IBaseRepository<Address, Guid> _addressRepository;
     private readonly IUserService _userService;
@@ -29,7 +30,7 @@ public class AddressService : ServiceBase<Address, AddressCommand, Guid>, IAdres
  
     public async Task<int> CreateAsync(AddressCommand addressDTO, CancellationToken cancellation, Guid customerid = default)
     {
-        var address = TranslateToEntity(addressDTO);
+        var address = Translate<AddressCommand,Address>(addressDTO);
         if (!_userService.IsAdmin())
             address.CustomerId = _userService.RequesterId() == null ? throw new AccessDeniedException() : Guid.Parse(_userService.RequesterId());
         else
@@ -54,7 +55,7 @@ public class AddressService : ServiceBase<Address, AddressCommand, Guid>, IAdres
         throw new AccessDeniedException();
     }
 
-    public async Task<List<AddressCommand>> GetAllByCustomerIdAsync(Guid customerid, CancellationToken cancellation)
+    public async Task<List<AddressResult>> GetAllByCustomerIdAsync(Guid customerid, CancellationToken cancellation)
     {
         if (!_userService.IsAdmin() && !_userService.IsRequesterUser(customerid))
             throw new AccessDeniedException();
@@ -62,12 +63,12 @@ public class AddressService : ServiceBase<Address, AddressCommand, Guid>, IAdres
         var query = await _addressRepository.GetAllDataAsync(x => x, cancellation, x => x.CustomerId == customerid, x => x.Include(x => x.City).ThenInclude(x => x.Province));
         var addresses = await query?.ToListAsync(cancellation);
         if (addresses == null)
-            return new List<AddressCommand>();
+            return new List<AddressResult>();
 
-        return Translate<List<Address>, List<AddressCommand>>(addresses);
+        return Translate<List<Address>, List<AddressResult>>(addresses);
     }
 
-    public async Task<AddressCommand> GetByAddressIdAsync(Guid addressid, CancellationToken cancellation)
+    public async Task<AddressResult> GetByAddressIdAsync(Guid addressid, CancellationToken cancellation)
     {
         var address = await _addressRepository.GetByIdAsync(addressid, cancellation);
 
@@ -80,7 +81,7 @@ public class AddressService : ServiceBase<Address, AddressCommand, Guid>, IAdres
 
     public async Task<int> UpdateAsync(AddressCommand addressDTO, CancellationToken cancellation)
     {
-        var address = TranslateToEntity(addressDTO);
+        var address = Translate<AddressCommand,Address>(addressDTO);
         var preAddress = await _addressRepository.GetByIdAsync(address.Id, cancellation);
         if (preAddress == null || (!_userService.IsRequesterUser(preAddress.CustomerId) && !_userService.IsAdmin()))
             throw new AccessDeniedException();

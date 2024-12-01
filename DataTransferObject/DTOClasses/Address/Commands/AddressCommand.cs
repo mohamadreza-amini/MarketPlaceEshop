@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataTransferObject.DTOClasses.Address.Commands;
 
-public class AddressCommand : BaseDTO<Guid>
+public class AddressCommand 
 {
     [Required(ErrorMessage = "وارد کردن محله الزامی است")]
     [RegularExpression("[آ-یA-Za-z0-9]+", ErrorMessage = "ورودی صحیح نمی باشد")]

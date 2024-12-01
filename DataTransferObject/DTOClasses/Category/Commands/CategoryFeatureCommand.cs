@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace DataTransferObject.DTOClasses.Category.Commands;
 
-public class CategoryFeatureCommand:BaseDTO<>
+/*public class CategoryFeatureCommand:BaseDTO<>
 {
     public string FeatureName { get; set; }
     public int CategoryId { get; set; }
   
 }
+*/

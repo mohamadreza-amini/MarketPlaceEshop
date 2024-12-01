@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataTransferObject.DTOClasses.Product.Commands;
 
-public class BrandCommand:BaseDTO<int>
+public class BrandCommand
 {
     [Length(1, 50)]
     [Required(ErrorMessage = "وارد کردن نام برند الزامی است.")]

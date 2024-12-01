@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.ProductServices;
 
-public class BrandService : ServiceBase<Brand, BrandCommand, int>, IBrandService
+public class BrandService : ServiceBase<Brand, BrandResult, int>, IBrandService
 {
     private readonly IBaseRepository<Brand, int> _brandRepository;
     private readonly IUserService _userService;
@@ -29,7 +29,7 @@ public class BrandService : ServiceBase<Brand, BrandCommand, int>, IBrandService
     {
         if (!_userService.IsAdmin())
             throw new AccessDeniedException();
-        var brand = TranslateToEntity(brandDto);
+        var brand = Translate<BrandCommand,Brand>(brandDto);
         brand.Validate();
         await _brandRepository.CreateAsync(brand, cancellation);
     }

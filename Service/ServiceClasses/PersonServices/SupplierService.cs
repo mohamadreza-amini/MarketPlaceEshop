@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.PersonServices;
 
-public class SupplierService : ServiceBase<Supplier, UserCommand, Guid>, ISupplierService
+public class SupplierService : ServiceBase<Supplier, UserResult, Guid>, ISupplierService
 {
     private readonly IUserService _userService;
     private readonly IBaseRepository<Supplier, Guid> _supplierRepository;

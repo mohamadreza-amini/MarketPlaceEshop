@@ -1,4 +1,5 @@
 ﻿using DataTransferObject.DTOClasses.Person.Commands;
+using DataTransferObject.DTOClasses.Person.Results;
 using Infrastructure.Contracts.Repository;
 using Model.Entities.Person;
 using Model.Exceptions;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.PersonServices;
 
-public class AdminService : ServiceBase<Admin, UserCommand, Guid>, IAdminService
+public class AdminService : ServiceBase<Admin, UserResult, Guid>, IAdminService
 {
 
     private readonly IBaseRepository<Admin, Guid> _adminRepository;
@@ -24,8 +25,6 @@ public class AdminService : ServiceBase<Admin, UserCommand, Guid>, IAdminService
 
     public async Task<bool> CreateAsync(UserCommand userDTO, CancellationToken cancellationToken)
     {
-        var adminId = Guid.NewGuid();
-        userDTO.Id = adminId;
         var requesterId = _userService.IsAdmin() ? Guid.Parse(_userService.RequesterId()) : throw new AccessDeniedException();
 
         if (!await _userService.CreateAsync(userDTO))
@@ -33,7 +32,7 @@ public class AdminService : ServiceBase<Admin, UserCommand, Guid>, IAdminService
 
         await _adminRepository.CreateAsync(new Admin
         {
-            Id = adminId,
+            Id = new Guid(),
             CreatorUserId = requesterId,
             UpdaterUserId = requesterId
 

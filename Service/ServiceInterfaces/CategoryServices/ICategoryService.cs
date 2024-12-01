@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceInterfaces.CategoryServices;
 
-public class ICategoryService:IServiceBase<Category, CategoryCommand, Guid>
+/*public class ICategoryService:IServiceBase<Category, CategoryResult, Guid>
 {
 
-}
+}*/

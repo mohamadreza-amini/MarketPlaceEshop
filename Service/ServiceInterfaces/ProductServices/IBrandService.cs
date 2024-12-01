@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceInterfaces.ProductServices;
 
-public interface IBrandService:IServiceBase<Brand,BrandCommand,int>
+public interface IBrandService:IServiceBase<Brand,BrandResult,int>
 {
     Task CreateAsync(BrandCommand brandDto, CancellationToken cancellation);
     Task<List<BrandResult>> GetAllAsync(CancellationToken cancellation);

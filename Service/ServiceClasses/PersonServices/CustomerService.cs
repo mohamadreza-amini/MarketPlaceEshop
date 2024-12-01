@@ -1,4 +1,5 @@
 ﻿using DataTransferObject.DTOClasses.Person.Commands;
+using DataTransferObject.DTOClasses.Person.Results;
 using Infrastructure.Contracts.Repository;
 using Microsoft.AspNetCore.Identity;
 using Model.Entities.Person;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.PersonServices;
 
-public class CustomerService : ServiceBase<Customer, UserCommand, Guid>, ICustomerService
+public class CustomerService : ServiceBase<Customer, UserResult, Guid>, ICustomerService
 {
     private readonly IBaseRepository<Customer, Guid> _customerRepository;
     private readonly IUserService _userService;
