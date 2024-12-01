@@ -1,4 +1,5 @@
 ﻿using DataTransferObject.DTOClasses.Person.Commands;
+using DataTransferObject.DTOClasses.Person.Results;
 using Infrastructure.Contracts.Repository;
 using Mapster;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +22,7 @@ namespace Service.ServiceClasses.PersonServices;
 public class UserService : ServiceBase<User, UserCommand, Guid>, IUserService
 {
     private readonly UserManager<User> _userManager;
+
     private readonly IHttpContextAccessor _contextAccessor;
 
     private readonly SignInManager<User> _signInManager;
@@ -69,7 +71,41 @@ public class UserService : ServiceBase<User, UserCommand, Guid>, IUserService
     {
         var user = TranslateToEntity(userDTO);
         user.Validate();
-        return (await _userManager.CreateAsync(user, userDTO.Password)).Succeeded; 
+        if (_userManager.FindByNameAsync(userDTO.Email) != null)
+            throw new RegisterException("حسابی با مشخصات کاربر موجود است");
+
+        var registerResult = await _userManager.CreateAsync(user, userDTO.Password);
+
+        if (!registerResult.Succeeded)
+            throw new RegisterException(registerResult.Errors.FirstOrDefault()?.Description ?? "عملیات ثبت نام ناموفق");
+
+        return registerResult.Succeeded;
+    }
+
+    public async Task<bool> SignInAsync(LoginCommand loginDTO, string role)
+    {
+        var user = await _userManager.FindByNameAsync(loginDTO.Email);
+
+        if (user == null)
+            throw new SignInException("کاربری با مشخصات وارد شده تعریف نشده است");
+
+        var isInRole = await _userManager.IsInRoleAsync(user, role);
+
+        if (!isInRole)
+            return false;
+
+        var signInResult = await _signInManager.PasswordSignInAsync(loginDTO.Email, loginDTO.Password, loginDTO.RememberMe, false);
+
+        return signInResult.Succeeded;
+    }
+
+    public async Task<UserResult?> GetUserbyEmailAsync(string email)
+    {
+        var user = await _userManager.FindByNameAsync(email);
+        if (user != null)
+            return Translate<User, UserResult>(user);
+
+        return null;
     }
 
 

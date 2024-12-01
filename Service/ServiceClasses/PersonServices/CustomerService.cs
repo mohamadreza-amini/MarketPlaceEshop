@@ -37,16 +37,12 @@ public class CustomerService : ServiceBase<Customer, UserCommand, Guid>, ICustom
             CreatorUserId = requesterId,
             UpdaterUserId = requesterId
         }, cancellationToken);
-        return (await _customerRepository.CommitAsync(cancellationToken))==1;
+        return (await _customerRepository.CommitAsync(cancellationToken)) == 1;
 
     }
 
-
-
-
-
-
-
-
-
+    public async Task<bool> SignInAsync(LoginCommand loginDto)
+    {    
+        return await _userService.SignInAsync(loginDto,"Customer");
+    }
 }

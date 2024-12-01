@@ -93,4 +93,25 @@ public class SupplierService : ServiceBase<Supplier, UserCommand, Guid>, ISuppli
 
     }
 
+    public async Task<bool> SignInAsync(LoginCommand loginDto)
+    {
+        var supplierId = (await _userService.GetUserbyEmailAsync(loginDto.Email))?.Id;
+
+        var supplier = await _supplierRepository.GetAsync(x => x.Id == supplierId, CancellationToken.None);
+
+        switch (supplier?.IsConfirmed ?? default)
+        {
+            case 1:
+                throw new SignInException("حساب شما در دست بررسی می باشد");
+            case 2:
+                break;
+            case 3:
+                throw new SignInException("حساب شما تایید نشد");
+
+            default:
+                throw new AccessDeniedException();
+        }
+
+        return await _userService.SignInAsync(loginDto, "Supplier");
+    }
 }

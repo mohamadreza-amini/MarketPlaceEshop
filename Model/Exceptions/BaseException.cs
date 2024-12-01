@@ -20,3 +20,25 @@ public class AccessDeniedException : BaseException
 
 
 
+public class IdentityException : BaseException
+{
+    public IdentityException(string? message) : base(message)
+    {
+    }
+}
+
+
+public class RegisterException : IdentityException
+{
+    public RegisterException(string? message) : base(message)
+    {
+    }
+}
+
+
+public class SignInException : IdentityException
+{
+    public SignInException(string? message) : base(message)
+    {
+    }
+}

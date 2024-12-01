@@ -42,7 +42,10 @@ public class AdminService : ServiceBase<Admin, UserCommand, Guid>, IAdminService
 
     }
 
-
+    public async Task<bool> SignInAsync(LoginCommand loginDto)
+    {
+        return await _userService.SignInAsync(loginDto,"Admin");
+    }
 
 
 

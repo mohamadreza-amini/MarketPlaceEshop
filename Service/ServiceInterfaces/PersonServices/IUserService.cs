@@ -1,5 +1,6 @@
 ﻿using DataTransferObject.DTOClasses;
 using DataTransferObject.DTOClasses.Person.Commands;
+using DataTransferObject.DTOClasses.Person.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Model.Entities.Person;
@@ -18,6 +19,8 @@ public interface IUserService//:IServiceBase<User,,>
     bool IsAdmin();
     bool IsRequesterUser(Guid userId);
     Task<bool> CreateAsync(UserCommand userDTO);
+    Task<bool> SignInAsync(LoginCommand loginDTO,string role);
+    Task<UserResult?> GetUserbyEmailAsync(string email); 
 
 
     /*  Task<IdentityResult> Create(UserDTO userDTO);
