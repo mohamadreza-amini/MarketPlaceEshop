@@ -17,6 +17,7 @@ public class ProductSupplierConfig : BaseConfig<ProductSupplier, Guid>
         builder.Property(x => x.Ventory).HasDefaultValue(0).IsRequired();
         builder.Property(x => x.Discount).HasColumnType(SqlDbType.Decimal.ToString()).HasPrecision(12, 2).HasDefaultValue(0).IsRequired();
         builder.Property(x => x.IsDisable).HasDefaultValue(false).IsRequired();
+        builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         builder.HasOne(x => x.Supplier).WithMany(x => x.ProductSuppliers).HasForeignKey(x => x.SupplierId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(x => x.Product).WithMany(x => x.productSuppliers).HasForeignKey(x => x.ProductId).IsRequired().OnDelete(DeleteBehavior.Cascade);

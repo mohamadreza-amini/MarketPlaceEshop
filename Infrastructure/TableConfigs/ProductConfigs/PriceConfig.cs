@@ -17,6 +17,7 @@ public class PriceConfig : BaseConfig<Price, Guid>
         builder.Property(x => x.PriceValue).HasColumnType(SqlDbType.Decimal.ToString()).HasPrecision(12, 2).IsRequired();
         builder.Property(x => x.StartTime).IsRequired();
         builder.Property(x => x.ExpiredTime).IsRequired(false);
+        builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         builder.HasOne(x => x.ProductSupplier).WithMany(x => x.Prices).HasForeignKey(x => x.ProductSupplierId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 

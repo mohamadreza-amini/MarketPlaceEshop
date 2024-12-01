@@ -20,6 +20,7 @@ public class OrderItemConfig : BaseConfig<OrderItem, Guid>
         builder.Property(x => x.Sent).HasDefaultValue(false).IsRequired();
         builder.Property(x => x.DateOfPosting).IsRequired(false);
         builder.Property(x => x.IsCanceled).HasDefaultValue(false).IsRequired();
+        builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         builder.HasOne(x => x.ProductSupplier).WithMany(x => x.OrderItems).HasForeignKey(x => x.ProductSupplierId).IsRequired().OnDelete(DeleteBehavior.NoAction);
         builder.HasOne(x => x.Order).WithMany(x => x.OrderItems).HasForeignKey(x => x.OrderId).IsRequired().OnDelete(DeleteBehavior.Cascade);

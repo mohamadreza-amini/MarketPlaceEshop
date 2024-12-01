@@ -16,7 +16,6 @@ public class BrandConfig : BaseConfig<Brand, int>
     {
         builder.Property(x => x.BrandName).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(50).IsRequired();
 
-        NeedConfirmation = true;
         base.Configure(builder);
     }
 }

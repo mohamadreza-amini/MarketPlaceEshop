@@ -15,6 +15,7 @@ public class AdminConfig : BaseConfig<Admin, Guid>
     public override void Configure(EntityTypeBuilder<Admin> builder)
     {
         builder.HasOne(x => x.User).WithOne().HasForeignKey<Admin>(x => x.Id).IsRequired().OnDelete(DeleteBehavior.Cascade);
+        builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         UseForTracable = true;
         RequireTraceable = true;

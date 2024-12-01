@@ -20,6 +20,7 @@ public class ProductConfig : BaseConfig<Product, Guid>
         builder.Property(x => x.StartDate).IsRequired();
         builder.Property(x => x.View).IsRequired().HasDefaultValue(0);
         builder.Property(x => x.IsDisable).IsRequired().HasDefaultValue(false);
+        builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         builder.HasOne(x => x.Category).WithMany(x => x.Products).HasForeignKey(x => x.CategoryId).IsRequired().OnDelete(DeleteBehavior.NoAction);
         builder.HasOne(x => x.Brand).WithMany(x => x.products).HasForeignKey(x => x.BrandId).IsRequired().OnDelete(DeleteBehavior.NoAction);

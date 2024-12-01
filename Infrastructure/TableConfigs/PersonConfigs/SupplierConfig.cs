@@ -19,6 +19,7 @@ public class SupplierConfig : BaseConfig<Supplier, Guid>
         builder.Property(x => x.BankAccountNumber).HasColumnType(SqlDbType.VarChar.ToString()).HasMaxLength(50).IsRequired();
         builder.Property(x => x.CompanyName).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(50).IsRequired();
         builder.Property(x => x.CompanyRegistrationNumber).HasColumnType(SqlDbType.VarChar.ToString()).HasMaxLength(50).IsRequired();
+        builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         builder.HasOne(x => x.User).WithOne().HasForeignKey<Supplier>(x => x.Id).OnDelete(DeleteBehavior.NoAction).IsRequired();
 

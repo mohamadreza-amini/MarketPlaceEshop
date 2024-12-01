@@ -15,6 +15,7 @@ public class CustomerConfig : BaseConfig<Customer, Guid>
     public override void Configure(EntityTypeBuilder<Customer> builder)
     {
         builder.Property(x => x.RegisterDate).IsRequired();
+        builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         builder.HasOne(x => x.User).WithOne().HasForeignKey<Customer>(x => x.Id).IsRequired().OnDelete(DeleteBehavior.Cascade);
 

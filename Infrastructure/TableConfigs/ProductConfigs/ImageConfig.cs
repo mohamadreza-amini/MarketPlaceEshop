@@ -16,6 +16,7 @@ public class ImageConfig : BaseConfig<Image, Guid>
     {
         builder.Property(x => x.Path).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(30).IsRequired();
         builder.Property(x => x.Priority).HasColumnType(SqlDbType.TinyInt.ToString()).IsRequired();
+        builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         builder.HasOne(x => x.Product).WithMany(x => x.Images).HasForeignKey(x => x.ProductId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 

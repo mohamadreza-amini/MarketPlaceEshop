@@ -16,6 +16,7 @@ public class OrderConfig : BaseConfig<Order, Guid>
     {
         builder.Property(x => x.OrderDate).IsRequired();
         builder.Property(x => x.ShippedDate).IsRequired();
+        builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         builder.HasOne(x => x.Address).WithMany(x => x.Orders).HasForeignKey(x => x.AddressId).IsRequired().OnDelete(DeleteBehavior.NoAction);
         builder.HasOne(x => x.Customer).WithMany(x => x.Orders).HasForeignKey(x => x.CustomerId).IsRequired().OnDelete(DeleteBehavior.Cascade);
