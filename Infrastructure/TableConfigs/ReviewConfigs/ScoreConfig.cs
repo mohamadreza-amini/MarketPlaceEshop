@@ -14,10 +14,11 @@ public class ScoreConfig : BaseConfig<Score, Guid>
 {
     public override void Configure(EntityTypeBuilder<Score> builder)
     {
-        builder.Property(x => x.StarRating).HasColumnType(SqlDbType.TinyInt.ToString()).IsRequired().HasDefaultValue(0);
+        builder.Property(x => x.StarRating).HasColumnType(SqlDbType.Int.ToString()).IsRequired().HasDefaultValue(0);
 
         builder.HasOne(x => x.ProductSupplier).WithMany(x => x.Scores).HasForeignKey(x => x.ProductSupplierId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(x => x.Customer).WithMany(x => x.Scores).HasForeignKey(x => x.CustomerId).IsRequired().OnDelete(DeleteBehavior.NoAction);
+        builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         builder.HasIndex(x => new { x.CustomerId, x.ProductSupplierId }).IsUnique();
 

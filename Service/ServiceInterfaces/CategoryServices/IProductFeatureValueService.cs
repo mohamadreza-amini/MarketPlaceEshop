@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceInterfaces.CategoryServices;
 
-public interface ICategoryFeatureService : IServiceBase<CategoryFeature, CategoryFeatureResult, int>
+public interface IProductFeatureValueService:IServiceBase<ProductFeatureValue,ProductFeatureValueResult,int>
 {
-    Task Create(CategoryFeatureCommand categoryDto, CancellationToken cancellation);
-    Task<List<CategoryFeatureResult>> GetAllByCategoryId(int categoryId,CancellationToken cancellation);
+    List<ProductFeatureValue> PrepareToAdd(List<ProductFeatureValueCommand> productFeaturesDto,Guid ProductId);
 }

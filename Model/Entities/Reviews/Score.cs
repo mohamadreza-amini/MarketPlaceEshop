@@ -11,7 +11,7 @@ namespace Model.Entities.Review;
 
 public class Score : BaseEntity<Guid>
 {
-    public byte StarRating { get; set; }
+    public int StarRating { get; set; }
     public Guid ProductSupplierId { get; set; }
     public virtual ProductSupplier ProductSupplier { get; set; }
     public Guid CustomerId { get; set; }

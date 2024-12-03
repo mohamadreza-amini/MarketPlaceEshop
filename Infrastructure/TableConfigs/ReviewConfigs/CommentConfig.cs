@@ -16,6 +16,7 @@ public class CommentConfig : BaseConfig<Comment, Guid>
     {
         builder.Property(x => x.CommentText).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(2000).IsRequired();
         builder.Property(x => x.DateOfRegistration).IsRequired();
+        builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         builder.HasOne(x => x.Customer).WithMany(x => x.Comments).HasForeignKey(x => x.CustomerId).IsRequired().OnDelete(DeleteBehavior.NoAction);
         builder.HasOne(x => x.ProductSupplier).WithMany(x => x.Comments).HasForeignKey(x => x.ProductSupplierId).IsRequired().OnDelete(DeleteBehavior.Cascade);

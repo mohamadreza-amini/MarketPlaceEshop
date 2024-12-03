@@ -32,7 +32,7 @@ public class AdminService : ServiceBase<Admin, UserResult, Guid>, IAdminService
 
         await _adminRepository.CreateAsync(new Admin
         {
-            Id = new Guid(),
+            Id = Guid.NewGuid(),
             CreatorUserId = requesterId,
             UpdaterUserId = requesterId
 

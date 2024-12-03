@@ -16,6 +16,7 @@ public interface IUserService:IServiceBase<User,UserResult,Guid>
 {
     Task<User?> GetRequesterUserAsync(HttpContext httpContext);
     string? RequesterId();
+    bool IsInRole(string role);
     bool IsAdmin();
     bool IsRequesterUser(Guid userId);
     Task<bool> CreateAsync(UserCommand userDTO);

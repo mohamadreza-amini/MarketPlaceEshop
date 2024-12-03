@@ -11,6 +11,7 @@ using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -18,7 +19,7 @@ using System.Threading.Tasks;
 
 
 namespace Service.ServiceClasses.PersonServices;
-
+//امکان اینترنال کردن این سرویس برای اینکه جای دیگه استفاده نشه
 public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
 {
     private readonly UserManager<User> _userManager;
@@ -44,13 +45,16 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
     {
         return _contextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
-    public bool IsAdmin()
+
+    public bool IsInRole(string role)
     {
         if (_contextAccessor.HttpContext != null)
-            return _contextAccessor.HttpContext.User.IsInRole("Admin");
+            return _contextAccessor.HttpContext.User.IsInRole(role);
 
         return false;
     }
+
+    public bool IsAdmin() => IsInRole("Admin");
 
     public bool IsRequesterUser(Guid userId)
     {
@@ -69,7 +73,7 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
 
     public async Task<bool> CreateAsync(UserCommand userDTO)
     {
-        var user = Translate<UserCommand,User>(userDTO);
+        var user = Translate<UserCommand, User>(userDTO);
         user.Validate();
         if (_userManager.FindByNameAsync(userDTO.Email) != null)
             throw new RegisterException("حسابی با مشخصات کاربر موجود است");

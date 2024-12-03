@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Model.Entities.Addresses;
+using Model.Entities.Person;
+using Model.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,4 +26,14 @@ public class CategoryFeature : BaseEntity<int>
     public virtual Category Category { get; set; }
     public virtual ICollection<ProductFeatureValue>? ProductFeatureValues { get; set; }
 
+
+
+    public void validate()
+    {
+        if (string.IsNullOrWhiteSpace(FeatureName) ||
+           CategoryId <= 0)
+        {
+            throw new ModelValidationException("CategoryFeature");
+        }
+    }
 }

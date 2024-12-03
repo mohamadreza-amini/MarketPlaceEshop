@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Model.Entities.Categories;
+using Model.Exceptions;
 
 namespace Model.Entities.Products;
 
@@ -22,5 +23,17 @@ public class Product : BaseEntity<Guid>
     public virtual ICollection<ProductSupplier> productSuppliers { get; set; }
     public virtual ICollection<Image> Images { get; set; }
     public virtual ICollection<ProductFeatureValue> ProductFeatureValues { get; set; }
+
+
+    public void Validate()
+    {
+        if (string.IsNullOrWhiteSpace(Titel) ||
+            string.IsNullOrWhiteSpace(Name) ||
+           CategoryId <= 0 ||
+           BrandId <= 0)
+        {
+            throw new ModelValidationException("Product");
+        }
+    }
 
 }

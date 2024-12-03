@@ -18,6 +18,11 @@ public class AccessDeniedException : BaseException
 }
 
 
+public class BadRequestException : BaseException
+{
+    public BadRequestException(string? message = null) : base("Bad request!" + message) { }
+}
+
 
 
 public class IdentityException : BaseException

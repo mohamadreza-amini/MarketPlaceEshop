@@ -40,5 +40,11 @@ public class BrandService : ServiceBase<Brand, BrandResult, int>, IBrandService
         return Translate<List<Brand>, List<BrandResult>>(brands);
     }
 
-
+    public async Task<BrandResult?> GetByIdAsync(int brandId, CancellationToken cancellation)
+    {
+        var brand = await _brandRepository.GetByIdAsync(brandId, cancellation);
+        if (brand == null)
+            return null;
+        return TranslateToDTO(brand);
+    }
 }
