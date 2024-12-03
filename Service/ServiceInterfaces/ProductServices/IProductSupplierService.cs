@@ -1,4 +1,5 @@
-﻿using DataTransferObject.DTOClasses.Product.Results;
+﻿using DataTransferObject.DTOClasses.Product.Commands;
+using DataTransferObject.DTOClasses.Product.Results;
 using Model.Entities.Products;
 using Service.ServiceInterfaces;
 using System;
@@ -11,5 +12,7 @@ namespace Service.ServiceInterfaces.ProductServices;
 
 public interface IProductSupplierService: IServiceBase<ProductSupplier, ProductSupplierResult, Guid>
 {
+    Task AddSupplierToProduct(ProductSupplierCommand productSupplierDto,CancellationToken cancellationToken);
+    Task<ProductSupplierResult?> GetSuppierProductById(Guid ProductSupplierId, CancellationToken cancellation);
 }
 

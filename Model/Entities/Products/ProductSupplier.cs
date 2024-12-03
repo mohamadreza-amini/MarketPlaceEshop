@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Model.Entities.Orders;
 using Model.Entities.Person;
 using Model.Entities.Review;
+using Model.Exceptions;
 
 namespace Model.Entities.Products;
 
@@ -23,4 +24,15 @@ public class ProductSupplier : BaseEntity<Guid>
     public virtual ICollection<Price> Prices { get; set; }
     public virtual ICollection<OrderItem>? OrderItems { get; set; }
     public virtual ICollection<CartItem>? CartItems { get; set; }
+
+    public void Validate()
+    {
+        if (Ventory < 0 ||
+            Discount < 0 ||
+            SupplierId == Guid.Empty ||
+            ProductId == Guid.Empty)
+        {
+            throw new ModelValidationException("ProductSupplier");
+        }
+    }
 }

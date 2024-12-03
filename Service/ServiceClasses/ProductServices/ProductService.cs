@@ -33,8 +33,6 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
         _categoryService = categoryService;
     }
 
-
-
     public async Task<bool> CreateAsync(ProductCommand productDto, CancellationToken cancellation)
     {
         if (!_userService.IsAdmin() && !_userService.IsInRole("Supplier"))
@@ -88,5 +86,17 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
         product.UpdaterUserId = product.AdminConfirmedId;
 
         await _productRepository.CommitAsync(cancellation);
+    }
+
+    public async Task<bool> IsConfirmedProduct(Guid productId, CancellationToken cancellation)
+    {
+        var product = (await _productRepository.GetByIdAsync(productId, cancellation)) ?? throw new BadRequestException("product not found");
+        return product.IsConfirmed == 2;
+    }
+
+    public async Task<bool> IsDisableProduct(Guid productId, CancellationToken cancellation)
+    {
+        var product = (await _productRepository.GetByIdAsync(productId, cancellation)) ?? throw new BadRequestException("product not found");
+        return product.IsDisable;
     }
 }

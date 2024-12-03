@@ -15,10 +15,15 @@ public class ProductSupplierCommand
     [Display(Name = "موجودی محصول")]
     public int Ventory { get; set; }
 
-    [Display(Name = "نخفیف")]
+    [Display(Name = "تخفیف")]
     public decimal Discount { get; set; }
+
     [Display(Name = "فعال")]
     public bool IsDisable { get; set; }
+
+    [Required(ErrorMessage = "وارد کردن قیمت الزامی است")]
+    [Display(Name = "قیمت")]
+    public decimal PriceValue { get; set; }
     public Guid SupplierId { get; set; }
     public Guid ProductId { get; set; }
 

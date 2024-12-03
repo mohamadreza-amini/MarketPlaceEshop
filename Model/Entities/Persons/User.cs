@@ -23,9 +23,6 @@ public class User : IdentityUser<Guid>
     public DateTime? UpdateDatetime { get; set; }
 
 
-
-
-
     public void Validate()
     {
         if(string.IsNullOrWhiteSpace(FirstName)||
@@ -37,9 +34,4 @@ public class User : IdentityUser<Guid>
             throw new ModelValidationException("User");
         }
     }
-
-
-
-
-
 }

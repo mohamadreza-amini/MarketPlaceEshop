@@ -14,7 +14,6 @@ public interface IProductService:IServiceBase<Product,ProductResult,Guid>
 {
     Task<bool> CreateAsync(ProductCommand productDto,CancellationToken cancellation); 
     Task ChangeProductStatus(Guid productId,ConfirmationStatus confirmationStatus,CancellationToken cancellation);
-
-    
-   
+    Task<bool> IsConfirmedProduct(Guid productId,CancellationToken cancellation);
+    Task<bool> IsDisableProduct(Guid productId,CancellationToken cancellation);
 }
