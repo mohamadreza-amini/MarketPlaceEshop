@@ -19,7 +19,7 @@ public class CommentConfig : BaseConfig<Comment, Guid>
         builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
         builder.HasOne(x => x.Customer).WithMany(x => x.Comments).HasForeignKey(x => x.CustomerId).IsRequired().OnDelete(DeleteBehavior.NoAction);
-        builder.HasOne(x => x.ProductSupplier).WithMany(x => x.Comments).HasForeignKey(x => x.ProductSupplierId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(x => x.Product).WithMany(x => x.Comments).HasForeignKey(x => x.ProductId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
         NeedConfirmation = true;
         base.Configure(builder);

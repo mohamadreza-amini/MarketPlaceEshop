@@ -16,11 +16,11 @@ public class ScoreConfig : BaseConfig<Score, Guid>
     {
         builder.Property(x => x.StarRating).HasColumnType(SqlDbType.Int.ToString()).IsRequired().HasDefaultValue(0);
 
-        builder.HasOne(x => x.ProductSupplier).WithMany(x => x.Scores).HasForeignKey(x => x.ProductSupplierId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(x => x.Product).WithMany(x => x.Scores).HasForeignKey(x => x.ProductId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(x => x.Customer).WithMany(x => x.Scores).HasForeignKey(x => x.CustomerId).IsRequired().OnDelete(DeleteBehavior.NoAction);
         builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
-        builder.HasIndex(x => new { x.CustomerId, x.ProductSupplierId }).IsUnique();
+        builder.HasIndex(x => new { x.CustomerId, x.ProductId }).IsUnique();
 
         base.Configure(builder);
     }

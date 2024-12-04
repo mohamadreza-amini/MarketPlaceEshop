@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Model.Entities.Person;
 using Model.Entities.Products;
+using Model.Exceptions;
 
 namespace Model.Entities.Review;
 
@@ -14,6 +15,16 @@ public class Comment : BaseEntity<Guid>
     public DateTime DateOfRegistration { get; set; }
     public Guid CustomerId { get; set; }
     public virtual Customer Customer { get; set; }
-    public Guid ProductSupplierId { get; set; }
-    public virtual ProductSupplier ProductSupplier { get; set; }
+    public Guid ProductId { get; set; }
+    public virtual Product Product { get; set; }
+
+    public void Validate()
+    {
+        if (string.IsNullOrWhiteSpace(CommentText) ||
+           CustomerId==Guid.Empty||
+           ProductId==Guid.Empty)
+        {
+            throw new ModelValidationException("Comment");
+        }
+    }
 }
