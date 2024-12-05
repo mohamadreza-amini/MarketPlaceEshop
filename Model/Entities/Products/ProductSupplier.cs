@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,11 +20,11 @@ public class ProductSupplier : BaseEntity<Guid>
     public virtual Supplier Supplier { get; set; }
     public Guid ProductId { get; set; }
     public virtual Product Product { get; set; }
-    public virtual ICollection<Comment>? Comments { get; set; }
-    public virtual ICollection<Score>? Scores { get; set; }
     public virtual ICollection<Price> Prices { get; set; }
     public virtual ICollection<OrderItem>? OrderItems { get; set; }
     public virtual ICollection<CartItem>? CartItems { get; set; }
+    [Timestamp]
+    public byte[] RowVersion { get; set; }
 
     public void Validate()
     {

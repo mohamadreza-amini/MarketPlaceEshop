@@ -99,4 +99,9 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
         var product = (await _productRepository.GetByIdAsync(productId, cancellation)) ?? throw new BadRequestException("product not found");
         return product.IsDisable;
     }
+
+    public async Task<bool> ProductExists(Guid productId, CancellationToken cancellation)
+    {
+        return await _productRepository.GetByIdAsync(productId, cancellation) != null;
+    }
 }

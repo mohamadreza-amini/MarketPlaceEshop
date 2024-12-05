@@ -14,7 +14,7 @@ namespace Infrastructure.Repository;
 public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where T : BaseEntity<KeyTypeId> where KeyTypeId : struct
 {
     private readonly AppDbContext _appDbContext;
-    private readonly DbSet<T> _entitySet;
+    protected readonly DbSet<T> _entitySet;
     public BaseRepository(AppDbContext appDbContext)
     {
         _appDbContext = appDbContext;

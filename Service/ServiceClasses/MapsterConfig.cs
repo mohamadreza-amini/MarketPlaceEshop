@@ -2,10 +2,13 @@
 using DataTransferObject.DTOClasses.Address.Commands;
 using DataTransferObject.DTOClasses.Person.Commands;
 using DataTransferObject.DTOClasses.Person.Results;
+using DataTransferObject.DTOClasses.Review.Results;
 using Mapster;
 using Model.Entities.Addresses;
 using Model.Entities.Orders;
 using Model.Entities.Person;
+using Model.Entities.Products;
+using Model.Entities.Review;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,10 +43,18 @@ namespace Service.ServiceClasses
                .Map(dest => dest.MobileNumber, src => src.User.MobileNumber)
                .Map(dest => dest.NationalCode, src => src.User.NationalCode)
                .Map(dest => dest.PhoneNumber, src => src.User.PhoneNumber);
-             
+
+
+            TypeAdapterConfig<Comment, CommentResult>.NewConfig()
+               .Map(dest => dest.FullName, src => src.Customer.User.FirstName + " " + src.Customer.User.LastName)
+               .Map(dest => dest.ProductName, src => src.Product.Name);
+        
 
 
 
+
+
+        
 
 
 

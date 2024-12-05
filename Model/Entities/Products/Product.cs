@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Model.Entities.Categories;
+using Model.Entities.Review;
 using Model.Exceptions;
 
 namespace Model.Entities.Products;
@@ -20,6 +21,8 @@ public class Product : BaseEntity<Guid>
     public virtual Category Category { get; set; }
     public int BrandId { get; set; }
     public virtual Brand Brand { get; set; }
+    public virtual ICollection<Comment>? Comments { get; set; }
+    public virtual ICollection<Score>? Scores { get; set; }
     public virtual ICollection<ProductSupplier> productSuppliers { get; set; }
     public virtual ICollection<Image> Images { get; set; }
     public virtual ICollection<ProductFeatureValue> ProductFeatureValues { get; set; }
