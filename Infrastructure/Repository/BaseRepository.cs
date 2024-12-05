@@ -18,7 +18,7 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
     public BaseRepository(AppDbContext appDbContext)
     {
         _appDbContext = appDbContext;
-        _entitySet = appDbContext.Set<T>();  
+        _entitySet = appDbContext.Set<T>();
     }
 
     public IQueryable<T> GetAll(Expression<Func<T, bool>> predicate = null, bool isNoTracking = true)
@@ -30,7 +30,12 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         return isNoTracking ? _entitySet.Where(predicate).AsNoTracking() : _entitySet.Where(predicate);
     }
 
-    public async Task<IQueryable<TResult>?> GetAllDataAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken cancellationToken, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, bool isNoTracking = true)
+    public async Task<IQueryable<TResult>?> GetAllDataAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        CancellationToken cancellationToken,
+        Expression<Func<T, bool>> predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+        bool isNoTracking = true)
     {
         IQueryable<T> query = _entitySet;
         query = isNoTracking == true ? query.AsNoTracking() : query.AsQueryable();
@@ -40,14 +45,12 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
     }
 
     public async Task<T?> GetAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellation)
-    {
-        return await _entitySet.FirstOrDefaultAsync(predicate, cancellation);
-    }
+        => await _entitySet.FirstOrDefaultAsync(predicate, cancellation);
+
 
     public async Task<T?> GetByIdAsync(KeyTypeId id, CancellationToken cancellation)
-    {
-        return await GetAsync(x => x.Id.Equals(id), cancellation);
-    }
+        => await GetAsync(x => x.Id.Equals(id), cancellation);
+
 
     public async Task<T> CreateAsync(T data, CancellationToken cancellation)
     {
@@ -72,9 +75,9 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         return false;
     }
 
-    public async Task<bool> SoftDeleteAsync(KeyTypeId id, CancellationToken cancellation)
+    public async Task<bool> SoftDeleteAsync(Expression<Func<T,bool>> predicate, CancellationToken cancellation)
     {
-        var data = await GetAsync(x => x.Id.Equals(id), cancellation);
+        var data = await GetAsync(predicate, cancellation);
         if (data != null)
         {
             data.IsDeleted = true;
@@ -82,11 +85,15 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         }
         return false;
     }
-    public async Task<bool> IsExistAsync(T data, CancellationToken cancellation)
-    {
-        return await _entitySet.AnyAsync(x => x.Id.Equals(data.Id),cancellation);
-    }
-    public async Task<int> CommitAsync(CancellationToken cancellation) => await _appDbContext.SaveChangesAsync(cancellation);
+
+    public async Task<bool> IsExistAsync(T data, CancellationToken cancellation) 
+        => await _entitySet.AnyAsync(x => x.Id.Equals(data.Id), cancellation);
+
+    public async Task<bool> IsExistAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellation) 
+        => await _entitySet.AnyAsync(predicate, cancellation);
+
+    public async Task<int> CommitAsync(CancellationToken cancellation) 
+        => await _appDbContext.SaveChangesAsync(cancellation);
 
 }
 
