@@ -1,6 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Address.Results;
 using Infrastructure.Contracts.Cache;
 using Infrastructure.Contracts.Repository;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Addresses;
@@ -36,8 +37,6 @@ public class CityService : ServiceBase<City, CityResult, int>, ICityService
 
     public async Task<List<CityResult>> GetCityByProvinceIdAsync(int provinceId, CancellationToken cancellation)
     {
-        var cities = await _cityRepository.GetAll(x => x.ProvinceId == provinceId).ToListAsync(cancellation);
-
-        return Translate<List<City>, List<CityResult>>(cities);
+       return await _cityRepository.GetAll(x => x.ProvinceId == provinceId).ProjectToType<CityResult>().ToListAsync(cancellation);
     }
 }

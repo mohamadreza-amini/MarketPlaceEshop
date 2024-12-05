@@ -10,9 +10,13 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceInterfaces.ProductServices;
 
-public interface IProductSupplierService: IServiceBase<ProductSupplier, ProductSupplierResult, Guid>
+public interface IProductSupplierService : IServiceBase<ProductSupplier, ProductSupplierResult, Guid>
 {
-    Task AddSupplierToProduct(ProductSupplierCommand productSupplierDto,CancellationToken cancellationToken);
+    Task AddSupplierToProduct(ProductSupplierCommand productSupplierDto, CancellationToken cancellationToken);
     Task<ProductSupplierResult?> GetSuppierProductById(Guid ProductSupplierId, CancellationToken cancellation);
+    Task<int> GetInventory(Guid productSupplierId, CancellationToken cancellation);
+    Task<bool> HasInventory(Guid productSupplierId, int quantity, CancellationToken cancellation);
+    Task<bool> IsActiveProductSupplier(Guid productSupplierId, CancellationToken cancellation);
+    Task<bool> ProductSupplierExists(Guid productSupplierId, CancellationToken cancellation);
 }
 

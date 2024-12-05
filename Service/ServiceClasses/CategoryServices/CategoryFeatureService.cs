@@ -1,6 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Category.Commands;
 using DataTransferObject.DTOClasses.Category.Results;
 using Infrastructure.Contracts.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Categories;
 using Model.Exceptions;
@@ -48,10 +49,6 @@ public class CategoryFeatureService : ServiceBase<CategoryFeature, CategoryFeatu
         if (await (_categoryService.GetCategoryAsync(categoryId, cancellation)) == null)
             throw new BadRequestException("Categoryid not found");
 
-        var features =await _categoryFeatureRepository.GetAll(x => x.Id == categoryId).ToListAsync(cancellation);
-
-        return Translate<List<CategoryFeature>,List<CategoryFeatureResult>>(features);
-        
+        return await _categoryFeatureRepository.GetAll(x => x.Id == categoryId).ProjectToType<CategoryFeatureResult>().ToListAsync(cancellation);
     }
-
 }

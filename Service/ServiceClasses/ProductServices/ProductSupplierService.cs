@@ -15,12 +15,12 @@ namespace Service.ServiceClasses.ProductServices;
 
 public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSupplierResult, Guid>, IProductSupplierService
 {
-    private readonly IBaseRepository<ProductSupplier, Guid> _productSupplierRepository;
+    private readonly IProductSupplierRepository _productSupplierRepository;
     private readonly IUserService _userService;
     private readonly IProductService _productService;
     private readonly IPriceService _priceService;
 
-    public ProductSupplierService(IBaseRepository<ProductSupplier, Guid> productSupplierRepository, IUserService userService, IProductService productService, IPriceService priceService)
+    public ProductSupplierService(IProductSupplierRepository productSupplierRepository, IUserService userService, IProductService productService, IPriceService priceService)
     {
         _productSupplierRepository = productSupplierRepository;
         _userService = userService;
@@ -120,5 +120,27 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         if (productSupplier != null)
             productSupplierResult = TranslateToDTO(productSupplier);
         return productSupplierResult;
+    }
+
+    public async Task<int> GetInventory(Guid productSupplierId, CancellationToken cancellation)
+    {
+        return await _productSupplierRepository.GetInventory(productSupplierId, cancellation);
+    }
+
+    public async Task<bool> HasInventory(Guid productSupplierId, int quantity, CancellationToken cancellation)
+    {
+        return await GetInventory(productSupplierId, cancellation) >= quantity;
+    }
+
+
+    public async Task<bool> IsActiveProductSupplier(Guid productSupplierId, CancellationToken cancellation)
+    {
+        var product = (await _productSupplierRepository.GetByIdAsync(productSupplierId, cancellation)) ?? throw new BadRequestException("product-supplier not found");
+        return product.IsDisable;
+    }
+
+    public async Task<bool> ProductSupplierExists(Guid productSupplierId, CancellationToken cancellation)
+    {
+        return await _productSupplierRepository.GetByIdAsync(productSupplierId, cancellation) != null;
     }
 }

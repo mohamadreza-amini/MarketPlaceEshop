@@ -2,6 +2,7 @@
 using DataTransferObject.DTOClasses.Category.Results;
 using Infrastructure.Contracts.Cache;
 using Infrastructure.Contracts.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Categories;
 using Model.Exceptions;
@@ -55,8 +56,7 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         var categories = _cachedData.Get<Dictionary<int, List<CategoryResult>>>("AllCategoriesDictionary");
         if (categories == null)
         {
-            var categorylist = await _categoryRepository.GetAll().ToListAsync(cancellation);
-            var categoryresultlist = Translate<List<Category>, List<CategoryResult>>(categorylist);
+            var categoryresultlist = await _categoryRepository.GetAll().ProjectToType<CategoryResult>().ToListAsync(cancellation);
 
             categories = new Dictionary<int, List<CategoryResult>>();
 
@@ -79,12 +79,10 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         var categories = _cachedData.Get<List<CategoryResult>>("AllCategoriesList");
         if (categories == null)
         {
-            var categorylist = await _categoryRepository.GetAll().ToListAsync(cancellation);
-            categories = Translate<List<Category>, List<CategoryResult>>(categorylist);
+             categories = await _categoryRepository.GetAll().ProjectToType<CategoryResult>().ToListAsync(cancellation);
             _cachedData.Set("AllCategoriesList", categories);
         }
         return categories;
-
     }
 
     public async Task<CategoryResult?> GetCategoryAsync(int categoryId, CancellationToken cancellation)

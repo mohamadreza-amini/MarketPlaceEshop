@@ -1,6 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Product.Commands;
 using DataTransferObject.DTOClasses.Product.Results;
 using Infrastructure.Contracts.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Products;
 using Model.Exceptions;
@@ -29,15 +30,14 @@ public class BrandService : ServiceBase<Brand, BrandResult, int>, IBrandService
     {
         if (!_userService.IsAdmin())
             throw new AccessDeniedException();
-        var brand = Translate<BrandCommand,Brand>(brandDto);
+        var brand = Translate<BrandCommand, Brand>(brandDto);
         brand.Validate();
         await _brandRepository.CreateAsync(brand, cancellation);
     }
 
     public async Task<List<BrandResult>> GetAllAsync(CancellationToken cancellation)
     {
-        var brands = await _brandRepository.GetAll().ToListAsync(cancellation);
-        return Translate<List<Brand>, List<BrandResult>>(brands);
+        return await _brandRepository.GetAll().ProjectToType<BrandResult>().ToListAsync(cancellation);
     }
 
     public async Task<BrandResult?> GetByIdAsync(int brandId, CancellationToken cancellation)
