@@ -18,5 +18,6 @@ public interface IProductSupplierService : IServiceBase<ProductSupplier, Product
     Task<bool> HasInventory(Guid productSupplierId, int quantity, CancellationToken cancellation);
     Task<bool> IsActiveProductSupplier(Guid productSupplierId, CancellationToken cancellation);
     Task<bool> ProductSupplierExists(Guid productSupplierId, CancellationToken cancellation);
+   
 }
 

@@ -14,7 +14,7 @@ public class CartItemRepository : BaseRepository<CartItem, Guid>, ICartItemRepos
 {
     public CartItemRepository(AppDbContext appDbContext) : base(appDbContext) { }
 
-    public async Task<int> UpdateQuantities(Guid productSupplierId, int quantity, CancellationToken cancellation)
+    public async Task<int> UpdateQuantitiesById(Guid productSupplierId, int quantity, CancellationToken cancellation)
     {
         var affectedItems = await _entitySet
             .Where(x => x.ProductSupplierId == productSupplierId && x.Quantity > quantity)
@@ -22,10 +22,28 @@ public class CartItemRepository : BaseRepository<CartItem, Guid>, ICartItemRepos
         await RemoveWithoutCapacity(cancellation);
         return affectedItems;
     }
+
+    public async Task<int> UpdateAllQuantities(CancellationToken cancellation)
+    {
+        var affectedItems = await _entitySet
+            .Where(x => x.ProductSupplier.Ventory < x.Quantity)
+            .ExecuteUpdateAsync(x => x.SetProperty(cartitem => cartitem.Quantity, cartitem => cartitem.ProductSupplier.Ventory), cancellation);
+        await RemoveWithoutCapacity(cancellation);
+        return affectedItems;
+    }
+
     public async Task<int> RemoveWithoutCapacity(CancellationToken cancellation)
     {
         return await _entitySet
             .Where(x => x.Quantity == 0)
             .ExecuteUpdateAsync(x => x.SetProperty(x => x.IsDeleted, true), cancellation);
+    }
+
+
+    public async Task<int> DeleteAllByCustomerId(Guid customerId, CancellationToken cancellation)
+    {
+        return await _entitySet
+           .Where(x => x.CustomerId == customerId)
+           .ExecuteUpdateAsync(x => x.SetProperty(x => x.IsDeleted, true), cancellation);
     }
 }

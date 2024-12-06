@@ -8,9 +8,10 @@ namespace DataTransferObject.DTOClasses.Order.Commands;
 
 public class OrderItemCommand
 {
-    public int Quantity { get; set; }
     public decimal UnitCost { get; set; }
     public decimal UnitDiscount { get; set; }
+    public int Quantity { get; set; }
     public Guid ProductSupplierId { get; set; }
-    public Guid OrderId { get; set; }
+
+    //برای انتقال از سبد خرید به اردر ایتم
 }
