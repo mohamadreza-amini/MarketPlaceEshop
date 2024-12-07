@@ -3,6 +3,7 @@ using DataTransferObject.DTOClasses.Product.Commands;
 using DataTransferObject.DTOClasses.Product.Results;
 using DataTransferObject.DTOClasses.Review.Results;
 using Infrastructure.Contracts.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Categories;
 using Model.Entities.Products;
@@ -14,10 +15,12 @@ using Service.ServiceInterfaces.ProductServices;
 using Service.ServiceInterfaces.ReviewServices;
 using Shared.Enums;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Service.ServiceClasses.ProductServices;
 
@@ -131,7 +134,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
     public async Task<ProductResult> GetById(Guid productId, CancellationToken cancellation)
     {
         var query = await _productRepository.GetAllDataAsync(
-            x => TranslateToDTO(x), cancellation, x => x.Id == productId, x => x.Include(x => x.Category).Include(x => x.Brand));
+            x => TranslateToDTO(x), cancellation, x => x.Id == productId && x.IsConfirmed == 2, x => x.Include(x => x.Category).Include(x => x.Brand));
         var product = await query?.FirstOrDefaultAsync(cancellation);
 
         if (product == null)
@@ -151,26 +154,112 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
 
 
 
-    //public async Task<ProductResult> GetById(Guid productId, CancellationToken cancellation)
-    //{
-    //    var query = await _productRepository.GetAllDataAsync(
-    //        x => new ProductResult
-    //        {
-    //            Comments = Translate<List<Comment>, List<CommentResult>>(x.Comments.ToList()),
-    //            AverageScore = x.Scores.Average(x => x.StarRating),
-    //            Images = Translate<List<Image>, List<ImageResult>>(x.Images.ToList()),
-    //            ProductFeatureValues = Translate<List<ProductFeatureValue>, List<ProductFeatureValueResult>>(x.ProductFeatureValues.ToList()),
+/*    public async Task<ProductResult> GetByIdss(Guid productId, CancellationToken cancellation)
+    {
+        var query = await _productRepository.GetAllDataAsync(
+            x => new ProductResult
+            {
+                Comments = Translate<List<Comment>, List<CommentResult>>(x.Comments.ToList()),
+                AverageScore = x.Scores.Average(x => x.StarRating),
+                Images = Translate<List<Image>, List<ImageResult>>(x.Images.ToList()),
+                ProductFeatureValues = Translate<List<ProductFeatureValue>, List<ProductFeatureValueResult>>(x.ProductFeatureValues.ToList()),
+                productSuppliers = Translate<List<ProductSupplier>, List<ProductSupplierResult>>(x.productSuppliers.ToList()),
 
-    //        } ,
-    //        cancellation,
-    //        x => x.Id == productId,
-    //        x => x.Include(x => x.Category).Include(x => x.Brand).Include(x=>x.Images).Include(x=>x.ProductFeatureValues).ThenInclude(x=>x.CategoryFeature).Include(x=>x.Comments).Include(x=>x.Scores));
-    //    var product = await query?.FirstOrDefaultAsync(cancellation);
+            },
+            cancellation,
+            x => x.Id == productId && x.IsConfirmed == 2,
+            x => x.Include(x => x.Category).Include(x => x.Brand).Include(x => x.Images).Include(x => x.ProductFeatureValues).ThenInclude(x => x.CategoryFeature).Include(x => x.Comments).Include(x => x.Scores));
+        var product = await query?.FirstOrDefaultAsync(cancellation);
 
-    //    if (product == null)
-    //        throw new BadRequestException("محصول یافت نشد");
-    //     اینو همینجوری نوشتم به عنوان راهی دیگه برای نوشتن بالایی  کامل ننوشتم و همون بالایی اصلیه و کامله
-    //حس میکنم این روش بهتره بعدا وقت بود بررسی کن یا تغیر بده
-    //    return product;
-    //}
+
+        if (product == null)
+            throw new BadRequestException("محصول یافت نشد");
+
+        product.CommentCount = product.Comments?.Count() ?? 0;
+
+        product.ScoreCount = await _scoreService.NumberOfScore(productId, cancellation);
+
+        //  اینو همینجوری نوشتم به عنوان راهی دیگه برای نوشتن بالایی  کامل ننوشتم و همون بالایی اصلیه و کامله
+        //حس میکنم این روش بهتره بعدا وقت بود بررسی کن یا تغیر بده
+        return product;
+    }*/
+
+
+    public async Task<PaginatedList<ProductminiResult>> GetAllbyFilterCommand(ProductFilterCommand filterDto, CancellationToken cancellation, int pageIndex = 1, int pageSize = 20)
+    {
+        var query = await _productRepository.GetAllDataAsync(x => x, cancellation, x => x.IsConfirmed == 2, x => x.Include(x => x.Images).Include(x => x.productSuppliers).ThenInclude(x => x.Prices));
+
+        if (query == null)
+            return new PaginatedList<ProductminiResult>(new List<ProductminiResult>(), 0, 1, pageSize);
+        //اینجوری مشکل داره نمیتونه لیست برند و کتگوری پر بشه کلا روش خوبی نیست
+        query = await FilterProducts(query, filterDto, cancellation);
+
+        query = SortProducts(query, filterDto.SortProduct);
+
+        var products = query.Select((x => new ProductminiResult
+        {
+            Id = x.Id,
+            Name = x.Name,
+            Titel = x.Titel,
+            ImagePath = x.Images.Select(x => x.Path).FirstOrDefault()!,
+            Price = x.productSuppliers.SelectMany(x => x.Prices).Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).Min()
+        }));
+
+        return await PaginatedList<ProductminiResult>.CreateAsync(products, pageIndex, pageSize, cancellation);
+        //مقادیر فیلتر ها باید در اندپوینت همراه خروجی این سرویس در یه مدل ویو ترکیب بشن و برگردانده بشن و وظیفه سرویس نیست فیلتر رو پر کنه برگردانه برای ویو
+        //در اون مدل ویو باید فیلترها  پر بشن مقادیر لیست برند و کتگوری از سرویس گرفته بشن و همراه خروجی این لیست محصولات صقحه بندی شده برگشت داده بشن
+    }
+
+    private async Task<IQueryable<Product>> FilterProducts(IQueryable<Product> query, ProductFilterCommand filterDto, CancellationToken cancellation)
+    {
+        if (!string.IsNullOrWhiteSpace(filterDto.SearchText))
+            query = query.Where(x => x.Name.Contains(filterDto.SearchText) || x.Titel.Contains(filterDto.SearchText));
+
+        if (filterDto.OnlyAvailable)
+            query = query.Where(x => x.productSuppliers.Any(x => x.Ventory > 0));
+
+        if (filterDto.SelectedBrandIds.Any())
+            query = query.Where(x => filterDto.SelectedBrandIds.Contains(x.BrandId));
+
+        if (filterDto.SelectedCategoryId.HasValue && filterDto.SelectedCategoryId.Value != 0)
+        {
+            var subCategories = await _categoryService.GetAllSubCategoryIdbyCategoryId(filterDto.SelectedCategoryId.Value, cancellation);
+            query = query.Where(x => subCategories.Contains(x.CategoryId));
+        }
+        return query;
+    }
+
+    private IQueryable<Product> SortProducts(IQueryable<Product> query, SortProduct sortProduct)
+    {
+        switch (sortProduct)
+        {
+            case SortProduct.Newest:
+                query = query.OrderByDescending(x => x.CreateDatetime);
+                break;
+            case SortProduct.Oldest:
+                query = query.OrderBy(x => x.CreateDatetime);
+                break;
+            case SortProduct.Cheapest:
+                query = query.OrderBy(x => x.productSuppliers.SelectMany(x => x.Prices)
+                .Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).DefaultIfEmpty(decimal.MaxValue).Min());
+                break;
+            case SortProduct.MostExpensive:
+                query = query.OrderByDescending(x => x.productSuppliers.SelectMany(x => x.Prices)
+                .Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).DefaultIfEmpty(decimal.MinValue).Min());
+                break;
+            default: break;
+        }
+        return query;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+

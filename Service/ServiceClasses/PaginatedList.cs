@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataTransferObject.DTOClasses.Product.Commands;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,11 +25,11 @@ public class PaginatedList<T> : List<T>
 
     public async static Task<PaginatedList<T>> CreateAsync(IQueryable<T>? source, int pageIndex, int pageSize, CancellationToken cancellationToken)
     {
-       
+
         if (source == null)
             return new PaginatedList<T>(new List<T>(), 0, 1, pageSize);
 
-        var count =await source.CountAsync();
+        var count = await source.CountAsync();
 
         var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
 
@@ -37,3 +38,7 @@ public class PaginatedList<T> : List<T>
     }
 
 }
+
+
+
+

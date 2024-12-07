@@ -79,7 +79,7 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         var categories = _cachedData.Get<List<CategoryResult>>("AllCategoriesList");
         if (categories == null)
         {
-             categories = await _categoryRepository.GetAll().ProjectToType<CategoryResult>().ToListAsync(cancellation);
+            categories = await _categoryRepository.GetAll().ProjectToType<CategoryResult>().ToListAsync(cancellation);
             _cachedData.Set("AllCategoriesList", categories);
         }
         return categories;
@@ -91,8 +91,8 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         return categories.FirstOrDefault(x => x.Id == categoryId);
     }
 
-
-    public async Task<List<int>> GetAllSubCategoryIdbyCategoryId(int categoryId, CancellationToken cancellation)
+    //کتگوری رو میگیره پدراشو میده
+    public async Task<List<int>> GetAllParentCategoryIds(int categoryId, CancellationToken cancellation)
     {
         var categories = await GetAllListAsync(cancellation);
 
@@ -115,6 +115,27 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         var parent = categories.FirstOrDefault(x => x.Id == parentId.Value);
         parentsCategory.Add(parent!.Id);
         ParentCategoryId(parentsCategory, parent.ParentCategoryId, categories);
+    }
+
+
+    //کنگوری رو میگیره فرزنداشو میده
+    public async Task<List<int>> GetAllSubCategoryIdbyCategoryId(int categoryId, CancellationToken cancellation)
+    {
+        var categories = await GetAllDictionryAsync(cancellation);
+        var parentLevel = categories.FirstOrDefault(x => x.Value.Any(y => y.Id == categoryId)).Key;
+        if (parentLevel == default && !categories[parentLevel].Any(y => y.Id == categoryId))
+            return new List<int>();     
+        var childCategories = new List<int> { categoryId };
+ 
+        for (var level = parentLevel + 1; categories.TryGetValue(level, out var currentLevelCategories); level++)
+        {
+            foreach (var category in currentLevelCategories)
+            {
+                if (childCategories.Contains(category.ParentCategoryId.GetValueOrDefault()))
+                    childCategories.Add(category.Id);
+            }
+        }
+        return childCategories;
     }
 
 }

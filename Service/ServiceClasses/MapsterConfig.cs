@@ -1,11 +1,13 @@
 ﻿using DataTransferObject.DTOClasses;
 using DataTransferObject.DTOClasses.Address.Commands;
+using DataTransferObject.DTOClasses.Category.Results;
 using DataTransferObject.DTOClasses.Person.Commands;
 using DataTransferObject.DTOClasses.Person.Results;
 using DataTransferObject.DTOClasses.Product.Results;
 using DataTransferObject.DTOClasses.Review.Results;
 using Mapster;
 using Model.Entities.Addresses;
+using Model.Entities.Categories;
 using Model.Entities.Orders;
 using Model.Entities.Person;
 using Model.Entities.Products;
@@ -57,6 +59,12 @@ namespace Service.ServiceClasses
 
 
 
+            TypeAdapterConfig<ProductFeatureValue, ProductFeatureValueResult>.NewConfig()
+             .Map(dest => dest.FeatureName, src => src.CategoryFeature.FeatureName);
+
+
+            TypeAdapterConfig<ProductSupplier, ProductSupplierResult>.NewConfig()
+            .Map(dest => dest.Price, src => src.Prices.Where(x=>x.ExpiredTime==null).Select(x=>x.PriceValue).FirstOrDefault());
 
 
 
