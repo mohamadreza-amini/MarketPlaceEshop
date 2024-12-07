@@ -54,6 +54,7 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
         }
         catch (Exception ex)
         {
+            //اینجا میشه لاگ زد
             return false;
         }
         finally

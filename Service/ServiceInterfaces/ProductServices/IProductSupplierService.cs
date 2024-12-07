@@ -13,11 +13,12 @@ namespace Service.ServiceInterfaces.ProductServices;
 public interface IProductSupplierService : IServiceBase<ProductSupplier, ProductSupplierResult, Guid>
 {
     Task AddSupplierToProduct(ProductSupplierCommand productSupplierDto, CancellationToken cancellationToken);
-    Task<ProductSupplierResult?> GetSuppierProductById(Guid ProductSupplierId, CancellationToken cancellation);
+    Task<Guid?> GetSuppierIdById(Guid ProductSupplierId, CancellationToken cancellation);
     Task<int> GetInventory(Guid productSupplierId, CancellationToken cancellation);
     Task<bool> HasInventory(Guid productSupplierId, int quantity, CancellationToken cancellation);
     Task<bool> IsActiveProductSupplier(Guid productSupplierId, CancellationToken cancellation);
     Task<bool> ProductSupplierExists(Guid productSupplierId, CancellationToken cancellation);
-   
+    Task<List<ProductSupplierResult>> GetAllSupplierByProductId(Guid productId, CancellationToken cancellation);
+
 }
 

@@ -90,4 +90,31 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         var categories = await GetAllListAsync(cancellation);
         return categories.FirstOrDefault(x => x.Id == categoryId);
     }
+
+
+    public async Task<List<int>> GetAllSubCategoryIdbyCategoryId(int categoryId, CancellationToken cancellation)
+    {
+        var categories = await GetAllListAsync(cancellation);
+
+        var category = categories.FirstOrDefault(x => x.Id == categoryId);
+        if (category == null)
+            //چون کش میشه ممکنه بلافاصله نیاد
+            throw new BadRequestException("دسته بندی یافت نشد");
+
+        var subCategory = new List<int>();
+        subCategory.Add(categoryId);
+        ParentCategoryId(subCategory, category.ParentCategoryId, categories);
+        return subCategory;
+    }
+
+    private void ParentCategoryId(List<int> parentsCategory, int? parentId, List<CategoryResult> categories)
+    {
+        if (parentId == null)
+            return;
+
+        var parent = categories.FirstOrDefault(x => x.Id == parentId.Value);
+        parentsCategory.Add(parent!.Id);
+        ParentCategoryId(parentsCategory, parent.ParentCategoryId, categories);
+    }
+
 }

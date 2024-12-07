@@ -61,4 +61,8 @@ public class ScoreService : ServiceBase<Score, ScoreResult, Guid>, IScoreService
         return await _scoreRepository.GetAvgScoreByProductId(productId, cancellation);
     }
 
+    public async Task<int> NumberOfScore(Guid productId, CancellationToken cancellation)
+    {
+        return await _scoreRepository.NumberOfScores(productId, cancellation);
+    }
 }

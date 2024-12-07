@@ -1,6 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Product.Commands;
 using DataTransferObject.DTOClasses.Product.Results;
 using Infrastructure.Contracts.Repository;
+using Microsoft.EntityFrameworkCore;
 using Model.Entities.Products;
 using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
@@ -113,13 +114,14 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         await _productSupplierRepository.CommitAsync(cancellationToken);
     }
 
-    public async Task<ProductSupplierResult?> GetSuppierProductById(Guid ProductSupplierId, CancellationToken cancellation)
+    public async Task<Guid?> GetSuppierIdById(Guid ProductSupplierId, CancellationToken cancellation)
     {
+
         var productSupplier = await _productSupplierRepository.GetByIdAsync(ProductSupplierId, cancellation);
-        ProductSupplierResult? productSupplierResult = null;
+        Guid? supplierId = null;
         if (productSupplier != null)
-            productSupplierResult = TranslateToDTO(productSupplier);
-        return productSupplierResult;
+            supplierId = productSupplier.SupplierId;
+        return supplierId;
     }
 
     public async Task<int> GetInventory(Guid productSupplierId, CancellationToken cancellation)
@@ -144,5 +146,22 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         return await _productSupplierRepository.GetByIdAsync(productSupplierId, cancellation) != null;
     }
 
-     
+    public async Task<List<ProductSupplierResult>> GetAllSupplierByProductId(Guid productId, CancellationToken cancellation)
+    {
+        var query = await _productSupplierRepository.GetAllDataAsync(
+            x => new ProductSupplierResult
+            {
+                Id = x.Id,
+                SupplierId = x.SupplierId,
+                CompanyName = x.Supplier.CompanyName,
+                ProductId = x.ProductId,
+                Ventory = x.Ventory,
+                Discount = x.Discount,
+                Price = x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault()
+            }
+        , cancellation, x => x.ProductId == productId, x => x.Include(x => x.Supplier).Include(x => x.Prices));
+        if (query == null)
+            return new List<ProductSupplierResult>();
+        return await query.OrderBy(x=>x.Price).ToListAsync(cancellation);
+    }
 }

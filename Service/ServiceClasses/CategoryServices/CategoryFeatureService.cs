@@ -23,10 +23,11 @@ public class CategoryFeatureService : ServiceBase<CategoryFeature, CategoryFeatu
     private readonly IBaseRepository<CategoryFeature, int> _categoryFeatureRepository;
     private readonly ICategoryService _categoryService;
     private readonly IUserService _userService;
-    public CategoryFeatureService(IBaseRepository<CategoryFeature, int> categoryFeatureRepository, ICategoryService categoryService)
+    public CategoryFeatureService(IBaseRepository<CategoryFeature, int> categoryFeatureRepository, ICategoryService categoryService, IUserService userService)
     {
         _categoryFeatureRepository = categoryFeatureRepository;
         _categoryService = categoryService;
+        _userService = userService;
     }
 
     public async Task Create(CategoryFeatureCommand categoryDto, CancellationToken cancellation)
@@ -44,11 +45,18 @@ public class CategoryFeatureService : ServiceBase<CategoryFeature, CategoryFeatu
         await _categoryFeatureRepository.CommitAsync(cancellation);
     }
 
+
     public async Task<List<CategoryFeatureResult>> GetAllByCategoryId(int categoryId, CancellationToken cancellation)
     {
-        if (await (_categoryService.GetCategoryAsync(categoryId, cancellation)) == null)
-            throw new BadRequestException("Categoryid not found");
+        var subCategories = await _categoryService.GetAllSubCategoryIdbyCategoryId(categoryId, cancellation);
+        var CategoryFeatureResultList = new List<CategoryFeatureResult>();
 
-        return await _categoryFeatureRepository.GetAll(x => x.Id == categoryId).ProjectToType<CategoryFeatureResult>().ToListAsync(cancellation);
+        foreach (var category in subCategories)
+        {
+            CategoryFeatureResultList.AddRange(await _categoryFeatureRepository
+                .GetAll(x => x.CategoryId == category).ProjectToType<CategoryFeatureResult>().ToListAsync(cancellation));
+        }
+
+        return CategoryFeatureResultList;
     }
 }

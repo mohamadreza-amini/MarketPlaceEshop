@@ -9,6 +9,6 @@ namespace DataTransferObject.DTOClasses.Category.Results;
 public class CategoryResult:BaseDTO<int>
 {
     public string CategoryName { get; set; }
-    public int ParentCategoryId { get; set; }
+    public int? ParentCategoryId { get; set; }
     public int Level { get; set; }
 }

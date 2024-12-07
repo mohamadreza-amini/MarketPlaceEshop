@@ -1,11 +1,17 @@
-﻿using DataTransferObject.DTOClasses.Product.Commands;
+﻿using DataTransferObject.DTOClasses.Category.Results;
+using DataTransferObject.DTOClasses.Product.Commands;
 using DataTransferObject.DTOClasses.Product.Results;
+using DataTransferObject.DTOClasses.Review.Results;
 using Infrastructure.Contracts.Repository;
+using Microsoft.EntityFrameworkCore;
+using Model.Entities.Categories;
 using Model.Entities.Products;
+using Model.Entities.Review;
 using Model.Exceptions;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.PersonServices;
 using Service.ServiceInterfaces.ProductServices;
+using Service.ServiceInterfaces.ReviewServices;
 using Shared.Enums;
 using System;
 using System.Collections.Generic;
@@ -23,7 +29,20 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
     private readonly IProductFeatureValueService _productFeatureValueService;
     private readonly IBrandService _brandService;
     private readonly ICategoryService _categoryService;
-    public ProductService(IBaseRepository<Product, Guid> productRepository, IUserService userService, IImageService imageService, IProductFeatureValueService productFeatureValueService, IBrandService brandService, ICategoryService categoryService)
+    private readonly IScoreService _scoreService;
+    private readonly IProductFeatureValueService _productFeatureService;
+    private readonly ICommentService _commentService;
+    private readonly IProductSupplierService _productSupplierService;
+
+    public ProductService(IBaseRepository<Product, Guid> productRepository,
+        IUserService userService,
+        IImageService imageService,
+        IProductFeatureValueService productFeatureValueService,
+        IBrandService brandService, ICategoryService categoryService,
+        IScoreService scoreService,
+        IProductFeatureValueService productFeatureService,
+        ICommentService commentService,
+        IProductSupplierService productSupplierService)
     {
         _productRepository = productRepository;
         _userService = userService;
@@ -31,6 +50,10 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
         _productFeatureValueService = productFeatureValueService;
         _brandService = brandService;
         _categoryService = categoryService;
+        _scoreService = scoreService;
+        _productFeatureService = productFeatureService;
+        _commentService = commentService;
+        _productSupplierService = productSupplierService;
     }
 
     public async Task<bool> CreateAsync(ProductCommand productDto, CancellationToken cancellation)
@@ -104,4 +127,50 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
     {
         return await _productRepository.GetByIdAsync(productId, cancellation) != null;
     }
+
+    public async Task<ProductResult> GetById(Guid productId, CancellationToken cancellation)
+    {
+        var query = await _productRepository.GetAllDataAsync(
+            x => TranslateToDTO(x), cancellation, x => x.Id == productId, x => x.Include(x => x.Category).Include(x => x.Brand));
+        var product = await query?.FirstOrDefaultAsync(cancellation);
+
+        if (product == null)
+            throw new BadRequestException("محصول یافت نشد");
+        //میشد برد توی ریپازیتوری یا کلا پروداکت رو کامل اورد به جای گرفتن از سرویس های مختلف
+        //بخشی از کار دیگه که میشد کرد رو پایین نوشتم کامنته
+        product.AverageScore = await _scoreService.GetProductAverageRating(productId, cancellation);
+        product.ProductFeatureValues = await _productFeatureValueService.GetAllByProductId(productId, cancellation);
+        product.Comments = await _commentService.GetAllCommentByProductId(productId, cancellation);
+        product.Images = await _imageService.GetAllByProductId(productId, cancellation);
+        product.productSuppliers = await _productSupplierService.GetAllSupplierByProductId(productId, cancellation);
+        product.ScoreCount = await _scoreService.NumberOfScore(productId, cancellation);
+        product.CommentCount = product.Comments.Count();
+        return product;
+    }
+
+
+
+
+    //public async Task<ProductResult> GetById(Guid productId, CancellationToken cancellation)
+    //{
+    //    var query = await _productRepository.GetAllDataAsync(
+    //        x => new ProductResult
+    //        {
+    //            Comments = Translate<List<Comment>, List<CommentResult>>(x.Comments.ToList()),
+    //            AverageScore = x.Scores.Average(x => x.StarRating),
+    //            Images = Translate<List<Image>, List<ImageResult>>(x.Images.ToList()),
+    //            ProductFeatureValues = Translate<List<ProductFeatureValue>, List<ProductFeatureValueResult>>(x.ProductFeatureValues.ToList()),
+
+    //        } ,
+    //        cancellation,
+    //        x => x.Id == productId,
+    //        x => x.Include(x => x.Category).Include(x => x.Brand).Include(x=>x.Images).Include(x=>x.ProductFeatureValues).ThenInclude(x=>x.CategoryFeature).Include(x=>x.Comments).Include(x=>x.Scores));
+    //    var product = await query?.FirstOrDefaultAsync(cancellation);
+
+    //    if (product == null)
+    //        throw new BadRequestException("محصول یافت نشد");
+    //     اینو همینجوری نوشتم به عنوان راهی دیگه برای نوشتن بالایی  کامل ننوشتم و همون بالایی اصلیه و کامله
+    //حس میکنم این روش بهتره بعدا وقت بود بررسی کن یا تغیر بده
+    //    return product;
+    //}
 }

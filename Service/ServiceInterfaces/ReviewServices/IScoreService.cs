@@ -14,4 +14,5 @@ public interface IScoreService:IServiceBase<Score,ScoreResult,Guid>
     Task<bool> AddScoreAsync(ScoreCommand scoreDto,CancellationToken cancellation);
     Task<bool> HasCustomerScoreAsync(Guid customerid, Guid productId, CancellationToken cancellation);
     Task<double> GetProductAverageRating(Guid productId, CancellationToken cancellation);
+    Task<int> NumberOfScore(Guid productId, CancellationToken cancellation);
 }

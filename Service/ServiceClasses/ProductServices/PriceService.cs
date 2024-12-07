@@ -41,12 +41,12 @@ public class PriceService : ServiceBase<Price, PriceResult, Guid>, IPriceService
 
     public async Task<bool> ExpireLastPrice(Guid productSupplierId, CancellationToken cancellation)
     {
-        var supplierproduct = await _productSupplierService.GetSuppierProductById(productSupplierId, cancellation);
-        if (supplierproduct == null)
+        var supplierId = await _productSupplierService.GetSuppierIdById(productSupplierId, cancellation);
+        if (supplierId == null)
             return true;
         //در حالت بالا هنوز تامین کننده برای اون محصول ساخته نشده و قیمت قبلی نداره
 
-        if (!_userService.IsAdmin() && !_userService.IsRequesterUser(supplierproduct.SupplierId))
+        if (!_userService.IsAdmin() && !_userService.IsRequesterUser(supplierId.Value))
             throw new AccessDeniedException();
 
         var lastPrice = await _priceRepository.GetAsync(x => x.ProductSupplierId == productSupplierId && x.ExpiredTime == null, cancellation);

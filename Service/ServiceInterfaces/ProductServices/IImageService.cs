@@ -13,6 +13,8 @@ namespace Service.ServiceInterfaces.ProductServices;
 
 public interface IImageService:IServiceBase<Image,ImageResult,Guid>
 {
+    //درست کردن خروجی مدل نباشه بهتره 
     List<Image> PrepareToAdd(List<ImageCommand> imagesDto,Guid productId);
 
+    Task<List<ImageResult>> GetAllByProductId(Guid productId,CancellationToken cancellation);
 }

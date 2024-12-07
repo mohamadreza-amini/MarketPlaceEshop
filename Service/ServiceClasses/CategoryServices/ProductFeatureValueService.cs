@@ -1,6 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Category.Commands;
 using DataTransferObject.DTOClasses.Category.Results;
 using Infrastructure.Contracts.Repository;
+using Microsoft.EntityFrameworkCore;
 using Model.Entities.Categories;
 using Model.Exceptions;
 using Service.ServiceInterfaces.CategoryServices;
@@ -30,10 +31,28 @@ public class ProductFeatureValueService : ServiceBase<ProductFeatureValue, Produ
             throw new AccessDeniedException();
 
         var productFeatures = Translate<List<ProductFeatureValueCommand>, List<ProductFeatureValue>>(productFeaturesDto);
-        productFeatures.ForEach(x=>x.ProductId = ProductId);
+        productFeatures.ForEach(x => x.ProductId = ProductId);
         productFeatures.ForEach(x => x.Validate());
 
         return productFeatures;
         //کامیت نشده برای استفاده در پروداکت
+    }
+
+    public async Task<List<ProductFeatureValueResult>> GetAllByProductId(Guid ProductId, CancellationToken cancellation)
+    {
+        var query =await _productFeatureRepository.GetAllDataAsync(
+            x => new ProductFeatureValueResult
+            {
+                Id = x.Id,
+                FeatureValue = x.FeatureValue,
+                FeatureName = x.CategoryFeature.FeatureName
+            },
+            cancellation,
+            x => x.ProductId == ProductId,
+            x => x.Include(x => x.CategoryFeature));
+
+        if (query == null)
+            return new List<ProductFeatureValueResult>();
+        return await query.ToListAsync(cancellation);
     }
 }

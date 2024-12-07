@@ -13,7 +13,6 @@ public class ProductSupplierResult:BaseDTO<Guid>
     public Guid SupplierId { get; set; }
     public string CompanyName { get; set; }
     public Guid ProductId { get; set; }
-    public int Scores { get; set; }
-    public decimal Prices { get; set; }
+    public decimal Price { get; set; }
 
 }

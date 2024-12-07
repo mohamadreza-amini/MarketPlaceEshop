@@ -2,6 +2,7 @@
 using DataTransferObject.DTOClasses.Address.Commands;
 using DataTransferObject.DTOClasses.Person.Commands;
 using DataTransferObject.DTOClasses.Person.Results;
+using DataTransferObject.DTOClasses.Product.Results;
 using DataTransferObject.DTOClasses.Review.Results;
 using Mapster;
 using Model.Entities.Addresses;
@@ -48,13 +49,15 @@ namespace Service.ServiceClasses
             TypeAdapterConfig<Comment, CommentResult>.NewConfig()
                .Map(dest => dest.FullName, src => src.Customer.User.FirstName + " " + src.Customer.User.LastName)
                .Map(dest => dest.ProductName, src => src.Product.Name);
-        
+
+
+            TypeAdapterConfig<Product, ProductResult>.NewConfig()
+               .Map(dest => dest.CategoryName, src => src.Category.CategoryName)
+               .Map(dest => dest.BrandName, src => src.Brand.BrandName);
 
 
 
 
-
-        
 
 
 

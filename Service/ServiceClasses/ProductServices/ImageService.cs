@@ -2,6 +2,8 @@
 using DataTransferObject.DTOClasses.Product.Commands;
 using DataTransferObject.DTOClasses.Product.Results;
 using Infrastructure.Contracts.Repository;
+using Mapster;
+using Microsoft.EntityFrameworkCore;
 using Model.Entities.Categories;
 using Model.Entities.Products;
 using Model.Exceptions;
@@ -37,5 +39,13 @@ public class ImageService : ServiceBase<Image, ImageResult, Guid>, IImageService
 
         return images;
         //کامیت نشده برای استفاده در پروداکت
+    }
+
+    public async Task<List<ImageResult>> GetAllByProductId(Guid productId, CancellationToken cancellation)
+    {
+        var images = await _imageRepository.GetAll(x => x.ProductId == productId).ProjectToType<ImageResult>().ToListAsync(cancellation);
+        if (images == null)
+            return new List<ImageResult>();
+        return images;
     }
 }

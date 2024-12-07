@@ -90,7 +90,17 @@ public class CommentService : ServiceBase<Comment, CommentResult, Guid>, ICommen
             x => x.Include(x => x.Customer).ThenInclude(x => x.User).Include(x => x.Product));
 
         return await PaginatedList<CommentResult>.CreateAsync(unConfirmComments, pageIndex, pageSize, cancellation);
-
     }
 
+    public async Task<List<CommentResult>> GetAllCommentByProductId(Guid productId, CancellationToken cancellation)
+    {
+        var confirmComments = await _commentRepository.GetAllDataAsync(
+            x => TranslateToDTO(x),
+            cancellation,
+            x => x.IsConfirmed == 2 && x.ProductId == productId,
+            x => x.Include(x => x.Customer).ThenInclude(x => x.User).Include(x => x.Product));
+        if (confirmComments == null)
+            return new List<CommentResult>();
+        return await confirmComments.ToListAsync(cancellation);
+    }
 }

@@ -10,4 +10,5 @@ namespace Infrastructure.Contracts.Repository;
 public interface IScoreRepository:IBaseRepository<Score,Guid>
 {
     Task<double> GetAvgScoreByProductId(Guid productId,CancellationToken cancellation);
+    Task<int> NumberOfScores(Guid productId,CancellationToken cancellation);
 }

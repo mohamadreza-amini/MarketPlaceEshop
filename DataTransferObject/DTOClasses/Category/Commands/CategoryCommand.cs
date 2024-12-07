@@ -13,7 +13,7 @@ public class CategoryCommand
     [RegularExpression("[آ-یA-Za-z]+", ErrorMessage = "ورودی صحیح نمی باشد")]
     [Display(Name = "دسته بندی")]
     public string CategoryName { get; set; }
-    public int ParentCategoryId { get; set; }
+    public int? ParentCategoryId { get; set; }
 }
 
 

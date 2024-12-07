@@ -19,4 +19,9 @@ public class ScoreRepository : BaseRepository<Score, Guid>, IScoreRepository
             return await query.AverageAsync(x => x.StarRating, cancellation);
         return 0;
     }
+
+    public async Task<int> NumberOfScores(Guid productId, CancellationToken cancellation)
+    {
+        return await _entitySet.Where(X => X.ProductId == productId).CountAsync(cancellation);
+    }
 }
