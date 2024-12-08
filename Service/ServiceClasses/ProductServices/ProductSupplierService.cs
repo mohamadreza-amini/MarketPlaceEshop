@@ -9,6 +9,7 @@ using Service.ServiceInterfaces.ProductServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -116,7 +117,6 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
 
     public async Task<Guid?> GetSuppierIdById(Guid ProductSupplierId, CancellationToken cancellation)
     {
-
         var productSupplier = await _productSupplierRepository.GetByIdAsync(ProductSupplierId, cancellation);
         Guid? supplierId = null;
         if (productSupplier != null)
@@ -162,6 +162,52 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         , cancellation, x => x.ProductId == productId, x => x.Include(x => x.Supplier).Include(x => x.Prices));
         if (query == null)
             return new List<ProductSupplierResult>();
-        return await query.OrderBy(x=>x.Price).ToListAsync(cancellation);
+        return await query.OrderBy(x => x.Price).ToListAsync(cancellation);
+    }
+
+
+
+    //لیست محصول-تامین کننده برای دیدن ادمین و تامین کننده نه بقیه
+
+    public async Task<PaginatedList<ProductSupplierFullResult>> GetAllProductSupplierByPerson(CancellationToken cancellation, int pageIndex = 1, int pageSize = 20)
+    {
+        Expression<Func<ProductSupplier, bool>> predicate;
+
+        if (_userService.IsAdmin())
+        {
+            predicate = x => true;
+        }
+        else if (_userService.IsInRole("Supplier") && Guid.TryParse(_userService.RequesterId(), out Guid requesterId))
+        {
+            predicate = x => x.SupplierId == requesterId;
+        }
+        else
+        {
+            throw new AccessDeniedException();
+        }
+        var query = await _productSupplierRepository.GetAllDataAsync(
+           x => new ProductSupplierFullResult
+           {
+               Id = x.Id,
+               SupplierId = x.SupplierId,
+               CompanyName = x.Supplier.CompanyName,
+               ProductId = x.ProductId,
+               Ventory = x.Ventory,
+               Discount = x.Discount,
+               Price = x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(),
+               StartDate = x.Product.StartDate,
+               BrandName = x.Product.Brand.BrandName,
+               CategoryId = x.Product.CategoryId,
+               CategoryName = x.Product.Category.CategoryName,
+               Titel = x.Product.Titel,
+               ProductName = x.Product.Name,
+               AverageScore = x.Product.Scores != null && x.Product.Scores.Any() ? x.Product.Scores.Select(s => s.StarRating).DefaultIfEmpty(0).Average() : 0
+           }
+       , cancellation, predicate);
+
+        if (query == null)
+            return await PaginatedList<ProductSupplierFullResult>.CreateAsync(query, 1, pageSize, cancellation);
+
+        return await PaginatedList<ProductSupplierFullResult>.CreateAsync(query, pageIndex, pageSize, cancellation);
     }
 }
