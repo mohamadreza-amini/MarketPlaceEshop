@@ -10,4 +10,5 @@ namespace Service.ServiceInterfaces.OrderServices;
 
 public interface IOrderItemService:IServiceBase<OrderItem,OrderItemResult,Guid>
 {
+    Task SendOrderItem(Guid orderItemId, CancellationToken cancellation);
 }

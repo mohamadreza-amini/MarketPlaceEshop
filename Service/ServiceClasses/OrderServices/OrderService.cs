@@ -1,17 +1,25 @@
 ﻿using DataTransferObject.DTOClasses.Order.Commands;
 using DataTransferObject.DTOClasses.Order.Results;
 using Infrastructure.Contracts.Repository;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Model.Entities.Orders;
 using Model.Entities.Person;
+using Model.Entities.Products;
 using Model.Exceptions;
+using Service.ServiceClasses.PersonServices;
 using Service.ServiceInterfaces.OrderServices;
 using Service.ServiceInterfaces.PersonServices;
+using Service.ServiceInterfaces.ProductServices;
+using Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Service.ServiceClasses.OrderServices;
 
@@ -20,12 +28,14 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
     private readonly IBaseRepository<Order, Guid> _orderRepository;
     private readonly IUserService _userService;
     private readonly ICartItemService _cartItemService;
+    private readonly IProductSupplierService _productSupplierService;
 
-    public OrderService(IBaseRepository<Order, Guid> orderRepository, IUserService userService, ICartItemService cartItemService)
+    public OrderService(IBaseRepository<Order, Guid> orderRepository, IUserService userService, ICartItemService cartItemService, IProductSupplierService productSupplierService)
     {
         _orderRepository = orderRepository;
         _userService = userService;
         _cartItemService = cartItemService;
+        _productSupplierService = productSupplierService;
     }
 
 
@@ -86,5 +96,226 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
 
 
 
+    //دیدن لیست اردرها براساس شخص یعنی کاربر باشه برای خودش ادمین باشه همه رو تامین کننده برای خودش به همراه لیست اردرایتم ها  با قابلیت فیلتر ارسال شده نشده تایید شده نشده 
+    public async Task<PaginatedList<OrderResult>> GetAllOrders(CancellationToken cancellation, int pageIndex = 1, int pageSize = 20, bool? sent = null, ConfirmationStatus? confirmationStatus = null)
+    {
+        var query = await _orderRepository.GetAllDataAsync(x => x, cancellation);
+        if (query == null)
+            return new PaginatedList<OrderResult>(new List<OrderResult> { new OrderResult() { OrderItems = new List<OrderItemResult>() } }, 0, 1, pageSize) { };
+
+        Func<OrderItem, bool> sentFilter = x => true;
+        await FilterByPerson(query);
+        SetFilters(query, sentFilter, sent, confirmationStatus);
+        var result = SelectOrders(query, sentFilter);
+        return await PaginatedList<OrderResult>.CreateAsync(result, pageIndex, pageSize, cancellation);
+    }
+
+    //همون بالایی ولی فقط اردر ایتم هارو میده
+    public async Task<PaginatedList<OrderItemResult>> GetAllOrderItems(CancellationToken cancellation, int pageIndex = 1, int pageSize = 20, bool? sent = null, ConfirmationStatus? confirmationStatus = null)
+    {
+        var query = await _orderRepository.GetAllDataAsync(x => x, cancellation);
+        if (query == null)
+            return new PaginatedList<OrderItemResult>(new List<OrderItemResult>(), 0, 1, pageSize) { };
+
+        Func<OrderItem, bool> sentFilter = x => true;
+        await FilterByPerson(query);
+        SetFilters(query, sentFilter, sent, confirmationStatus);
+        var result = GetOrderItems(query, sent);
+        return await PaginatedList<OrderItemResult>.CreateAsync(result, pageIndex, pageSize, cancellation);
+    }
+
+
+
+    private void SetFilters(IQueryable<Order> query, Func<OrderItem, bool> sentFilter, bool? sent = null, ConfirmationStatus? confirmationStatus = null)
+    {
+        if (confirmationStatus != null)
+        {
+            query = query.Where(x => x.IsConfirmed == (byte)confirmationStatus);
+        }
+        if (sent != null)
+        {
+            query = query.Where(x => x.OrderItems.Any(x => x.Sent == sent));
+            sentFilter = x => x.Sent == sent;
+        }
+    }
+
+
+    private async Task FilterByPerson(IQueryable<Order> query)
+    {
+        if (!Guid.TryParse(_userService.RequesterId(), out Guid requesterId))
+            throw new AccessDeniedException();
+
+        switch (await _userService.GetRole())
+        {
+            case ("Admin"):
+                break;
+
+            case ("Supplier"):
+                query = query.Where(x => x.OrderItems.Any(x => x.ProductSupplier.SupplierId == requesterId));
+                break;
+
+            case ("Customer"):
+                query = query.Where(x => x.CustomerId == requesterId);
+                break;
+
+            default:
+                throw new AccessDeniedException();
+        }
+    }
+
+
+
+    private IQueryable<OrderResult> SelectOrders(IQueryable<Order> query, Func<OrderItem, bool> sentFilter)
+    {
+        return query.Select(x => new OrderResult
+        {
+            Id = x.Id,
+            AddressId = x.AddressId,
+            CustomerId = x.CustomerId,
+            IsConfirm = (ConfirmationStatus)x.IsConfirmed,
+            ShippedDate = x.ShippedDate,
+            OrderDate = x.OrderDate,
+            TotalPrice = x.OrderItems.Sum(x => x.Quantity * x.UnitCost),
+            TotalDiscount = x.OrderItems.Sum(x => x.Quantity * x.UnitDiscount),
+            TotalAmountPaid = x.OrderItems.Sum(x => x.Quantity * x.UnitCost) - x.OrderItems.Sum(x => x.Quantity * x.UnitDiscount),
+            FullAddress = x.Address.City.Province.ProvinceName + "-" + x.Address.City.CityName + "-" + x.Address.Neighborhood + "," + x.Address.AddressDetail + " پلاک," + x.Address.HouseNumber + " واحد," + x.Address.UnitNumber + " کدپستی," + x.Address.PostalCode,
+            OrderItems = SelectOrderItems(x, sentFilter)
+        });
+    }
+
+    private List<OrderItemResult> SelectOrderItems(Order order, Func<OrderItem, bool> sentFilter)
+    {
+        return order.OrderItems.Where(sentFilter).Select(x => new OrderItemResult
+        {
+            Id = x.Id,
+            DateOfPosting = x.DateOfPosting,
+            OrderId = x.OrderId,
+            ProductId = x.ProductSupplier.ProductId,
+            Sent = x.Sent,
+            UnitCost = x.UnitCost,
+            UnitDiscount = x.UnitDiscount,
+            ImagePath = x.ProductSupplier.Product.Images.Select(x => x.Path).FirstOrDefault()!,
+            Quantity = x.Quantity,
+            IsCanceled = x.IsCanceled,
+            ProductName = x.ProductSupplier.Product.Name,
+            ProductSupplierId = x.ProductSupplier.Id,
+            CompanyName = x.ProductSupplier.Supplier.CompanyName,
+        }).ToList();
+    }
+
+
+
+
+    private IQueryable<OrderItemResult> GetOrderItems(IQueryable<Order> orders, bool? sent = null)
+    {
+        Expression<Func<OrderItem, bool>> sentFilter = x => true;
+        if (sent != null)
+            sentFilter = x => x.Sent == sent;
+
+        return orders.SelectMany(x => x.OrderItems).Where(sentFilter).Select(x => new OrderItemResult
+        {
+            Id = x.Id,
+            DateOfPosting = x.DateOfPosting,
+            OrderId = x.OrderId,
+            ProductId = x.ProductSupplier.ProductId,
+            Sent = x.Sent,
+            UnitCost = x.UnitCost,
+            UnitDiscount = x.UnitDiscount,
+            ImagePath = x.ProductSupplier.Product.Images.Select(x => x.Path).FirstOrDefault()!,
+            Quantity = x.Quantity,
+            IsCanceled = x.IsCanceled,
+            ProductName = x.ProductSupplier.Product.Name,
+            ProductSupplierId = x.ProductSupplier.Id,
+            CompanyName = x.ProductSupplier.Supplier.CompanyName,
+        });
+    }
+
+
+    public async Task ConfitrmOrder(Guid OrderId, ConfirmationStatus confirmation, CancellationToken cancellation)
+    {
+        if (!_userService.IsAdmin())
+            throw new AccessDeniedException();
+        Guid.TryParse(_userService.RequesterId(), out Guid adminId);
+
+        var order = await _orderRepository.GetByIdAsync(OrderId, cancellation);
+        if (order == null)
+            throw new BadRequestException("سفارش یافت نشد");
+
+        order.IsConfirmed = (byte)confirmation;
+        order.UpdaterUserId = adminId;
+        if (confirmation == ConfirmationStatus.Confirmed)
+        {
+            order.ConfirmedDate = DateTime.UtcNow;
+            order.AdminConfirmedId = adminId;
+        }
+        await _orderRepository.CommitAsync(cancellation);
+    }
+
+
+    //براساس ایننکه ادمین یا تامین کننده فراخوانی کنه میره اردرایتم های اردر را ارسال میکنه
+
+    public async Task SendOrder(Guid orderId, CancellationToken cancellation)
+    {
+        if (!_userService.IsAdmin() && _userService.IsInRole("Supplier"))
+            throw new AccessDeniedException();
+        var query = await _orderRepository.GetAllDataAsync(x => x, cancellation, x => x.Id == orderId, x => x.Include(x => x.OrderItems).ThenInclude(x => x.ProductSupplier), false);
+        if (query == null)
+            throw new BadRequestException("سفارش پیدا نشد");
+
+        var order = await query.FirstOrDefaultAsync(cancellation);
+        UpdateSentOrder(order!);
+        await _orderRepository.CommitAsync(cancellation);
+    }
+
+    private void UpdateSentOrder(Order order)
+    {
+        Guid.TryParse(_userService.RequesterId(), out Guid requesterId);
+
+        if (_userService.IsAdmin())
+        {
+            order!.OrderItems.ToList().ForEach(x =>
+            {
+                x.Sent = true;
+                x.DateOfPosting = DateTime.Now;
+                x.UpdaterUserId = requesterId;
+            });
+        }
+        else
+        {
+            order!.OrderItems.Where(x => x.ProductSupplier.SupplierId == requesterId).ToList().ForEach(x =>
+            {
+                x.Sent = true;
+                x.DateOfPosting = DateTime.Now;
+                x.UpdaterUserId = requesterId;
+            });
+        }
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

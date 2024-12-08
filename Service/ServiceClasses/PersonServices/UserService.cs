@@ -2,7 +2,6 @@
 using DataTransferObject.DTOClasses.Person.Results;
 using Infrastructure.Contracts.Repository;
 using Mapster;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Orders;
@@ -24,37 +23,32 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
 {
     private readonly UserManager<User> _userManager;
 
-    private readonly IHttpContextAccessor _contextAccessor;
-
     private readonly SignInManager<User> _signInManager;
-    public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IHttpContextAccessor httpContextAccessor)
+
+    private readonly ClaimsPrincipal _claimsPrincipal;
+    public UserService(UserManager<User> userManager, SignInManager<User> signInManager, ClaimsPrincipal claimsPrincipal)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _contextAccessor = httpContextAccessor;
+        _claimsPrincipal = claimsPrincipal;
     }
 
-    public async Task<User?> GetRequesterUserAsync(HttpContext httpContext)
-    {
-        if (_contextAccessor.HttpContext == null)
-            return null;
-        return await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
-    }
+    public async Task<User?> GetRequesterUserAsync() => await _userManager.GetUserAsync(_claimsPrincipal);
 
-    public string? RequesterId()
-    {
-        return _contextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    }
+    public string? RequesterId() => _claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-    public bool IsInRole(string role)
-    {
-        if (_contextAccessor.HttpContext != null)
-            return _contextAccessor.HttpContext.User.IsInRole(role);
-
-        return false;
-    }
-
+    public bool IsInRole(string role) => _claimsPrincipal.IsInRole(role);
     public bool IsAdmin() => IsInRole("Admin");
+
+
+    public async Task<string?> GetRole()
+    {
+        var claim = _claimsPrincipal;
+        if (claim == null) return null;
+        var user = await _userManager.GetUserAsync(claim);
+        if (user == null) return null;
+        return (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+    }
 
     public bool IsRequesterUser(Guid userId)
     {

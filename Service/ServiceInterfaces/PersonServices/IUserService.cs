@@ -1,7 +1,6 @@
 ﻿using DataTransferObject.DTOClasses;
 using DataTransferObject.DTOClasses.Person.Commands;
 using DataTransferObject.DTOClasses.Person.Results;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Model.Entities.Person;
 using System;
@@ -14,9 +13,10 @@ namespace Service.ServiceInterfaces.PersonServices;
 
 public interface IUserService:IServiceBase<User,UserResult,Guid>
 {
-    Task<User?> GetRequesterUserAsync(HttpContext httpContext);
+    Task<User?> GetRequesterUserAsync();
     string? RequesterId();
     bool IsInRole(string role);
+    Task<string?> GetRole();
     bool IsAdmin();
     bool IsRequesterUser(Guid userId);
     Task<bool> CreateAsync(UserCommand userDTO);

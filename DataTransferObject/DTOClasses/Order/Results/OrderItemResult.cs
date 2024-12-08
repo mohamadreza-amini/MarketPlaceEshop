@@ -19,7 +19,7 @@ public class OrderItemResult : BaseDTO<Guid>
     public string ImagePath { get; set; }
     public string CompanyName { get; set; }
     public string ProductName { get; set; }
-
+    public Guid ProductId { get; set; }
 
     // امکانات بیشتری اورده شد مثل عکس محصول  
 

@@ -185,6 +185,8 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
     }*/
 
 
+
+
     public async Task<PaginatedList<ProductminiResult>> GetAllbyFilterCommand(ProductFilterCommand filterDto, CancellationToken cancellation, int pageIndex = 1, int pageSize = 20)
     {
         var query = await _productRepository.GetAllDataAsync(x => x, cancellation, x => x.IsConfirmed == 2, x => x.Include(x => x.Images).Include(x => x.productSuppliers).ThenInclude(x => x.Prices));
