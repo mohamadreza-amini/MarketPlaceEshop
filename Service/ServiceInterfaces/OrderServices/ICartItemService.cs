@@ -26,4 +26,8 @@ public interface ICartItemService : IServiceBase<CartItem, CartItemResult, Guid>
     Task<List<OrderItemCommand>> TransferCartToOrderItems(Guid customerId, CancellationToken cancellation);
     Task<bool> IsAvailableCartItems(Guid customerId, CancellationToken cancellation);
     Task<bool> DecreaseInventoryOnSale(Guid customerId, CancellationToken cancellation);
+    Task<decimal> GetCartTotalDiscountByCustomerId(Guid customerId, CancellationToken cancellation);
+    Task<decimal> GetCartTotalPriceByCustomerId(Guid customerId, CancellationToken cancellation);
+    Task<CartResult?> GetCartByCustomerId(CancellationToken cancellation);
+
 }

@@ -154,4 +154,57 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
         return true;
         //اگه بعد از پیاده سازی تغیراتش اعمال نشد کامیت رو اینجا هم اضافه کن
     }
+
+    //گرفتن سبد خرید یک شخص
+    public async Task<CartResult?> GetCartByCustomerId(CancellationToken cancellation)
+    {
+        if (Guid.TryParse(_userService.RequesterId(), out Guid customerId))
+            throw new AccessDeniedException();
+
+        var query = await _cartItemRepository.GetAllDataAsync(x => new CartItemResult
+        {
+            ProductSupplierId = x.ProductSupplierId,
+            CustomerId = x.CustomerId,
+            Id = x.Id,
+            ProductId = x.ProductSupplier.ProductId,
+            CompanyName = x.ProductSupplier.Supplier.CompanyName,
+            Ventory = x.ProductSupplier.Ventory,
+            ProductName = x.ProductSupplier.Product.Name,
+            ImagePath = x.ProductSupplier.Product.Images.Select(x => x.Path).FirstOrDefault() ?? string.Empty,
+            Quantity = x.Quantity,
+            Discount = x.ProductSupplier.Discount,
+            PriceValue = x.ProductSupplier.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(),
+        }, cancellation, x => x.CustomerId == customerId);
+
+        if (query == null)
+            return null;
+        var cartItems = await query.ToListAsync(cancellation);
+        var totalPrice = await GetCartTotalPriceByCustomerId(customerId, cancellation);
+        var totalDiscount = await GetCartTotalDiscountByCustomerId(customerId, cancellation);
+        var totalAmountPaid = totalPrice - totalDiscount;
+        return new CartResult
+        {
+            CartItems = cartItems,
+            TotalAmountPaid = totalAmountPaid,
+            TotalDiscount = totalDiscount,
+            TotalPrice = totalPrice
+        };
+    }
+
+    public async Task<decimal> GetCartTotalPriceByCustomerId(Guid customerId, CancellationToken cancellation)
+
+        => await _cartItemRepository.GetCartTotalPriceByCustomerId(customerId, cancellation);
+
+    public async Task<decimal> GetCartTotalDiscountByCustomerId(Guid customerId, CancellationToken cancellation)
+
+       => await _cartItemRepository.GetCartTotalDiscountByCustomerId(customerId, cancellation);
+
+
+
+
+
+
+
+
+
 }

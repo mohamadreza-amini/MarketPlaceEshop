@@ -46,4 +46,17 @@ public class CartItemRepository : BaseRepository<CartItem, Guid>, ICartItemRepos
            .Where(x => x.CustomerId == customerId)
            .ExecuteUpdateAsync(x => x.SetProperty(x => x.IsDeleted, true), cancellation);
     }
+
+
+    public async Task<decimal> GetCartTotalPriceByCustomerId(Guid customerId, CancellationToken cancellation)
+    {
+        return await _entitySet
+            .Where(x => x.CustomerId == customerId)
+            .SumAsync(x => x.ProductSupplier.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault());
+    }
+
+    public async Task<decimal> GetCartTotalDiscountByCustomerId(Guid customerId, CancellationToken cancellation)
+    {
+        return await _entitySet.Where(x => x.CustomerId == customerId).SumAsync(x => x.ProductSupplier.Discount);
+    }
 }
