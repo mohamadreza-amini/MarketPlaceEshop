@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
-using Model.Entities;
 using Model.Entities.Addresses;
 using Model.Entities.Categories;
 using Model.Entities.Orders;
@@ -16,6 +15,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.ChangeInterceptors;
+using Model.Entities.Reports;
 
 
 namespace Infrastructure

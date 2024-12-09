@@ -15,4 +15,5 @@ public interface ICartItemRepository:IBaseRepository<CartItem,Guid>
     Task<int> DeleteAllByCustomerId(Guid customerId, CancellationToken cancellation);
     Task<decimal> GetCartTotalPriceByCustomerId(Guid customerId, CancellationToken cancellation);
     Task<decimal> GetCartTotalDiscountByCustomerId(Guid customerId, CancellationToken cancellation);
+    Task<decimal> GetTotalValueOfCarts(CancellationToken cancellation);
 }

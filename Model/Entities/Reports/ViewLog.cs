@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.Entities;
+namespace Model.Entities.Reports;
 
-public class ViewLog:BaseEntity<int>
+public class ViewLog : BaseEntity<int>
 {
     public string IP { get; set; }
     public DateTime DateTime { get; set; }

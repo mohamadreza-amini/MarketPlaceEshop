@@ -51,4 +51,7 @@ public class CustomerService : ServiceBase<Customer, UserResult, Guid>, ICustome
     {
         await _userService.LogOutAsync();
     }
+
+
+     
 }

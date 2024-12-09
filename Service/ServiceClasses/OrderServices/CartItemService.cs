@@ -190,19 +190,23 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
             TotalPrice = totalPrice
         };
     }
-
+    //قیمت کل سبد خرید
     public async Task<decimal> GetCartTotalPriceByCustomerId(Guid customerId, CancellationToken cancellation)
 
         => await _cartItemRepository.GetCartTotalPriceByCustomerId(customerId, cancellation);
-
+    //تخقیف کل سبد خرید
     public async Task<decimal> GetCartTotalDiscountByCustomerId(Guid customerId, CancellationToken cancellation)
 
        => await _cartItemRepository.GetCartTotalDiscountByCustomerId(customerId, cancellation);
 
 
-
-
-
+    //گرفتن ارزش کل تمام سبد های خرید
+    public async Task<decimal> GetTotalValueOfCarts(CancellationToken cancellation)
+    {
+        if (_userService.IsAdmin())
+            return await _cartItemRepository.GetTotalValueOfCarts(cancellation);
+        throw new AccessDeniedException();
+    }
 
 
 

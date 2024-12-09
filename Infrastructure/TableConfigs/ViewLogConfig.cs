@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Model.Entities;
 using Model.Entities.Person;
+using Model.Entities.Reports;
 using System;
 using System.Collections.Generic;
 using System.Data;

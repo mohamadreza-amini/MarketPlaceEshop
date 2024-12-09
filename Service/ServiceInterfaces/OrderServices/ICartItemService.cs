@@ -29,5 +29,6 @@ public interface ICartItemService : IServiceBase<CartItem, CartItemResult, Guid>
     Task<decimal> GetCartTotalDiscountByCustomerId(Guid customerId, CancellationToken cancellation);
     Task<decimal> GetCartTotalPriceByCustomerId(Guid customerId, CancellationToken cancellation);
     Task<CartResult?> GetCartByCustomerId(CancellationToken cancellation);
+    Task<decimal> GetTotalValueOfCarts(CancellationToken cancellation);
 
 }

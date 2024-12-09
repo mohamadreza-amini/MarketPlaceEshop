@@ -59,4 +59,12 @@ public class CartItemRepository : BaseRepository<CartItem, Guid>, ICartItemRepos
     {
         return await _entitySet.Where(x => x.CustomerId == customerId).SumAsync(x => x.ProductSupplier.Discount);
     }
+
+
+    public async Task<decimal> GetTotalValueOfCarts(CancellationToken cancellation)
+    {
+        return await _entitySet.SumAsync(x => x.Quantity * x.ProductSupplier.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(), cancellation);
+    }
+
+
 }

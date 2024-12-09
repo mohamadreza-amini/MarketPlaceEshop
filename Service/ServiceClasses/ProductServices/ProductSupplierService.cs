@@ -203,11 +203,29 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
                ProductName = x.Product.Name,
                AverageScore = x.Product.Scores != null && x.Product.Scores.Any() ? x.Product.Scores.Select(s => s.StarRating).DefaultIfEmpty(0).Average() : 0
            }
-       , cancellation, predicate);
+           , cancellation, predicate);
 
         if (query == null)
             return await PaginatedList<ProductSupplierFullResult>.CreateAsync(query, 1, pageSize, cancellation);
 
         return await PaginatedList<ProductSupplierFullResult>.CreateAsync(query, pageIndex, pageSize, cancellation);
     }
+
+
+    // مجموع موجودی حال اگه ادمین بود تمام تامین کنندگان اگه تامین کننده بود خودش
+    public async Task<decimal> GetTotalInventory(CancellationToken cancellation)
+    {
+        if (_userService.IsAdmin())
+        {
+            return await _productSupplierRepository.GetTotalInventory(cancellation);
+        }
+        else if (_userService.IsInRole("Supplier") && Guid.TryParse(_userService.RequesterId(), out Guid supplierId)){
+
+            return await _productSupplierRepository.GetTotalInventoryBySupplierId(supplierId,cancellation);
+        }
+        throw new AccessDeniedException();
+    }
+
+
+
 }
