@@ -13,6 +13,5 @@ public interface IAdminService : IServiceBase<Admin, UserResult, Guid>
 {
     Task<bool> CreateAsync(UserCommand userDTO, CancellationToken cancellationToken);
     Task<bool> SignInAsync(LoginCommand loginDto);
-    Task LogOutAsync();
 
 }

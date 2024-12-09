@@ -46,10 +46,7 @@ public class AdminService : ServiceBase<Admin, UserResult, Guid>, IAdminService
         return await _userService.SignInAsync(loginDto,"Admin");
     }
 
-    public async Task LogOutAsync()
-    {
-        await _userService.LogOutAsync();
-    }
+    
 
 
 

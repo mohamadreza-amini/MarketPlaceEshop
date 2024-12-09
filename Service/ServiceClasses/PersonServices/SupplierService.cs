@@ -116,8 +116,5 @@ public class SupplierService : ServiceBase<Supplier, UserResult, Guid>, ISupplie
         return await _userService.SignInAsync(loginDto, "Supplier");
     }
 
-    public async Task LogOutAsync()
-    {
-        await _userService.LogOutAsync();
-    }
+  
 }
