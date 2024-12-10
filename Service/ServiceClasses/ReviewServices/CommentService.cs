@@ -2,6 +2,7 @@
 using DataTransferObject.DTOClasses.Review.Results;
 using Infrastructure.Contracts.Repository;
 using Microsoft.EntityFrameworkCore;
+using Model.Entities.Products;
 using Model.Entities.Review;
 using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
@@ -19,13 +20,14 @@ public class CommentService : ServiceBase<Comment, CommentResult, Guid>, ICommen
 {
     private readonly IBaseRepository<Comment, Guid> _commentRepository;
     private readonly IUserService _userService;
-    private readonly IProductService _productService;
+    private readonly IBaseRepository<Product, Guid> _productRepository;
 
-    public CommentService(IBaseRepository<Comment, Guid> commentRepository, IUserService userService, IProductService productService)
+
+    public CommentService(IBaseRepository<Comment, Guid> commentRepository, IUserService userService, IBaseRepository<Product, Guid> productRepository)
     {
         _commentRepository = commentRepository;
         _userService = userService;
-        _productService = productService;
+        _productRepository = productRepository;
     }
 
     public async Task<bool> AddCommentAsync(CommentCommand commentDto, CancellationToken cancellation)
@@ -40,7 +42,7 @@ public class CommentService : ServiceBase<Comment, CommentResult, Guid>, ICommen
 
         comment.Validate();
 
-        if (await _productService.ProductExists(commentDto.ProductId, cancellation) == false)
+        if (await _productRepository.GetByIdAsync(commentDto.ProductId, cancellation) == null)
             throw new BadRequestException("محصول نامعتبر");
 
         var hasCustomerComment = await HasCustomerCommentAsync(customerId, comment.ProductId, cancellation);

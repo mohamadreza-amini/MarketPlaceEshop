@@ -1,6 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Review.Commands;
 using DataTransferObject.DTOClasses.Review.Results;
 using Infrastructure.Contracts.Repository;
+using Model.Entities.Products;
 using Model.Entities.Review;
 using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
@@ -18,13 +19,13 @@ public class ScoreService : ServiceBase<Score, ScoreResult, Guid>, IScoreService
 {
     private readonly IScoreRepository _scoreRepository;
     private readonly IUserService _userService;
-    private readonly IProductService _productService;
+    private readonly IBaseRepository<Product, Guid> _productRepository;
 
-    public ScoreService(IScoreRepository scoreRepository, IUserService userService, IProductService productService)
+    public ScoreService(IScoreRepository scoreRepository, IUserService userService, IBaseRepository<Product, Guid> productRepository)
     {
         _scoreRepository = scoreRepository;
         _userService = userService;
-        _productService = productService;
+        _productRepository = productRepository;
     }
 
     public async Task<bool> AddScoreAsync(ScoreCommand scoreDto, CancellationToken cancellation)
@@ -36,7 +37,7 @@ public class ScoreService : ServiceBase<Score, ScoreResult, Guid>, IScoreService
 
         var score = Translate<ScoreCommand, Score>(scoreDto);
 
-        if (await _productService.ProductExists(scoreDto.ProductId, cancellation) == false)
+        if (await _productRepository.GetByIdAsync(scoreDto.ProductId, cancellation) == null)
             throw new BadRequestException("محصول نامعتبر");
 
         score.Validate();

@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.ServiceClasses.AddressService;
+namespace Service.ServiceClasses.AddressServices;
 
 public class ProvinceService : ServiceBase<Province, ProvinceResult, int>, IProvinceService
 {

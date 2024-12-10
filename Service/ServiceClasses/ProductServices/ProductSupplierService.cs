@@ -19,15 +19,15 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
 {
     private readonly IProductSupplierRepository _productSupplierRepository;
     private readonly IUserService _userService;
-    private readonly IProductService _productService;
     private readonly IPriceService _priceService;
+    private readonly IBaseRepository<Product, Guid> _productRepository;
 
-    public ProductSupplierService(IProductSupplierRepository productSupplierRepository, IUserService userService, IProductService productService, IPriceService priceService)
+    public ProductSupplierService(IProductSupplierRepository productSupplierRepository, IUserService userService, IPriceService priceService, IBaseRepository<Product, Guid> productRepository)
     {
         _productSupplierRepository = productSupplierRepository;
         _userService = userService;
-        _productService = productService;
         _priceService = priceService;
+        _productRepository = productRepository;
     }
 
 
@@ -44,9 +44,9 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         productSupplier = Translate<ProductSupplierCommand, ProductSupplier>(productSupplierDto);
         productSupplier.Id = Guid.NewGuid();
 
-        if (await _productService.IsDisableProduct(productSupplier.ProductId, cancellationToken))
+        if (await IsDisableProduct(productSupplier.ProductId, cancellationToken))
             throw new BadRequestException("product is Disable");
-        if (!await _productService.IsConfirmedProduct(productSupplier.ProductId, cancellationToken))
+        if (!await IsConfirmedProduct(productSupplier.ProductId, cancellationToken))
             throw new BadRequestException("product isn't confirmed");
 
         if (productSupplierDto.PriceValue >= productSupplierDto.Discount)
@@ -87,9 +87,9 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         productSupplier.IsDisable = productSupplierDto.IsDisable;
         productSupplier.Discount = productSupplierDto.Discount;
 
-        if (await _productService.IsDisableProduct(productSupplier.ProductId, cancellationToken))
+        if (await IsDisableProduct(productSupplier.ProductId, cancellationToken))
             throw new BadRequestException("product is Disable");
-        if (!await _productService.IsConfirmedProduct(productSupplier.ProductId, cancellationToken))
+        if (!await IsConfirmedProduct(productSupplier.ProductId, cancellationToken))
             throw new BadRequestException("product isn't confirmed");
 
         if (productSupplierDto.PriceValue >= productSupplierDto.Discount)
@@ -226,6 +226,16 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         throw new AccessDeniedException();
     }
 
+    private async Task<bool> IsConfirmedProduct(Guid productId, CancellationToken cancellation)
+    {
+        var product = (await _productRepository.GetByIdAsync(productId, cancellation)) ?? throw new BadRequestException("product not found");
+        return product.IsConfirmed == 2;
+    }
 
+    private async Task<bool> IsDisableProduct(Guid productId, CancellationToken cancellation)
+    {
+        var product = (await _productRepository.GetByIdAsync(productId, cancellation)) ?? throw new BadRequestException("product not found");
+        return product.IsDisable;
+    }
 
 }

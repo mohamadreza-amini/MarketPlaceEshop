@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceInterfaces.PersonServices;
 
-public interface IRoleService
+/*public interface IRoleService
 {
-    /*public Task<RoleDTO> Create(RoleDTO userDTO);
-    public Task<RoleDTO> GetRole(Guid id);*/
-}
+    *//*public Task<RoleDTO> Create(RoleDTO userDTO);
+    public Task<RoleDTO> GetRole(Guid id);*//*
+}*/

@@ -16,7 +16,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.ServiceClasses.AddressService;
+namespace Service.ServiceClasses.AddressServices;
 
 public class AddressService : ServiceBase<Address, AddressResult, Guid>, IAdressService
 {

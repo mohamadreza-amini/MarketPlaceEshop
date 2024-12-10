@@ -1,6 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Product.Commands;
 using DataTransferObject.DTOClasses.Product.Results;
 using Infrastructure.Contracts.Repository;
+using Infrastructure.Repository.Classes;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Products;
 using Model.Exceptions;
@@ -18,12 +19,12 @@ public class PriceService : ServiceBase<Price, PriceResult, Guid>, IPriceService
 {
     private readonly IBaseRepository<Price, Guid> _priceRepository;
     private readonly IUserService _userService;
-    private readonly IProductSupplierService _productSupplierService;
-    public PriceService(IUserService userService, IBaseRepository<Price, Guid> priceRepository, IProductSupplierService productSupplierService)
+    private readonly IProductSupplierRepository _productSupplierRepository;
+    public PriceService(IUserService userService, IBaseRepository<Price, Guid> priceRepository, IProductSupplierRepository productSupplierRepository)
     {
         _userService = userService;
-        _priceRepository = priceRepository;
-        _productSupplierService = productSupplierService;
+        _priceRepository = priceRepository;     
+        _productSupplierRepository = productSupplierRepository;
     }
 
     public async Task<bool> AddPriceAsync(PriceCommand priceDto, CancellationToken cancellation)
@@ -41,12 +42,12 @@ public class PriceService : ServiceBase<Price, PriceResult, Guid>, IPriceService
 
     public async Task<bool> ExpireLastPrice(Guid productSupplierId, CancellationToken cancellation)
     {
-        var supplierId = await _productSupplierService.GetSuppierIdById(productSupplierId, cancellation);
-        if (supplierId == null)
+        var productSupplier = await _productSupplierRepository.GetByIdAsync(productSupplierId, cancellation);
+        if (productSupplier == null)
             return true;
         //در حالت بالا هنوز تامین کننده برای اون محصول ساخته نشده و قیمت قبلی نداره
 
-        if (!_userService.IsAdmin() && !_userService.IsRequesterUser(supplierId.Value))
+        if (!_userService.IsAdmin() && !_userService.IsRequesterUser(productSupplier.SupplierId))
             throw new AccessDeniedException();
 
         var lastPrice = await _priceRepository.GetAsync(x => x.ProductSupplierId == productSupplierId && x.ExpiredTime == null, cancellation);
