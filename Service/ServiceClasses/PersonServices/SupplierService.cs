@@ -37,7 +37,9 @@ public class SupplierService : ServiceBase<Supplier, UserResult, Guid>, ISupplie
 
         if (!await _userService.CreateAsync(supplierDTO.UserDto))
             return false;
-
+        var user = await _userService.GetUserbyIdAsync(supplierId);
+        if (user == null)
+            return false;
         var supplier = Translate<SupplierCommand, Supplier>(supplierDTO);
         supplier.Id = supplierId;
         supplier.StartDate = DateTime.Now;
@@ -45,9 +47,10 @@ public class SupplierService : ServiceBase<Supplier, UserResult, Guid>, ISupplie
         supplier.UpdaterUserId = requesterId;
         supplier.IsConfirmed = 1;
 
+        var addedToRole = await _userService.AddToRoleAsync(user, "Supplier");
         await _supplierRepository.CreateAsync(supplier, cancellation);
 
-        return (await _supplierRepository.CommitAsync(cancellation)) == 1;
+        return addedToRole && (await _supplierRepository.CommitAsync(cancellation)) == 1;
 
     }
 

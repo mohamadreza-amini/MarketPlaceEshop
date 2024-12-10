@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.PersonServices
 {
+
+
     /* public class RoleService :ServiceBase<Role,RoleDTO,Guid>//,IRoleService
      {
 

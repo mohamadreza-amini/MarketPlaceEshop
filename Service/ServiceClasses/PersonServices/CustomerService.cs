@@ -30,7 +30,9 @@ public class CustomerService : ServiceBase<Customer, UserResult, Guid>, ICustome
 
         if (!await _userService.CreateAsync(userDTO))
             return false;
-
+        var user = await _userService.GetUserbyIdAsync(customerId);
+        if (user == null)
+            return false;
         await _customerRepository.CreateAsync(new Customer
         {
             Id = customerId,
@@ -38,7 +40,9 @@ public class CustomerService : ServiceBase<Customer, UserResult, Guid>, ICustome
             CreatorUserId = requesterId,
             UpdaterUserId = requesterId
         }, cancellationToken);
-        return (await _customerRepository.CommitAsync(cancellationToken)) == 1;
+        var addedToRole = await _userService.AddToRoleAsync(user, "Customer");
+
+        return addedToRole && (await _customerRepository.CommitAsync(cancellationToken)) == 1;
 
     }
 

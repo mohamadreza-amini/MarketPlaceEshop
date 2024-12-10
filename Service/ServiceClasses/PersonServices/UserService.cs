@@ -106,11 +106,29 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
         return null;
     }
 
+
+    public async Task<User?> GetUserbyIdAsync(Guid userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user != null)
+            return user;
+
+        return null;
+    }
+
     public async Task LogOutAsync()
     {
         await _signInManager.SignOutAsync();
     }
 
+    public async Task<bool> AddToRoleAsync(User user, string roleName)
+    {
+        var result = await _userManager.AddToRoleAsync(user, roleName);
+        if (!result.Succeeded)
+            throw new RegisterException(result.Errors.FirstOrDefault()?.Description ?? "عملیات ثبت نام ناموفق");
+
+        return result.Succeeded;
+    }
 
 
 

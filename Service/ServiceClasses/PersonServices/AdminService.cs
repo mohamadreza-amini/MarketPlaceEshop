@@ -25,28 +25,36 @@ public class AdminService : ServiceBase<Admin, UserResult, Guid>, IAdminService
 
     public async Task<bool> CreateAsync(UserCommand userDTO, CancellationToken cancellationToken)
     {
-        var requesterId = _userService.IsAdmin() ? Guid.Parse(_userService.RequesterId()) : throw new AccessDeniedException();
+        var adminId = Guid.NewGuid();
+        userDTO.Id = adminId;
+
+        if (!_userService.IsAdmin() || !Guid.TryParse(_userService.RequesterId(), out Guid requesterId))
+            throw new AccessDeniedException();
 
         if (!await _userService.CreateAsync(userDTO))
             return false;
-
+        var user = await _userService.GetUserbyIdAsync(adminId);
+        if(user == null)
+            return false;
         await _adminRepository.CreateAsync(new Admin
         {
-            Id = Guid.NewGuid(),
+            Id = adminId,
             CreatorUserId = requesterId,
             UpdaterUserId = requesterId
 
         }, cancellationToken);
-        return (await _adminRepository.CommitAsync(cancellationToken)) == 1;
+
+       var addedToRole = await _userService.AddToRoleAsync(user, "Admin");
+        return addedToRole && (await _adminRepository.CommitAsync(cancellationToken)) == 1;
 
     }
 
     public async Task<bool> SignInAsync(LoginCommand loginDto)
     {
-        return await _userService.SignInAsync(loginDto,"Admin");
+        return await _userService.SignInAsync(loginDto, "Admin");
     }
 
-    
+
 
 
 

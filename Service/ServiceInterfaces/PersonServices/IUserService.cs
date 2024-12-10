@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace Service.ServiceInterfaces.PersonServices;
 
-public interface IUserService:IServiceBase<User,UserResult,Guid>
+public interface IUserService : IServiceBase<User, UserResult, Guid>
 {
     Task<User?> GetRequesterUserAsync();
     string? RequesterId();
@@ -20,10 +20,12 @@ public interface IUserService:IServiceBase<User,UserResult,Guid>
     bool IsAdmin();
     bool IsRequesterUser(Guid userId);
     Task<bool> CreateAsync(UserCommand userDTO);
-    Task<bool> SignInAsync(LoginCommand loginDTO,string role);
+    Task<bool> SignInAsync(LoginCommand loginDTO, string role);
     Task<UserResult?> GetUserbyEmailAsync(string email);
     Task LogOutAsync();
+    Task<User?> GetUserbyIdAsync(Guid userId);
 
+    Task<bool> AddToRoleAsync(User user, string roleName);
     /*  Task<IdentityResult> Create(UserDTO userDTO);
       Task<UserDTO> GetUser(Guid id);
       Task<List<UserDTO>> GetAllUser();
