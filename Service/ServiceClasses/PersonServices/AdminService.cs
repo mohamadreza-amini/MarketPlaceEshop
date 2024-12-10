@@ -30,8 +30,8 @@ public class AdminService : ServiceBase<Admin, UserResult, Guid>, IAdminService
 
         if (!_userService.IsAdmin() || !Guid.TryParse(_userService.RequesterId(), out Guid requesterId))
             throw new AccessDeniedException();
-
-        if (!await _userService.CreateAsync(userDTO))
+        
+        if (!await _userService.CreateAsync(userDTO,requesterId))
             return false;
         var user = await _userService.GetUserbyIdAsync(adminId);
         if(user == null)

@@ -65,13 +65,13 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
         return false;
     }
 
-    public async Task<bool> CreateAsync(UserCommand userDTO)
+    public async Task<bool> CreateAsync(UserCommand userDTO,Guid creatorId)
     {
         var user = Translate<UserCommand, User>(userDTO);
         user.Validate();
-        if (_userManager.FindByNameAsync(userDTO.Email) != null)
+        if (await _userManager.FindByNameAsync(userDTO.Email) != null)
             throw new RegisterException("حسابی با مشخصات کاربر موجود است");
-
+        user.CreatorUserId = user.UpdaterUserId = creatorId;
         var registerResult = await _userManager.CreateAsync(user, userDTO.Password);
 
         if (!registerResult.Succeeded)

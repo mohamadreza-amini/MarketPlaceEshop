@@ -35,7 +35,7 @@ public class SupplierService : ServiceBase<Supplier, UserResult, Guid>, ISupplie
         supplierDTO.UserDto.Id = supplierId;
         var requesterId = _userService.IsAdmin() ? Guid.Parse(_userService.RequesterId()) : supplierId;
 
-        if (!await _userService.CreateAsync(supplierDTO.UserDto))
+        if (!await _userService.CreateAsync(supplierDTO.UserDto,requesterId))
             return false;
         var user = await _userService.GetUserbyIdAsync(supplierId);
         if (user == null)

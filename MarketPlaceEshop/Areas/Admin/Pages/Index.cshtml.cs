@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MarketPlaceEshop.Areas.Supplier.Pages
+namespace MarketPlaceEshop.Areas.Admin.Pages
 {
     public class IndexModel : PageModel
     {

@@ -28,7 +28,7 @@ public class CustomerService : ServiceBase<Customer, UserResult, Guid>, ICustome
         userDTO.Id = customerId;
         var requesterId = _userService.IsAdmin() ? Guid.Parse(_userService.RequesterId()) : customerId;
 
-        if (!await _userService.CreateAsync(userDTO))
+        if (!await _userService.CreateAsync(userDTO,requesterId))
             return false;
         var user = await _userService.GetUserbyIdAsync(customerId);
         if (user == null)

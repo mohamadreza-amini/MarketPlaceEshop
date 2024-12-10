@@ -19,7 +19,7 @@ public interface IUserService : IServiceBase<User, UserResult, Guid>
     Task<string?> GetRole();
     bool IsAdmin();
     bool IsRequesterUser(Guid userId);
-    Task<bool> CreateAsync(UserCommand userDTO);
+    Task<bool> CreateAsync(UserCommand userDTO, Guid creatorId);
     Task<bool> SignInAsync(LoginCommand loginDTO, string role);
     Task<UserResult?> GetUserbyEmailAsync(string email);
     Task LogOutAsync();
