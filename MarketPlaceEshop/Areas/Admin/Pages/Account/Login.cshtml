@@ -1,4 +1,5 @@
 ﻿@page
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model MarketPlaceEshop.Areas.Admin.Pages.Account.LoginModel
 @{
     Layout = null;
@@ -33,8 +34,8 @@
     <link rel="stylesheet" href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="../../assets/vendor/libs/typeahead-js/typeahead.css">
     <!-- Vendor -->
-    <link rel="stylesheet" href="../../assets/vendor/libs/formvalidation/dist/css/formValidation.min.css">
-
+@*     <link rel="stylesheet" href="../../assets/vendor/libs/formvalidation/dist/css/formValidation.min.css">
+ *@
     <!-- Page CSS -->
     <!-- Page -->
     <link rel="stylesheet" href="../../assets/vendor/css/pages/page-auth.css">
@@ -93,11 +94,24 @@
                         <h4 class="mb-3 secondary-font">به فرست خوش آمدید!</h4>
                         <p class="mb-4">لطفا وارد حساب خود شده و ماجراجویی را شروع کنید</p>
 
-                        <form id="formAuthentication" class="mb-3" action="index.html" method="POST">
+                        <form id="formAuthentication" class="mb-3" asp-area="Admin" asp-page="/Account/Login" method="POST">
                             <div class="mb-3">
-                                <label for="email" class="form-label">ایمیل یا نام کاربری</label>
-                                <input type="text" class="form-control text-start" id="email" name="email-username" placeholder="ایمیل یا نام کاربری خود را وارد کنید" autofocus dir="ltr">
+                                <label asp-for="LoginDto.Email" class="form-label">ایمیل یا نام کاربری</label>
+                                <input type="text" asp-for="LoginDto.Email" class="form-control text-start" id="email" placeholder="ایمیل خود را وارد کنید" autofocus dir="ltr">                    
+                                <span asp-validation-for="LoginDto.Email" class="text-danger"></span>
+
                             </div>
+
+
+                            <div class="mb-3">
+                                <label asp-for="LoginDto.Email" class="form-label">ایمیل یا نام کاربری</label>
+                                <input type="password" asp-for="LoginDto.Password" class="form-control text-start" placeholder="············" aria-describedby="password" dir="ltr">
+                                <span asp-validation-for="LoginDto.Password" class="text-danger"></span>
+
+                            </div>
+
+
+
                             <div class="mb-3 form-password-toggle">
                                 <div class="d-flex justify-content-between">
                                     <label class="form-label" for="password">رمز عبور</label>
@@ -105,14 +119,12 @@
                                         <small>رمز عبور را فراموش کردید؟</small>
                                     </a>
                                 </div>
-                                <div class="input-group input-group-merge">
-                                    <input type="password" id="password" class="form-control text-start" name="password" placeholder="············" aria-describedby="password" dir="ltr">
-                                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                                </div>
+                               
                             </div>
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember-me">
+                                    <input asp-for="LoginDto.RememberMe" class="form-check-input" type="checkbox" id="remember-me">
+                                    <span asp-validation-for="LoginDto.RememberMe" class="text-danger"></span>
                                     <label class="form-check-label" for="remember-me"> به خاطر سپاری </label>
                                 </div>
                             </div>
@@ -136,10 +148,35 @@
         </div>
     </div>
 
+
+
+
+    @if (ViewData["Toast"]!=null)
+    {
+        <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 1050;">
+            <div class="bs-toast toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-danger text-white">
+                    <div class="me-auto fw-semibold">خطا</div>
+                    <small></small>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">@ViewData["Toast"]</div>
+            </div>
+        </div>
+
+    }
+
+
+
+
     <!-- / Content -->
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
     <script src="../../assets/vendor/libs/popper/popper.js"></script>
     <script src="../../assets/vendor/js/bootstrap.js"></script>
     <script src="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
@@ -152,9 +189,10 @@
     <script src="../../assets/vendor/js/menu.js"></script>
     <!-- endbuild -->
     <!-- Vendors JS -->
-    <script src="../../assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
+
+@*      <script src="../../assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script> 
     <script src="../../assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
-    <script src="../../assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
+    <script src="../../assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script> *@
 
     <!-- Main JS -->
     <script src="../../assets/js/main.js"></script>

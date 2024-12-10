@@ -24,4 +24,13 @@
     <ProjectReference Include="..\Service\Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Pages\Feedback\" />
+    <Folder Include="Areas\Admin\Pages\Sale\" />
+    <Folder Include="Areas\Admin\Pages\Profile\" />
+    <Folder Include="Areas\Admin\Pages\Report\" />
+    <Folder Include="Areas\Admin\Pages\User\" />
+    <Folder Include="Areas\Admin\Pages\Product\" />
+  </ItemGroup>
+
 </Project>

@@ -9,12 +9,12 @@ namespace DataTransferObject.DTOClasses.Person.Commands
 {
     public class LoginCommand
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage ="وارد کردن ایمیل الزامی است")]
+        [EmailAddress(ErrorMessage ="ایمیل نامعتبر")]
         [Display(Name = "ایمیل")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "وارد کردن رمز الزامی است")]
         [DataType(DataType.Password)]
         [Display(Name = "رمز عبور")]
         public string Password { get; set; }
