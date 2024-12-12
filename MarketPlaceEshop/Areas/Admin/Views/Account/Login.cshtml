@@ -1,50 +1,48 @@
-﻿@page
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model MarketPlaceEshop.Areas.Admin.Pages.Account.LoginModel
+﻿@model DataTransferObject.DTOClasses.Person.Commands.LoginCommand
 @{
     Layout = null;
+
 }
 
-
 <!DOCTYPE html>
-<html lang="fa" class="light-style customizer-hide" dir="rtl" data-theme="theme-default" data-assets-path="../../assets/" data-template="vertical-menu-template-no-customizer">
+<html lang="fa" class="light-style customizer-hide" dir="rtl" data-theme="theme-default" data-assets-path="~/assets/" data-template="vertical-menu-template-no-customizer">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-    <title>ورود پایه - صفحات | فرست - قالب مدیریت بوت‌استرپ</title>
+    <title>ورود ادمین | دیجی مارکت</title>
 
     <meta name="description" content="">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="../../assets/img/favicon/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="~/assets/img/favicon/favicon.ico">
 
     <!-- Icons -->
-    <link rel="stylesheet" href="../../assets/vendor/fonts/boxicons.css">
-    <link rel="stylesheet" href="../../assets/vendor/fonts/fontawesome.css">
-    <link rel="stylesheet" href="../../assets/vendor/fonts/flag-icons.css">
+    <link rel="stylesheet" href="~/assets/vendor/fonts/boxicons.css">
+    <link rel="stylesheet" href="~/assets/vendor/fonts/fontawesome.css">
+    <link rel="stylesheet" href="~/assets/vendor/fonts/flag-icons.css">
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="../../assets/vendor/css/rtl/core.css">
-    <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-default.css">
-    <link rel="stylesheet" href="../../assets/css/demo.css">
-    <link rel="stylesheet" href="../../assets/vendor/css/rtl/rtl.css">
+    <link rel="stylesheet" href="~/assets/vendor/css/rtl/core.css">
+    <link rel="stylesheet" href="~/assets/vendor/css/rtl/theme-default.css">
+    <link rel="stylesheet" href="~/assets/css/demo.css">
+    <link rel="stylesheet" href="~/assets/vendor/css/rtl/rtl.css">
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" href="../../assets/vendor/libs/typeahead-js/typeahead.css">
+    <link rel="stylesheet" href="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="~/assets/vendor/libs/typeahead-js/typeahead.css">
     <!-- Vendor -->
-    @*     <link rel="stylesheet" href="../../assets/vendor/libs/formvalidation/dist/css/formValidation.min.css">
+    @*     <link rel="stylesheet" href="~/assets/vendor/libs/formvalidation/dist/css/formValidation.min.css">
     *@
     <!-- Page CSS -->
     <!-- Page -->
-    <link rel="stylesheet" href="../../assets/vendor/css/pages/page-auth.css">
+    <link rel="stylesheet" href="~/assets/vendor/css/pages/page-auth.css">
     <!-- Helpers -->
-    <script src="../../assets/vendor/js/helpers.js"></script>
+    <script src="~/assets/vendor/js/helpers.js"></script>
 
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="../../assets/js/config.js"></script>
+    <script src="~/assets/js/config.js"></script>
 </head>
 
 <body>
@@ -87,26 +85,26 @@
                                         </g>
                                     </svg>
                                 </span>
-                                <span class="app-brand-text demo h3 mb-0 fw-bold">فرست</span>
+                                <span class="app-brand-text demo h3 mb-0 fw-bold">دیجی مارکت</span>
                             </a>
                         </div>
                         <!-- /Logo -->
-                        <h4 class="mb-3 secondary-font">به فرست خوش آمدید!</h4>
-                        <p class="mb-4">لطفا وارد حساب خود شده و ماجراجویی را شروع کنید</p>
+                        <h4 class="mb-3 secondary-font">ورود ادمین</h4>
+                        <p class="mb-4">لطفا اطلاعات حساب خودرا وارد کنید</p>
 
-                        <form id="formAuthentication" class="mb-3" asp-area="Admin" asp-page="/Account/Login" method="POST">
+                        <form id="formAuthentication" class="mb-3" asp-area="Admin" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewData["returnurl"]" method="POST">
                             <div class="mb-3">
-                                <label asp-for="LoginDto.Email" class="form-label">ایمیل یا نام کاربری</label>
-                                <input type="text" asp-for="LoginDto.Email" class="form-control text-start" id="email" placeholder="ایمیل خود را وارد کنید" autofocus dir="ltr">
-                                <span asp-validation-for="LoginDto.Email" class="text-danger"></span>
+                                <label asp-for="@Model.Email" class="form-label">ایمیل</label>
+                                <input type="text" asp-for="@Model.Email" class="form-control text-start" id="email" placeholder="ایمیل خود را وارد کنید" autofocus dir="ltr">
+                                <span asp-validation-for="@Model.Email" class="text-danger"></span>
 
                             </div>
 
 
                             <div class="mb-3">
-                                <label asp-for="LoginDto.Email" class="form-label">ایمیل یا نام کاربری</label>
-                                <input type="password" asp-for="LoginDto.Password" class="form-control text-start" placeholder="············" aria-describedby="password" dir="ltr">
-                                <span asp-validation-for="LoginDto.Password" class="text-danger"></span>
+                                <label asp-for="@Model.Password" class="form-label">رمز </label>
+                                <input type="password" asp-for="@Model.Password" class="form-control text-start" placeholder="············" aria-describedby="password" dir="ltr">
+                                <span asp-validation-for="@Model.Password" class="text-danger"></span>
 
                             </div>
 
@@ -123,8 +121,8 @@
                             </div>
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <input asp-for="LoginDto.RememberMe" class="form-check-input" type="checkbox" id="remember-me">
-                                    <span asp-validation-for="LoginDto.RememberMe" class="text-danger"></span>
+                                    <input asp-for="@Model.RememberMe" class="form-check-input" type="checkbox" id="remember-me">
+                                    <span asp-validation-for="@Model.RememberMe" class="text-danger"></span>
                                     <label class="form-check-label" for="remember-me"> به خاطر سپاری </label>
                                 </div>
                             </div>
@@ -133,12 +131,7 @@
                             </div>
                         </form>
 
-                        <p class="text-center">
-                            <span>کاربر جدید هستید؟</span>
-                            <a href="auth-register-basic.html">
-                                <span>یک حساب بسازید</span>
-                            </a>
-                        </p>
+                      
 
 
                     </div>
@@ -153,7 +146,7 @@
     @*     ارور رو نشون میده
     *@
 
-    @if (ViewData["Toast"] != null)
+    @if (ViewData["ToastLogin"] != null)
     {
         <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 1050;">
             <div class="bs-toast toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
@@ -162,7 +155,7 @@
                     <small></small>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
-                <div class="toast-body">@ViewData["Toast"]</div>
+                <div class="toast-body">@ViewData["ToastLogin"]</div>
             </div>
         </div>
 
@@ -170,35 +163,34 @@
 
 
 
-
     <!-- / Content -->
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
-    <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="~/assets/vendor/libs/jquery/jquery.js"></script>
 
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
-    <script src="../../assets/vendor/libs/popper/popper.js"></script>
-    <script src="../../assets/vendor/js/bootstrap.js"></script>
-    <script src="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="~/assets/vendor/libs/popper/popper.js"></script>
+    <script src="~/assets/vendor/js/bootstrap.js"></script>
+    <script src="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
 
-    <script src="../../assets/vendor/libs/hammer/hammer.js"></script>
+    <script src="~/assets/vendor/libs/hammer/hammer.js"></script>
 
-    <script src="../../assets/vendor/libs/i18n/i18n.js"></script>
-    <script src="../../assets/vendor/libs/typeahead-js/typeahead.js"></script>
+    <script src="~/assets/vendor/libs/i18n/i18n.js"></script>
+    <script src="~/assets/vendor/libs/typeahead-js/typeahead.js"></script>
 
-    <script src="../../assets/vendor/js/menu.js"></script>
+    <script src="~/assets/vendor/js/menu.js"></script>
     <!-- endbuild -->
     <!-- Vendors JS -->
-    @*      <script src="../../assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
-    <script src="../../assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
-    <script src="../../assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script> *@
+    @*      <script src="~/assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script> *@
 
     <!-- Main JS -->
-    <script src="../../assets/js/main.js"></script>
+    <script src="~/assets/js/main.js"></script>
 
     <!-- Page JS -->
-    <script src="../../assets/js/pages-auth.js"></script>
+    <script src="~/assets/js/pages-auth.js"></script>
 </body>
 </html>

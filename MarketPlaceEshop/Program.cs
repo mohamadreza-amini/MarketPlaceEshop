@@ -114,10 +114,12 @@ namespace MarketPlaceEshop
 
             app.UseEndpoints(endpoint =>
             {
-
+                endpoint.MapControllerRoute(name: "areas", pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 endpoint.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoint.MapRazorPages();
             });
+       
+
 
             app.Run();
         }

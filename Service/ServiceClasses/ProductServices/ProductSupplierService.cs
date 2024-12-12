@@ -145,7 +145,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
     {
         return await _productSupplierRepository.GetByIdAsync(productSupplierId, cancellation) != null;
     }
-
+    //اینو اضاضه کن تامین کننده الان در وضعبت تایید شده باشه در گرفتن قیمت ها هم ببین جاهای دیگه اگه بعدا تامین کننده غیرفعال شد
     public async Task<List<ProductSupplierResult>> GetAllSupplierByProductId(Guid productId, CancellationToken cancellation)
     {
         var query = await _productSupplierRepository.GetAllDataAsync(

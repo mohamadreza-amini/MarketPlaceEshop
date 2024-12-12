@@ -24,17 +24,4 @@
     <ProjectReference Include="..\Service\Service.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Admin\Pages\Feedback\" />
-    <Folder Include="Areas\Admin\Pages\Sale\" />
-    <Folder Include="Areas\Admin\Pages\Profile\" />
-    <Folder Include="Areas\Admin\Pages\Report\" />
-    <Folder Include="Areas\Admin\Pages\User\" />
-    <Folder Include="Areas\Admin\Pages\Product\" />
-    <Folder Include="Areas\Supplier\Pages\Product\" />
-    <Folder Include="Areas\Supplier\Pages\Report\" />
-    <Folder Include="Areas\Supplier\Pages\Profile\" />
-    <Folder Include="Areas\Supplier\Pages\Sale\" />
-  </ItemGroup>
-
 </Project>

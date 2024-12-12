@@ -1,0 +1,247 @@
+﻿    @using DataTransferObject.DTOClasses.Person.Results
+@using Service.ServiceClasses
+@using Shared;
+@model PaginatedList<SupplierResult>?
+
+
+
+<div id="tablecontent">
+    <div class="container mt-5">
+        <!-- Header with actions -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <button class="btn btn-primary">Add New</button>
+                <button class="btn btn-danger">Delete Selected</button>
+            </div>
+            <div class="input-group" style="width: 300px;">
+                <span class="input-group-text">Search</span>
+                <input type="text" class="form-control" placeholder="Type to search...">
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-light">
+                    <tr>
+
+                        <th scope="row">#</th>
+                        <th>نام فروشنده</th>
+                        <th>نام شرکت</th>
+                        <th>شماره تلفن</th>
+                        <th>شماره موبایل</th>
+                        <th>ایمیل</th>
+                        <th>شماره حساب</th>
+                        <th>شماره ثبت شرکت</th>
+                        <th>تاریخ تولد</th>
+                        <th>تاریخ ثبت نام</th>
+                        <th>کد ملی</th>
+
+                        <th>
+                            تعیین وضعیت
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var index = (Model.PageIndex - 1) * Model.PageSize + 1;
+                    }
+                    @foreach (var productsupplier in Model)
+                    {
+                        <tr>
+
+                            <th scope="row">@(index++)</th>
+                            <td>@(productsupplier.FirstName + " " + productsupplier.LastName)</td>
+                            <td>@productsupplier.CompanyName</td>
+                            <td>@productsupplier.PhoneNumber</td>
+                            <td>@productsupplier.MobileNumber</td>
+                            <td>@productsupplier.Email</td>
+                            <td>@productsupplier.BankAccountNumber</td>
+                            <td>@productsupplier.CompanyRegistrationNumber</td>
+                            <td>@productsupplier.DateOfBirth.ToAD().ToString("yyyy/MM/dd")</td>
+                            <td>@productsupplier.StartDate.ToAD().ToString("yyyy/MM/dd")</td>
+                            <td>@productsupplier.NationalCode</td>
+
+                            <td>
+                                <button type="button" onclick="ConfirmSupplier('@productsupplier.Id')" class="btn btn-sm btn-success">تایید</button>
+                                <button type="button" onclick="RejectSupplier('@productsupplier.Id')" class="btn btn-sm btn-danger">رد</button>
+                            </td>
+                        </tr>
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+        <!-- Footer with pagination and rows per page -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+                <select onchange="getMembershipRequestPage()" id="pagesize" class="form-select form-select-sm" style="width: auto;">
+                    @if (Model.PageSize == 1)
+                    {
+                        <option selected value="1">1</option>
+                    }
+                    else
+                    {
+                        <option value="1">1</option>
+                    }
+                    @if (Model.PageSize == 3)
+                    {
+                        <option selected value="3">3</option>
+                    }
+                    else
+                    {
+                        <option value="3">3</option>
+                    }
+
+                    @if (Model.PageSize == 5)
+                    {
+                        <option selected value="5">5</option>
+                    }
+                    else
+                    {
+                        <option value="5">5</option>
+                    }
+                    @if (Model.PageSize == 10)
+                    {
+                        <option selected value="10">10</option>
+                    }
+                    else
+                    {
+                        <option value="10">10</option>
+                    }
+                    @if (Model.PageSize == 20)
+                    {
+                        <option selected value="20">20</option>
+                    }
+                    else
+                    {
+                        <option value="20">20</option>
+                    }
+                    @if (Model.PageSize == 30)
+                    {
+                        <option selected value="30">30</option>
+                    }
+                    else
+                    {
+                        <option value="30">30</option>
+                    }
+
+
+
+
+
+                </select>
+            </div>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+
+                    @if (Model.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link paginate_button page-item  " asp-area="Admin" asp-controller="User" asp-action="MembershipRequest" asp-route-PageIndex="@(Model.PageIndex-1)" asp-route-pageSize=@Model.PageSize> قبلی </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">قبلی</span>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        if (i == Model.PageIndex)
+                        {
+                            <li class="page-item active">
+                                <span class="page-link">@i <span class="sr-only">(current)</span></span>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-area="Admin" asp-controller="User" asp-action="MembershipRequest" asp-route-pageSize=@Model.PageSize asp-route-PageIndex="@i">@i</a>
+                            </li>
+                        }
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-area="Admin" asp-controller="User" asp-action="MembershipRequest" asp-route-PageIndex="@(Model.PageIndex+1)" asp-route-pageSize=@Model.PageSize>بعدی</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">بعدی</span>
+                        </li>
+                    }
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+    <script>
+        function getMembershipRequestPage() {
+            const PageSize = $("#pagesize").val();
+
+            $.ajax({
+                url: "/Admin/User/MembershipRequest",
+                type: "GET",
+                data: {
+                    pageSize: PageSize
+                },
+                success: function (response) {
+                    var content = $(response).find('#tablecontent').html();
+
+                    $("#tablecontent").html(content);
+                },
+                error: function (xhr, status, error) {
+                    console.error("خطا در ارسال درخواست:", error);
+                }
+            });
+
+        }
+
+
+
+
+
+        function ConfirmSupplier(Id) {
+
+            $.ajax({
+                url: '/admin/user/ConfirmSupplier',
+                type: "Post",
+                data:{ supplierId: Id },               
+                success: function (response) {
+                    getMembershipRequestPage();
+                }
+            });
+
+        }
+
+
+        function RejectSupplier(Id) {
+
+            $.ajax({
+                url: '/admin/user/RejectSupplier',
+                type: "Post",
+                data: { supplierId: Id },               
+                success: function (response) {
+
+                    getMembershipRequestPage();
+
+                }
+            });
+        }
+
+    </script>
+}

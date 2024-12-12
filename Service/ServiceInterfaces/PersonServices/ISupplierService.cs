@@ -15,9 +15,9 @@ namespace Service.ServiceInterfaces.PersonServices;
 public interface ISupplierService : IServiceBase<Supplier, UserResult, Guid>
 {
     Task<bool> CreateAsync(SupplierCommand supplierDTO, CancellationToken cancellation);
-    Task<PaginatedList<SupplierResult>> GetAllSuppliersbyStatusAsync(ConfirmationStatus status, int pageIndex, int pageSize,CancellationToken cancellation);
-    Task<bool> ChangeSupplierStatusAsync(Guid supplierId,ConfirmationStatus confirmation,CancellationToken cancellation);
+    Task<PaginatedList<SupplierResult>> GetAllSuppliersbyStatusAsync(ConfirmationStatus status, CancellationToken cancellation, int pageIndex = 1, int pageSize = 20);
+    Task<bool> ChangeSupplierStatusAsync(Guid supplierId, ConfirmationStatus confirmation, CancellationToken cancellation);
     Task<bool> SignInAsync(LoginCommand loginDto);
-   
+
 
 }

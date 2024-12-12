@@ -1,6 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Person.Commands;
 using DataTransferObject.DTOClasses.Person.Results;
 using Infrastructure.Contracts.Repository;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Person;
@@ -54,15 +55,16 @@ public class SupplierService : ServiceBase<Supplier, UserResult, Guid>, ISupplie
 
     }
 
-    public async Task<PaginatedList<SupplierResult>> GetAllSuppliersbyStatusAsync(ConfirmationStatus status, int pageIndex, int pageSize, CancellationToken cancellation)
+    public async Task<PaginatedList<SupplierResult>> GetAllSuppliersbyStatusAsync(ConfirmationStatus status, CancellationToken cancellation, int pageIndex = 1, int pageSize = 20)
     {
         var suppliers = await _supplierRepository.GetAllDataAsync(
-            x => Translate<Supplier, SupplierResult>(x),
+            x =>x,
             cancellation,
             x => x.IsConfirmed == (byte)status,
             x => x.Include(x => x.User)
         );
-        return await PaginatedList<SupplierResult>.CreateAsync(suppliers, pageIndex, pageSize, cancellation);
+        
+        return await PaginatedList<SupplierResult>.CreateAsync(suppliers?.ProjectToType<SupplierResult>(), pageIndex, pageSize, cancellation);
     }
 
 
