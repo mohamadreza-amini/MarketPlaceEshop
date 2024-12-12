@@ -33,6 +33,10 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Register(SupplierCommand SupplierDto,CancellationToken cancellation)
     {
+        if (!ModelState.IsValid)
+        {
+            return RedirectToAction("Register");
+        }
         SupplierDto.UserDto.DateOfBirth = SupplierDto.UserDto.DateOfBirth.ToSolar();
         await _supplierService.CreateAsync(SupplierDto, cancellation);
         return View("SuccessfulRegistration");

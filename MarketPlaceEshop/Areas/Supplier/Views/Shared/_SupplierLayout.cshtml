@@ -480,8 +480,6 @@
 
     <script>
 
-
-
         document.addEventListener("DOMContentLoaded", function () {
             const menuLinks = document.querySelectorAll(".menu-link");
             const activeHref = sessionStorage.getItem("activeHref");
@@ -540,6 +538,45 @@
         });
 
     </script>
+
+
+
+
+@*     پیام هشدار یا موفقیت toast
+ *@
+
+    @if (TempData["ToastSuccess"] != null)
+    {
+        <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 1333050;">
+            <div class="bs-toast toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-success text-white">
+                    <div class="me-auto fw-semibold">موفق</div>
+                    <small></small>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">@TempData["ToastSuccess"]</div>
+            </div>
+        </div>
+    }
+
+
+
+    @if (TempData["ToastError"] != null)
+    {
+        <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 1333050;">
+            <div class="bs-toast toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-danger text-white">
+                    <div class="me-auto fw-semibold">خطا</div>
+                    <small></small>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">@TempData["ToastError"]</div>
+            </div>
+        </div>
+
+    }
+
+
 
 </body>
 </html>

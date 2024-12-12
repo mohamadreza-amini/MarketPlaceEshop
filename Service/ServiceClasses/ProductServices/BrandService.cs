@@ -33,6 +33,7 @@ public class BrandService : ServiceBase<Brand, BrandResult, int>, IBrandService
         var brand = Translate<BrandCommand, Brand>(brandDto);
         brand.Validate();
         await _brandRepository.CreateAsync(brand, cancellation);
+        await _brandRepository.CommitAsync(cancellation);
     }
 
     public async Task<List<BrandResult>> GetAllAsync(CancellationToken cancellation)
