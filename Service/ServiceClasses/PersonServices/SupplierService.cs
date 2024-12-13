@@ -105,6 +105,9 @@ public class SupplierService : ServiceBase<Supplier, UserResult, Guid>, ISupplie
 
         var supplier = await _supplierRepository.GetAsync(x => x.Id == supplierId, CancellationToken.None);
 
+        if (supplier == null)
+            throw new SignInException("کاربری با مشخصات وارد شده تعریف نشده است");
+
         switch (supplier?.IsConfirmed ?? default)
         {
             case 1:

@@ -14,6 +14,7 @@ public interface ICategoryService : IServiceBase<Category, CategoryResult, int>
     Task CreateAsync(CategoryCommand CategoryDto, CancellationToken cancellation);
     Task<Dictionary<int, List<CategoryResult>>> GetAllDictionryAsync(CancellationToken cancellation);
     Task<List<CategoryResult>> GetAllListAsync(CancellationToken cancellation);
+    Task<List<CategoryResult>> GetAllListSortAsync(CancellationToken cancellation);
     Task<CategoryResult?> GetCategoryAsync(int categoryId, CancellationToken cancellation);
     Task<List<int>> GetAllParentCategoryIds(int categoryId, CancellationToken cancellation);
     Task<List<int>> GetAllSubCategoryIdbyCategoryId(int categoryId, CancellationToken cancellation);

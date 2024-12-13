@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Cache;
 
-public class CachedData:ICachedData
+public class CachedData : ICachedData
 {
     private readonly IMemoryCache _memoryCache;
     public CachedData(IMemoryCache iMemoryCache)
@@ -16,14 +16,17 @@ public class CachedData:ICachedData
         _memoryCache = iMemoryCache;
     }
 
-    public T Set<T>(string key,T data,MemoryCacheEntryOptions? options = null)
+    public T Set<T>(string key, T data, MemoryCacheEntryOptions? options = null)
     {
-        if(options == null)
+        if (options == null)
         {
             options = new MemoryCacheEntryOptions()
             {
-                AbsoluteExpiration = DateTimeOffset.Now.AddHours(1),
-                SlidingExpiration = TimeSpan.FromMinutes(10)
+                /* AbsoluteExpiration = DateTimeOffset.Now.AddHours(1),
+                 SlidingExpiration = TimeSpan.FromMinutes(10)*/
+
+
+                SlidingExpiration = TimeSpan.FromSeconds(5)
             };
         }
 
@@ -33,5 +36,10 @@ public class CachedData:ICachedData
     public T? Get<T>(string key)
     {
         return _memoryCache.Get<T>(key);
+    }
+
+    public void Remove(string key)
+    {
+        _memoryCache.Remove(key);
     }
 }

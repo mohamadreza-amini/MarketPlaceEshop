@@ -1,42 +1,48 @@
-﻿@using DataTransferObject.DTOClasses.Product.Results
-@model List<BrandResult>
-
+﻿@using DataTransferObject.DTOClasses.Category.Results
+@model List<CategoryResult>
 
 <div id="tablecontent">
     <div class="container mt-5">
         <!-- Header with actions -->
         <div class="d-flex justify-content-center align-items-center mb-3">
             <div>
-                <button onclick="AddBrand()" class="btn btn-primary me-2">اضافه کردن</button>
+                <button onclick="AddCategory()" class="btn btn-primary me-2">اضافه کردن</button>
             </div>
             <div class="input-group" style="width: 300px;">
-                <span class="input-group-text"> برند:</span>
-                <input id="brandInput"  type="text" class="form-control" placeholder="نام برند">
+                <span class="input-group-text"> دسته بندی:</span>
+                <input id="categoryInput" type="text" class="form-control" placeholder="نام دسته بندی">
+                <select id="parentCategoryInput" name="SelectedId" class="form-control">
+                    <option value="0" selected>هیچ کدام</option>
+                    @foreach (var item in Model)
+                    {
+                        <option value="@item.Id">@item.CategoryName</option>
+                    }
+                </select>
             </div>
         </div>
-        
+
         <!-- Table -->
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead class="table-light">
                     <tr>
-                       
+
                         <th>ID</th>
-                        <th>نام برند</th>
-                       
+                        <th>نام دسته بندی</th>
+                        <th>نام دسته بندی پدر</th>
+                        <th>شناسه پدر</th>
+
                     </tr>
                 </thead>
                 <tbody>
-                   
-                    @foreach (var brand in Model)
+
+                    @foreach (var category in Model)
                     {
                         <tr>
-
-                           
-                            <td>@brand.Id</td>
-                            <td>@brand.BrandName</td>
-                            
-     
+                            <td>@category.Id</td>
+                            <td>@category.CategoryName</td>
+                            <td>@(category.ParentCategoryName?.ToString() ?? "root")</td>
+                            <td>@(category.ParentCategoryId?.ToString() ?? "root")</td>
                         </tr>
                     }
 
@@ -45,10 +51,10 @@
             </table>
         </div>
         <!-- Footer with pagination and rows per page -->
-        
+
     </div>
 
-    @if (ViewData["Branderror"] != null)
+    @if (ViewData["Categoryerror"] != null)
     {
         <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 1333050;">
             <div class="bs-toast toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
@@ -57,7 +63,7 @@
                     <small></small>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
-                <div class="toast-body">@ViewData["Branderror"]</div>
+                <div class="toast-body">@ViewData["Categoryerror"]</div>
             </div>
         </div>
 
@@ -74,17 +80,21 @@
     <script>
 
 
-        function AddBrand() {
-            var brand = $("#brandInput").val();
+        function AddCategory() {
+            var category = $("#categoryInput").val();
+            var parentCategory = $("#parentCategoryInput").val();
+            var value = { "CategoryName": category, "ParentCategoryId": parentCategory }
+            
             $.ajax({
-                url: '/admin/product/CreateBrand',
+                url: '/admin/product/CreateCategory',
                 type: "POST",
-                data: { BrandName: brand },
+                data: value,
+
                 success: function (response) {
                     var newBodyContent = $(response).find('#tablecontent').html();
                     $('#tablecontent').html(newBodyContent);
                 },
-               
+
             });
         }
 

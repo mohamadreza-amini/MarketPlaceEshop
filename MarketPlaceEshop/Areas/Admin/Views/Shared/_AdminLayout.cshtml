@@ -125,8 +125,8 @@
 
                         <ul class="menu-sub">
                             <li class="menu-item">
-                                <a href="layouts-collapsed-menu.html" class="menu-link">
-                                    <div>منوی جمع شده</div>
+                                <a asp-area="Admin" asp-controller="Product" asp-action="Brands" class="menu-link">
+                                    <div>برند</div>
                                 </a>
                             </li>
                             <li class="menu-item">
@@ -484,7 +484,7 @@
                                             <div class="dropdown-divider"></div>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="auth-login-cover.html" target="_blank">
+                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Account" asp-action="Logout" target="_blank">
                                                 <i class="bx bx-power-off me-2"></i>
                                                 <span class="align-middle">خروج</span>
                                             </a>
@@ -509,16 +509,7 @@
                 <div class="content-wrapper">
 
 
-
-
-
-
-
-
                     @RenderBody()
-
-
-
 
 
 
@@ -562,79 +553,78 @@
 
 
 
-
     @*    خودم اضافه کردم برای دادن لایبرری های دیگه *@
     @RenderSection("FooterContent", required: false)
 
 
-    @await RenderSectionAsync("Scripts", required: false)
 
 
     @* بررسی و درست کردن پایینی که وضعیت صفحه رو بگیره
     *@
+    @await RenderSectionAsync("Scripts", required: false)
 
 
-    
+
     <script>
 
-     
 
-document.addEventListener("DOMContentLoaded", function () {
-    const menuLinks = document.querySelectorAll(".menu-link");
-    const activeHref = sessionStorage.getItem("activeHref");
 
-    // پاک کردن کلاس‌های open و active از همه عناصر
-    const allMenuItems = document.querySelectorAll(".menu-item");
-    allMenuItems.forEach((menuItem) => {
-        menuItem.classList.remove("open", "active");
-    });
+        document.addEventListener("DOMContentLoaded", function () {
+            const menuLinks = document.querySelectorAll(".menu-link");
+            const activeHref = sessionStorage.getItem("activeHref");
 
-    const allMenuSubs = document.querySelectorAll(".menu-sub");
-    allMenuSubs.forEach((menuSub) => {
-        menuSub.classList.remove("open");
-    });
+            // پاک کردن کلاس‌های open و active از همه عناصر
+            const allMenuItems = document.querySelectorAll(".menu-item");
+            allMenuItems.forEach((menuItem) => {
+                menuItem.classList.remove("open", "active");
+            });
 
-    // تنظیم active و open در بارگذاری صفحه
-    if (activeHref) {
-        const activeLink = document.querySelector(`.menu-link[href="${activeHref}"]`);
-        if (activeLink) {
-            // افزودن کلاس active به menu-link
-            activeLink.classList.add("active");
+            const allMenuSubs = document.querySelectorAll(".menu-sub");
+            allMenuSubs.forEach((menuSub) => {
+                menuSub.classList.remove("open");
+            });
 
-            // افزودن کلاس open به نزدیک‌ترین menu-item و menu-sub
-            const menuItem = activeLink.closest(".menu-item");
-            if (menuItem) {
-                menuItem.classList.add("open", "active");
+            // تنظیم active و open در بارگذاری صفحه
+            if (activeHref) {
+                const activeLink = document.querySelector(`.menu-link[href="${activeHref}"]`);
+                if (activeLink) {
+                    // افزودن کلاس active به menu-link
+                    activeLink.classList.add("active");
 
-                // افزودن کلاس open به menu-sub و menu-item والد
-                const parentMenuSub = menuItem.closest(".menu-sub");
-                if (parentMenuSub) {
-                    parentMenuSub.classList.add("open");
+                    // افزودن کلاس open به نزدیک‌ترین menu-item و menu-sub
+                    const menuItem = activeLink.closest(".menu-item");
+                    if (menuItem) {
+                        menuItem.classList.add("open", "active");
 
-                    const parentMenuItem = parentMenuSub.closest(".menu-item");
-                    if (parentMenuItem) {
-                        parentMenuItem.classList.add("open", "active");
+                        // افزودن کلاس open به menu-sub و menu-item والد
+                        const parentMenuSub = menuItem.closest(".menu-sub");
+                        if (parentMenuSub) {
+                            parentMenuSub.classList.add("open");
 
-                        const grandParentMenuSub = parentMenuItem.closest(".menu-sub");
-                        if (grandParentMenuSub) {
-                            grandParentMenuSub.classList.add("open");
+                            const parentMenuItem = parentMenuSub.closest(".menu-item");
+                            if (parentMenuItem) {
+                                parentMenuItem.classList.add("open", "active");
+
+                                const grandParentMenuSub = parentMenuItem.closest(".menu-sub");
+                                if (grandParentMenuSub) {
+                                    grandParentMenuSub.classList.add("open");
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
-    }
 
-    // ذخیره مقدار href در sessionStorage در زمان کلیک
-    menuLinks.forEach((menuLink) => {
-        menuLink.addEventListener("click", function (e) {
-            const href = menuLink.getAttribute("href");
-            if (href && href !== "javascript:void(0);") {
-                sessionStorage.setItem("activeHref", href);
-            }
+            // ذخیره مقدار href در sessionStorage در زمان کلیک
+            menuLinks.forEach((menuLink) => {
+                menuLink.addEventListener("click", function (e) {
+                    const href = menuLink.getAttribute("href");
+                    if (href && href !== "javascript:void(0);") {
+                        sessionStorage.setItem("activeHref", href);
+                    }
+                });
+            });
         });
-    });
-});
 
     </script>
 
@@ -642,10 +632,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    
-@*     پیام هشدار یا موفقیت toast
- *@   
-     @if (TempData["ToastSuccess"] != null)
+
+    @*     پیام هشدار یا موفقیت toast
+    *@
+    @if (TempData["ToastSuccess"] != null)
     {
         <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 1333050;">
             <div class="bs-toast toast fade show" role="alert" aria-live="assertive" aria-atomic="true">

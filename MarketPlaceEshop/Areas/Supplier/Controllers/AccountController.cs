@@ -11,10 +11,11 @@ namespace MarketPlaceEshop.Areas.Supplier.Controllers;
 public class AccountController : Controller
 {
     private readonly ISupplierService _supplierService;
-
-    public AccountController(ISupplierService supplierService)
+    private readonly IUserService _userService;
+    public AccountController(ISupplierService supplierService, IUserService userService)
     {
         _supplierService = supplierService;
+        _userService = userService;
     }
 
     public IActionResult Index()
@@ -82,7 +83,11 @@ public class AccountController : Controller
 
 
 
-
+    public async Task<IActionResult> LogOut()
+    {
+        await _userService.LogOutAsync();
+        return RedirectToAction("index", "Home");
+    }
 
 
 

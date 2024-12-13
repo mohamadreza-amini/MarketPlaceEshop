@@ -11,4 +11,5 @@ public interface ICachedData
 {
     T? Get<T>(string key);
     T Set<T>(string key, T data, MemoryCacheEntryOptions? options = null);
+    void Remove(string key);
 }

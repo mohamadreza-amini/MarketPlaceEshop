@@ -23,8 +23,7 @@ public class Category : BaseEntity<int>
     public void validate()
     {
         if (string.IsNullOrWhiteSpace(CategoryName) ||
-           Level <= 0 ||
-           ParentCategoryId < 0)
+           Level < 0 )
         {
             throw new ModelValidationException("Category");
         }

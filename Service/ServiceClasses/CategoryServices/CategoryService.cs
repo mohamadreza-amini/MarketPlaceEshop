@@ -40,6 +40,7 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         if (category.ParentCategoryId == 0)
         {
             category.Level = 1;
+            category.ParentCategoryId = null;
         }
         else
         {
@@ -49,6 +50,8 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         category.validate();
         await _categoryRepository.CreateAsync(category, cancellation);
         await _categoryRepository.CommitAsync(cancellation);
+        _cachedData.Remove("AllCategoriesDictionary");
+        _cachedData.Remove("AllCategoriesList");
     }
 
     public async Task<Dictionary<int, List<CategoryResult>>> GetAllDictionryAsync(CancellationToken cancellation)
@@ -79,10 +82,32 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         var categories = _cachedData.Get<List<CategoryResult>>("AllCategoriesList");
         if (categories == null)
         {
-            categories = await _categoryRepository.GetAll().ProjectToType<CategoryResult>().ToListAsync(cancellation);
+            var query = await _categoryRepository
+                .GetAllDataAsync(
+                x => new CategoryResult
+                {
+                    Id = x.Id,
+                    CategoryName = x.CategoryName,
+                    Level = x.Level,
+                    ParentCategoryId = x.ParentCategoryId,
+                    ParentCategoryName = x.ParentCategory == null ? "root" : x.ParentCategory.CategoryName
+                }, cancellation);
+            if (query != null)
+            {
+                categories = await query.ToListAsync(cancellation);
+            }
+            else {
+                categories = new List<CategoryResult>(); 
+            }
             _cachedData.Set("AllCategoriesList", categories);
         }
         return categories;
+    }
+
+    public async Task<List<CategoryResult>> GetAllListSortAsync(CancellationToken cancellation)
+    {
+        var categories = await GetAllListAsync(cancellation);
+        return categories.OrderBy(x => x.Level).ThenBy(x => x.ParentCategoryId).ToList();
     }
 
     public async Task<CategoryResult?> GetCategoryAsync(int categoryId, CancellationToken cancellation)
@@ -124,9 +149,9 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         var categories = await GetAllDictionryAsync(cancellation);
         var parentLevel = categories.FirstOrDefault(x => x.Value.Any(y => y.Id == categoryId)).Key;
         if (parentLevel == default && !categories[parentLevel].Any(y => y.Id == categoryId))
-            return new List<int>();     
+            return new List<int>();
         var childCategories = new List<int> { categoryId };
- 
+
         for (var level = parentLevel + 1; categories.TryGetValue(level, out var currentLevelCategories); level++)
         {
             foreach (var category in currentLevelCategories)
