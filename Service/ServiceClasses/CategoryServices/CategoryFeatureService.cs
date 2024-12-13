@@ -48,7 +48,7 @@ public class CategoryFeatureService : ServiceBase<CategoryFeature, CategoryFeatu
 
     public async Task<List<CategoryFeatureResult>> GetAllByCategoryId(int categoryId, CancellationToken cancellation)
     {
-        var subCategories = await _categoryService.GetAllSubCategoryIdbyCategoryId(categoryId, cancellation);
+        var subCategories = await _categoryService.GetAllParentCategoryIds(categoryId, cancellation);
         var CategoryFeatureResultList = new List<CategoryFeatureResult>();
 
         foreach (var category in subCategories)
@@ -59,4 +59,5 @@ public class CategoryFeatureService : ServiceBase<CategoryFeature, CategoryFeatu
 
         return CategoryFeatureResultList;
     }
+
 }

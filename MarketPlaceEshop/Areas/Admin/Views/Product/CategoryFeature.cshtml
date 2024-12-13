@@ -1,0 +1,122 @@
+﻿@using MarketPlaceEshop.Areas.Admin.Models
+@model CategoryFeatureViewModel
+
+<div id="tablecontent">
+    <div class="container mt-5">
+        <!-- Header with actions -->
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <div>
+                <button onclick="AddCategoryFeature()" class="btn btn-primary me-2">اضافه کردن</button>
+            </div>
+            <div class="input-group" style="width: 500px;">
+                <span class="input-group-text"> ویژگی دسته بندی</span>
+                <input id="featureNameInput" type="text" class="form-control" placeholder="نام ویژگی ">
+                <select onchange="GetFeatures()" id="CategoryInput" name="SelectedId" class="form-control">
+                    <option value="@Model.Category.Id" selected>@Model.Category.CategoryName</option>
+                    @foreach (var item in Model.CategoryResults.Where(x=>x.Id!=Model.Category.Id))
+                    {
+                        <option value="@item.Id">@item.CategoryName</option>
+                    }
+                </select>   
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-light">
+                    <tr>
+
+                        <th>ID</th>
+                        <th>نام دسته بندی</th>
+                        <th>نام ویژگی دسته بندی</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var categoryFeature in Model.CategoryFeatures)
+                    {
+                        <tr>
+                            <td>@categoryFeature.Id</td>
+                            <td>@Model.Category.CategoryName</td>
+                            <td>@categoryFeature.FeatureName</td>
+                        </tr>
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+        <!-- Footer with pagination and rows per page -->
+
+    </div>
+
+    @if (ViewData["categoryFeature"] != null)
+    {
+        <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 1333050;">
+            <div class="bs-toast toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-danger text-white">
+                    <div class="me-auto fw-semibold">خطا</div>
+                    <small></small>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">@ViewData["categoryFeature"]</div>
+            </div>
+        </div>
+
+    }
+
+
+</div>
+
+
+
+
+
+@section Scripts {
+    <script>
+
+
+        function AddCategoryFeature() {
+            var feature = $("#featureNameInput").val();
+            var category = $("#CategoryInput").val();
+            var value = { "FeatureName": feature, "CategoryId": category }
+
+            $.ajax({
+                url: '/admin/product/CreateCategoryFeature',
+                type: "POST",
+                data: value,
+
+                success: function (response) {
+                    var newBodyContent = $(response).find('#tablecontent').html();
+                    $('#tablecontent').html(newBodyContent);
+                },
+
+            });
+        }
+
+
+        function GetFeatures() {
+            
+            var category = $("#CategoryInput").val();
+            var value = { "categoryId": category }
+
+            $.ajax({
+                url: '/admin/product/CategoryFeature',
+                type: "GET",
+                data: value,
+
+                success: function (response) {
+                    var newBodyContent = $(response).find('#tablecontent').html();
+                    $('#tablecontent').html(newBodyContent);
+                },
+
+            });
+        }
+
+    </script>
+}
+
+
+

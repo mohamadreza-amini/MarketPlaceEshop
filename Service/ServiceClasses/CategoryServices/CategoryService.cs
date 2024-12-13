@@ -66,7 +66,7 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
             var list = new List<CategoryResult>();
             foreach (var categoryResult in categoryresultlist)
             {
-                if (categories[categoryResult.Level] == null)
+                if (!categories.ContainsKey(categoryResult.Level))
                     categories[categoryResult.Level] = new List<CategoryResult>();
 
                 categories[categoryResult.Level].Add(categoryResult);

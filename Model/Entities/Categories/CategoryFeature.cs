@@ -31,7 +31,7 @@ public class CategoryFeature : BaseEntity<int>
     public void validate()
     {
         if (string.IsNullOrWhiteSpace(FeatureName) ||
-           CategoryId <= 0)
+           CategoryId < 0)
         {
             throw new ModelValidationException("CategoryFeature");
         }
