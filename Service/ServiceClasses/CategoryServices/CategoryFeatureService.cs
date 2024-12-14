@@ -60,4 +60,10 @@ public class CategoryFeatureService : ServiceBase<CategoryFeature, CategoryFeatu
         return CategoryFeatureResultList;
     }
 
+    public async Task<List<ProductFeatureValueCommand>> GetFeatureCommand(int categoryId, CancellationToken cancellation)
+    {
+        var productFeatures = await GetAllByCategoryId(categoryId, cancellation);
+        return Translate<List<CategoryFeatureResult>, List<ProductFeatureValueCommand>>(productFeatures);
+    }
+
 }

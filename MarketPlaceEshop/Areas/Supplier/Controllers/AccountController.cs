@@ -36,6 +36,7 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid)
         {
+            ViewData["ToastRegster"] = "اطلاعات ورودی نامعتبر";
             return RedirectToAction("Register");
         }
         SupplierDto.UserDto.DateOfBirth = SupplierDto.UserDto.DateOfBirth.ToSolar();
@@ -86,7 +87,7 @@ public class AccountController : Controller
     public async Task<IActionResult> LogOut()
     {
         await _userService.LogOutAsync();
-        return RedirectToAction("index", "Home");
+        return LocalRedirect("/");
     }
 
 

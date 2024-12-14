@@ -53,7 +53,7 @@ public class UserCommand :BaseDTO<Guid>
     [Display(Name = "تکرار رمز عبور")]
     public string ConfirmPassword { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "وارد کردن ایمیل الزامی است.")]
     [EmailAddress]
     [Length(1, 100)]
     [Display(Name = "ایمیل")]

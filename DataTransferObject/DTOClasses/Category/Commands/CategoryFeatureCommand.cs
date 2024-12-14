@@ -10,7 +10,7 @@ namespace DataTransferObject.DTOClasses.Category.Commands;
 public class CategoryFeatureCommand
 {
     [Required(ErrorMessage = "وارد کردن نام وِیژگی الزامی است")]
-    [RegularExpression("[آ-یA-Za-z0-9\\s]+", ErrorMessage = "ورودی صحیح نمی باشد")]
+    [RegularExpression(@"^(?=.*[a-zA-Z\u0600-\u06FF0-9]).*$", ErrorMessage = "ورودی صحیح نمی باشد")]
     [Display(Name = "ویژگی")]
     public string FeatureName { get; set; }
     public int CategoryId { get; set; }

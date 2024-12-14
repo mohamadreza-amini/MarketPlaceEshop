@@ -15,6 +15,8 @@ public class Image : BaseEntity<Guid>
     //پیاده نشده
     public int Priority { get; set; }
     public Guid ProductId { get; set; }
+    public string MimeType { get; set; }
+    public int FileSize { get; set; }
     public virtual Product Product { get; set; }
 
 

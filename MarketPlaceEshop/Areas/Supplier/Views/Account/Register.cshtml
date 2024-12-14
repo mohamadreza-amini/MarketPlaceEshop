@@ -166,7 +166,6 @@
                                             <div class="col-md-6 col-12 mb-4">
                                                 <label for="flatpickr-date" class="form-label">تولد</label>
                                                 <input class="form-control flatpickr-input" asp-for="@Model.UserDto.DateOfBirth" placeholder="YYYY/MM/DD" id="flatpickr-date">
-
                                                 <span asp-validation-for="@Model.UserDto.DateOfBirth" class="text-danger"></span>
                                             </div>
 
@@ -225,6 +224,20 @@
 
 
 
+    @if (ViewData["ToastRegster"] != null)
+    {
+        <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 1050;">
+            <div class="bs-toast toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-danger text-white">
+                    <div class="me-auto fw-semibold">خطا</div>
+                    <small></small>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">@ViewData["ToastRegster"]</div>
+            </div>
+        </div>
+
+    }
 
 
 

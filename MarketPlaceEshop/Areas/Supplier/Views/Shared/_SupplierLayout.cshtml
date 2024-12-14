@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="~/assets/vendor/libs/typeahead-js/typeahead.css">
     <link rel="stylesheet" href="~/assets/vendor/libs/apex-charts/apex-charts.css">
 
+    @RenderSection("HeadContent", required: false)
     <!-- Page CSS -->
     <!-- Helpers -->
     <script src="~/assets/vendor/js/helpers.js"></script>
@@ -464,10 +465,10 @@
 
 
 
+    @RenderSection("FooterContent", required: false)
+
 
     @await RenderSectionAsync("Scripts", required: false)
-
-
 
 
 

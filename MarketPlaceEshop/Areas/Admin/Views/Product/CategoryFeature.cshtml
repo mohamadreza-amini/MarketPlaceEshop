@@ -11,7 +11,7 @@
             <div class="input-group" style="width: 500px;">
                 <span class="input-group-text"> ویژگی دسته بندی</span>
                 <input id="featureNameInput" type="text" class="form-control" placeholder="نام ویژگی ">
-                <select onchange="GetFeatures()" id="CategoryInput" name="SelectedId" class="form-control">
+                <select onchange="GetFeatures()" id="CategoryInput" name="SelectedId" class="form-control ">
                     <option value="@Model.Category.Id" selected>@Model.Category.CategoryName</option>
                     @foreach (var item in Model.CategoryResults.Where(x=>x.Id!=Model.Category.Id))
                     {
@@ -24,7 +24,7 @@
         <!-- Table -->
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
-                <thead class="table-light">
+                <thead class="table-primary">
                     <tr>
 
                         <th>ID</th>

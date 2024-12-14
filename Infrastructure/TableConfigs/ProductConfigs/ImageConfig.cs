@@ -14,7 +14,7 @@ public class ImageConfig : BaseConfig<Image, Guid>
 {
     public override void Configure(EntityTypeBuilder<Image> builder)
     {
-        builder.Property(x => x.Path).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(30).IsRequired();
+        builder.Property(x => x.Path).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(300).IsRequired();
         builder.Property(x => x.Priority).HasColumnType(SqlDbType.Int.ToString()).IsRequired();
         builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 

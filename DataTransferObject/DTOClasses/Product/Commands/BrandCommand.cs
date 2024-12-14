@@ -11,7 +11,7 @@ public class BrandCommand
 {
     [Length(1, 50)]
     [Required(ErrorMessage = "وارد کردن نام برند الزامی است.")]
-    [RegularExpression("[آ-یA-Za-z]+", ErrorMessage = "نام باید فقط شامل حروف فارسی، انگلیسی باشد.")]
+    [RegularExpression(@"^(?=.*[a-zA-Z\u0600-\u06FF]).*$", ErrorMessage = "نام باید فقط شامل حروف فارسی، انگلیسی باشد.")]
     [Display(Name = "برند")]
     public string BrandName { get; set; }
 }

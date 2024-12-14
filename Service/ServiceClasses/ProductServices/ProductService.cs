@@ -66,7 +66,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
 
         var product = Translate<ProductCommand, Product>(productDto);
         var productId = Guid.NewGuid();
-
+        product.Id = productId;
         if (await _brandService.GetByIdAsync(product.BrandId, cancellation) == null)
             throw new BadRequestException("[create product faild] - invalid brand");
 
@@ -78,6 +78,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
 
         product.StartDate = DateTime.Now;
         product.CreatorUserId = Guid.Parse(_userService.RequesterId() ?? throw new BadRequestException("UserId not found"));
+        product.UpdaterUserId = product.CreatorUserId;
         product.IsConfirmed = 1;
 
         if (_userService.IsAdmin())
@@ -91,7 +92,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
             await _productRepository.CreateAsync(product, cancellation);
             return (await _productRepository.CommitAsync(cancellation)) > 0;
         }
-        catch (Exception ex)
+         catch (Exception ex)
         {
             throw new BadRequestException("[create product faild] " + ex.Message);
         }

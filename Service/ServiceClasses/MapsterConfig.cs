@@ -1,5 +1,6 @@
 ﻿using DataTransferObject.DTOClasses;
 using DataTransferObject.DTOClasses.Address.Commands;
+using DataTransferObject.DTOClasses.Category.Commands;
 using DataTransferObject.DTOClasses.Category.Results;
 using DataTransferObject.DTOClasses.Person.Commands;
 using DataTransferObject.DTOClasses.Person.Results;
@@ -65,6 +66,11 @@ namespace Service.ServiceClasses
 
             TypeAdapterConfig<ProductSupplier, ProductSupplierResult>.NewConfig()
             .Map(dest => dest.Price, src => src.Prices.Where(x=>x.ExpiredTime==null).Select(x=>x.PriceValue).FirstOrDefault());
+
+
+            TypeAdapterConfig<CategoryFeatureResult, ProductFeatureValueCommand>.NewConfig()
+            .Map(dest => dest.CategoryFeatureId, src => src.Id);
+                 
 
 
 

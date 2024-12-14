@@ -1,0 +1,53 @@
+﻿@using MarketPlaceEshop.Areas.Supplier.Models
+@model CreateProductViewModel
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-12">
+            <!-- Card Design -->
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4 class="m-0">افزودن محصول</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Category Dropdown -->
+                    <form asp-area="Supplier" asp-controller="Product" asp-action="CreateProduct">
+                        <div class="mb-3">
+                            <label for="categorySelect" class="form-label">دسته‌بندی</label>
+
+                            <select name="categoryId" required id="categorySelect" class="form-select">
+                                <option value="" selected>انتخاب کنید</option>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.Id">@category.CategoryName</option>
+
+                                }
+
+                            </select>
+                        </div>
+
+                        <!-- Brand Dropdown -->
+                        <div class="mb-3">
+                            <label for="brandSelect" class="form-label">برند</label>
+                            <select name="brandId" required id="brandSelect" class="form-select">
+                                <option value="" selected>انتخاب کنید</option>
+
+                                @foreach (var brand in Model.Brands)
+                                {
+                                    <option value="@brand.Id">@brand.BrandName</option>
+                                }
+
+                            </select>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success w-100">شروع درج محصول</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

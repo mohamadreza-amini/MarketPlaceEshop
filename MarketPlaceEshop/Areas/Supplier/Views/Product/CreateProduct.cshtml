@@ -1,0 +1,93 @@
+﻿@using MarketPlaceEshop.Areas.Supplier.Models
+@model ProductGenerateViewModel
+
+<div class="container mb-5 d-flex justify-content-center">
+    <div class="w-75 p-4" style="background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <h2 class="text-center mb-4">فرم ورود محصول</h2>
+        <form asp-area="Supplier" asp-controller="Product" asp-action="Create" method="post" enctype="multipart/form-data">
+
+            <!-- Name -->
+            <div class="mb-3">
+                <label asp-for="ProductDto.Name" class="form-label">نام محصول</label>
+                <input asp-for="ProductDto.Name"  class="form-control" id="productName" placeholder="نام محصول را وارد کنید">
+                <span asp-validation-for="ProductDto.Name" class="text-danger"></span>
+
+            </div>
+
+            <!-- Title -->
+            <div class="mb-3">
+                <label asp-for="ProductDto.Titel" class="form-label">عنوان محصول</label>
+                <input asp-for="ProductDto.Titel" class="form-control" id="productTitle" placeholder="عنوان محصول را وارد کنید">
+                <span asp-validation-for="ProductDto.Titel" class="text-danger"></span>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label asp-for="ProductDto.Description" class="form-label">توضیحات محصول</label>
+                <textarea asp-for="ProductDto.Description" class="form-control"  rows="4" placeholder="توضیحات محصول را وارد کنید"></textarea>
+                <span asp-validation-for="ProductDto.Description" class="text-danger"></span>
+            </div>
+
+            <!-- Brand -->
+            <div class="mb-3">
+                <label asp-for="ProductDto.BrandName" class="form-label">برند</label>
+                <input asp-for="ProductDto.BrandName" type="text" class="form-control" id="brandName" value="@Model.ProductDto.BrandName" readonly>
+                <input asp-for="ProductDto.BrandId" value="@Model.ProductDto.BrandId" hidden readonly>
+            </div>
+
+
+            <!-- Category -->
+            <div class="mb-3">
+                <label asp-for="ProductDto.CategoryName" class="form-label">دسته‌بندی</label>
+                <input asp-for="ProductDto.CategoryName" type="text" class="form-control" value="@Model.ProductDto.CategoryName" readonly>
+                <input asp-for="ProductDto.CategoryId" hidden value="@Model.ProductDto.CategoryId" readonly>
+            </div>
+
+
+            <!-- Additional Inputs -->
+            <div class="row">
+         
+
+                @for (var index=0;index<Model.ProductDto.ProductFeatureValues.Count();index++)
+                {
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">@Model.ProductDto.ProductFeatureValues[index].FeatureName</label>
+                        <input type="text" name="ProductDto.ProductFeatureValues[@index].FeatureValue" value="@Model.ProductDto.ProductFeatureValues[index].FeatureValue" class="form-control" data-val="true" data-val-regex="ورودی صحیح نمی باشد" data-val-regex-pattern="^(?=.*[a-zA-Z\u0600-\u06FF0-9]).*$" data-val-required="وارد کردن مقدار وِیژگی الزامی است">
+                        <input type="text" name="ProductDto.ProductFeatureValues[@index].CategoryFeatureId" value="@Model.ProductDto.ProductFeatureValues[index].CategoryFeatureId" class="form-control" hidden readonly>
+                        <input type="text" name="ProductDto.ProductFeatureValues[@index].FeatureName" value="@Model.ProductDto.ProductFeatureValues[index].FeatureName" class="form-control" hidden readonly>
+                        <span class="text-danger field-validation-valid" data-valmsg-for="ProductDto.ProductFeatureValues[@index].FeatureValue" data-valmsg-replace="true"></span>
+
+                    </div>
+                }
+               
+          
+               
+            </div>
+
+            <!-- Images -->
+            <div class="mb-3">
+                <label asp-for="ProductImages" class="form-label">تصاویر محصول</label>
+                <input asp-for="ProductImages" type="file" class="form-control" id="productImages" multiple>
+                <span asp-validation-for="ProductImages" class="text-danger"></span>
+                <small class="text-muted">می‌توانید چندین تصویر انتخاب کنید.</small>
+            </div>
+
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary w-50">ذخیره محصول</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section FooterContent {
+    <script src="~/assets/vendor/libs/jquery/jquery.js"></script>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+
+
+>

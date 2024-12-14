@@ -13,4 +13,5 @@ public interface ICategoryFeatureService : IServiceBase<CategoryFeature, Categor
 {
     Task Create(CategoryFeatureCommand categoryDto, CancellationToken cancellation);
     Task<List<CategoryFeatureResult>> GetAllByCategoryId(int categoryId,CancellationToken cancellation);
+    Task<List<ProductFeatureValueCommand>> GetFeatureCommand(int categoryId, CancellationToken cancellation);
 }

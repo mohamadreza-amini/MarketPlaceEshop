@@ -11,13 +11,13 @@ namespace DataTransferObject.DTOClasses.Address.Commands;
 public class AddressCommand 
 {
     [Required(ErrorMessage = "وارد کردن محله الزامی است")]
-    [RegularExpression("[آ-یA-Za-z0-9]+", ErrorMessage = "ورودی صحیح نمی باشد")]
+    [RegularExpression(@"^(?=.*[a-zA-Z\u0600-\u06FF0-9]).*$", ErrorMessage = "ورودی صحیح نمی باشد")]
     [Display(Name = "محله")]
     public string Neighborhood { get; set; }
 
     [Required(ErrorMessage = "وارد کردن آدرس الزامی است")]
     [Display(Name = "آدرس")]
-    [RegularExpression("[آ-یA-Za-z0-9]+", ErrorMessage = "ورودی صحیح نمی باشد")]
+    [RegularExpression(@"^(?=.*[a-zA-Z\u0600-\u06FF0-9]).*$", ErrorMessage = "ورودی صحیح نمی باشد")]
     public string AddressDetail { get; set; }
 
     [Required(ErrorMessage = "وارد کردن پلاک الزامی است")]
@@ -31,7 +31,7 @@ public class AddressCommand
     public int UnitNumber { get; set; }
 
     [Required(ErrorMessage = "وارد کردن کد پستی الزامی است")]
-    [RegularExpression("[آ-یA-Za-z0-9]+", ErrorMessage = "ورودی صحیح نمی باشد")]
+    [RegularExpression(@"^(?=.*[a-zA-Z\u0600-\u06FF0-9]).*$", ErrorMessage = "ورودی صحیح نمی باشد")]
     [Display(Name = "کد پستی")]
     public string PostalCode { get; set; }
 
