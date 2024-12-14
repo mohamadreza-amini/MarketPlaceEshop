@@ -8,6 +8,7 @@ using Model.Entities.Categories;
 using Service.ServiceClasses.ProductServices;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.ProductServices;
+using Shared.Enums;
 
 namespace MarketPlaceEshop.Areas.Admin.Controllers;
 
@@ -31,6 +32,8 @@ public class ProductController : Controller
         return View();
     }
 
+
+    //brand
     [HttpGet]
     public async Task<IActionResult> Brands(CancellationToken cancellation)
     {
@@ -57,7 +60,7 @@ public class ProductController : Controller
 
 
 
-
+    //category
     public async Task<IActionResult> Category(CancellationToken cancellation)
     {
         var categories = await _categoryService.GetAllListSortAsync(cancellation);
@@ -83,7 +86,7 @@ public class ProductController : Controller
 
 
 
-
+    //category Feature
     public async Task<IActionResult> CategoryFeature(CancellationToken cancellation, int? categoryId)
     {
         var atr =await PrepareCategoryFeature(cancellation, categoryId);
@@ -131,7 +134,7 @@ public class ProductController : Controller
 
 
 
-
+    //add product
 
     [HttpGet]
     public async Task<IActionResult> CreateProductCategory(CancellationToken cancellation)
@@ -226,5 +229,33 @@ public class ProductController : Controller
                 System.IO.File.Delete(file);
         }
     }
+
+
+
+
+
+
+    //confirm product
+    public async Task<IActionResult> ProductRequest(CancellationToken cancellation, int pageIndex = 1, int pageSize = 10)
+    {
+        var productsDto = await _productService.GetProductPanelsAsync(cancellation,ConfirmationStatus.Unchecked,pageIndex,pageSize);
+        return View(productsDto);
+    }
+
+
+    public async Task ConfirmProduct(Guid productId, CancellationToken cancellation)
+    {
+        await _productService.ChangeProductStatus(productId, ConfirmationStatus.Confirmed,cancellation);
+    }
+
+    public async Task RejectProduct(Guid productId, CancellationToken cancellation)
+    {
+        await _productService.ChangeProductStatus(productId, ConfirmationStatus.Rejected, cancellation);
+    }
+
+
+
+
+
 
 }

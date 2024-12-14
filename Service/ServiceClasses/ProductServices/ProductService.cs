@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -92,7 +93,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
             await _productRepository.CreateAsync(product, cancellation);
             return (await _productRepository.CommitAsync(cancellation)) > 0;
         }
-         catch (Exception ex)
+        catch (Exception ex)
         {
             throw new BadRequestException("[create product faild] " + ex.Message);
         }
@@ -155,35 +156,35 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
 
 
 
-/*    public async Task<ProductResult> GetByIdss(Guid productId, CancellationToken cancellation)
-    {
-        var query = await _productRepository.GetAllDataAsync(
-            x => new ProductResult
-            {
-                Comments = Translate<List<Comment>, List<CommentResult>>(x.Comments.ToList()),
-                AverageScore = x.Scores.Average(x => x.StarRating),
-                Images = Translate<List<Image>, List<ImageResult>>(x.Images.ToList()),
-                ProductFeatureValues = Translate<List<ProductFeatureValue>, List<ProductFeatureValueResult>>(x.ProductFeatureValues.ToList()),
-                productSuppliers = Translate<List<ProductSupplier>, List<ProductSupplierResult>>(x.productSuppliers.ToList()),
+    /*    public async Task<ProductResult> GetByIdss(Guid productId, CancellationToken cancellation)
+        {
+            var query = await _productRepository.GetAllDataAsync(
+                x => new ProductResult
+                {
+                    Comments = Translate<List<Comment>, List<CommentResult>>(x.Comments.ToList()),
+                    AverageScore = x.Scores.Average(x => x.StarRating),
+                    Images = Translate<List<Image>, List<ImageResult>>(x.Images.ToList()),
+                    ProductFeatureValues = Translate<List<ProductFeatureValue>, List<ProductFeatureValueResult>>(x.ProductFeatureValues.ToList()),
+                    productSuppliers = Translate<List<ProductSupplier>, List<ProductSupplierResult>>(x.productSuppliers.ToList()),
 
-            },
-            cancellation,
-            x => x.Id == productId && x.IsConfirmed == 2,
-            x => x.Include(x => x.Category).Include(x => x.Brand).Include(x => x.Images).Include(x => x.ProductFeatureValues).ThenInclude(x => x.CategoryFeature).Include(x => x.Comments).Include(x => x.Scores));
-        var product = await query?.FirstOrDefaultAsync(cancellation);
+                },
+                cancellation,
+                x => x.Id == productId && x.IsConfirmed == 2,
+                x => x.Include(x => x.Category).Include(x => x.Brand).Include(x => x.Images).Include(x => x.ProductFeatureValues).ThenInclude(x => x.CategoryFeature).Include(x => x.Comments).Include(x => x.Scores));
+            var product = await query?.FirstOrDefaultAsync(cancellation);
 
 
-        if (product == null)
-            throw new BadRequestException("محصول یافت نشد");
+            if (product == null)
+                throw new BadRequestException("محصول یافت نشد");
 
-        product.CommentCount = product.Comments?.Count() ?? 0;
+            product.CommentCount = product.Comments?.Count() ?? 0;
 
-        product.ScoreCount = await _scoreService.NumberOfScore(productId, cancellation);
+            product.ScoreCount = await _scoreService.NumberOfScore(productId, cancellation);
 
-        //  اینو همینجوری نوشتم به عنوان راهی دیگه برای نوشتن بالایی  کامل ننوشتم و همون بالایی اصلیه و کامله
-        //حس میکنم این روش بهتره بعدا وقت بود بررسی کن یا تغیر بده
-        return product;
-    }*/
+            //  اینو همینجوری نوشتم به عنوان راهی دیگه برای نوشتن بالایی  کامل ننوشتم و همون بالایی اصلیه و کامله
+            //حس میکنم این روش بهتره بعدا وقت بود بررسی کن یا تغیر بده
+            return product;
+        }*/
 
 
 
@@ -254,6 +255,45 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
         }
         return query;
     }
+
+
+
+
+    public async Task<PaginatedList<ProductPanelResult>> GetProductPanelsAsync(CancellationToken cancellationToken, ConfirmationStatus? confirmation = null, int pageIndex = 1, int pageSize = 20)
+    {
+        Expression<Func<Product, bool>> predicate = x => true;
+        if (confirmation != null)
+        {
+            predicate = x => x.IsConfirmed == (byte)confirmation.Value;
+        }
+        var query = await _productRepository.GetAllDataAsync(x => new ProductPanelResult
+        {
+            Description = x.Description,
+            StartDate = x.StartDate,
+            BrandName = x.Brand.BrandName,
+            CategoryId = x.CategoryId,
+            Titel = x.Titel,
+            CategoryName = x.Category.CategoryName,
+            Id = x.Id,
+            Name = x.Name,
+            Images = x.Images.Select(x => new ImageResult
+            {
+                Id = x.Id,
+                Path = x.Path,
+                ProductId = x.ProductId
+            }).ToList(),
+            ProductFeatureValues = x.ProductFeatureValues.Select(x => new ProductFeatureValueResult
+            {
+                Id = x.Id,
+                FeatureName = x.CategoryFeature.FeatureName,
+                FeatureValue = x.FeatureValue
+            }).ToList()
+        }, cancellationToken, predicate);
+
+        return await PaginatedList<ProductPanelResult>.CreateAsync(query,pageIndex,pageSize,cancellationToken);
+
+    }
+
 }
 
 

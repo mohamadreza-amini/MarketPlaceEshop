@@ -14,6 +14,7 @@ using Infrastructure.ChangeInterceptors;
 using Infrastructure.Contracts.Repository;
 using Infrastructure.Contracts.Cache;
 using Infrastructure.Cache;
+using Microsoft.Extensions.FileProviders;
 
 
 namespace MarketPlaceEshop
@@ -50,7 +51,7 @@ namespace MarketPlaceEshop
             });
 
 
-           
+
 
 
             builder.Services.AddHttpContextAccessor();
@@ -102,6 +103,13 @@ namespace MarketPlaceEshop
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "bin", "Debug", "net8.0", "upload")),
+                RequestPath = "/upload"
+            });
+
+
             app.UseRouting();
 
             app.UseAuthentication();
@@ -118,7 +126,7 @@ namespace MarketPlaceEshop
                 endpoint.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoint.MapRazorPages();
             });
-       
+
 
 
             app.Run();
