@@ -11,13 +11,13 @@ namespace DataTransferObject.DTOClasses.Product.Commands;
 public class ProductCommand
 {
 
-    [Length(1, 50)]
+    [StringLength(50,ErrorMessage ="حداکثر 50 کاراکتر")]
     [Required(ErrorMessage = "وارد کردن عنوان محصول الزامی است.")]
     [RegularExpression(@"^(?=.*[a-zA-Z\u0600-\u06FF0-9]).*$", ErrorMessage = "عنوان محصول باید شامل حروف فارسی، انگلیسی باشد.")]
     [Display(Name = " عنوان محصول")]
     public string Titel { get; set; }
 
-    [Length(1, 50)]
+    [StringLength(50, ErrorMessage = "حداکثر 50 کاراکتر")]
     [Required(ErrorMessage = "وارد کردن نام محصول الزامی است.")]
     [RegularExpression(@"^(?=.*[a-zA-Z\u0600-\u06FF0-9]).*$", ErrorMessage = "نام محصول باید شامل حروف فارسی، انگلیسی باشد.")]
     [Display(Name = " نام محصول")]

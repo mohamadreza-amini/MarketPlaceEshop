@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Model.Entities.Addresses;
 using Model.Entities.Categories;
 using Model.Entities.Products;
+using Model.Exceptions;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.ProductServices;
+using Shared.Enums;
+using System.Security.Claims;
 
 namespace MarketPlaceEshop.Areas.Supplier.Controllers;
 [Area("Supplier")]
@@ -18,16 +21,17 @@ public class ProductController : Controller
     private readonly ICategoryService _categoryService;
     private readonly IBrandService _brandService;
     private readonly ICategoryFeatureService _categoryFeatureService;
-
-    public ProductController(IProductService productService, ICategoryService categoryService, IBrandService brandService, ICategoryFeatureService categoryFeatureService)
+    private readonly IProductSupplierService _productSupplierService;
+    public ProductController(IProductService productService, ICategoryService categoryService, IBrandService brandService, ICategoryFeatureService categoryFeatureService, IProductSupplierService productSupplierService)
     {
         _productService = productService;
         _categoryService = categoryService;
         _brandService = brandService;
         _categoryFeatureService = categoryFeatureService;
+        _productSupplierService = productSupplierService;
     }
 
-
+    //create product
     [HttpGet]
     public async Task<IActionResult> CreateProductCategory(CancellationToken cancellation)
     {
@@ -39,8 +43,6 @@ public class ProductController : Controller
 
         return View(createProductModel);
     }
-
-
 
     [HttpPost]
     public async Task<IActionResult> CreateProduct(int categoryId, int brandId, CancellationToken cancellation)
@@ -84,16 +86,15 @@ public class ProductController : Controller
         {
             DeleteImages(uploadedFiles);
             TempData["ToastError"] = "عملیات ناموفق";
-           return RedirectToAction("CreateProduct", "Product", new { area = "Supplier", categoryId = product.ProductDto.CategoryId, brandId = product.ProductDto.BrandId });
+            return RedirectToAction("CreateProduct", "Product", new { area = "Supplier", categoryId = product.ProductDto.CategoryId, brandId = product.ProductDto.BrandId });
         }
         TempData["ToastSuccess"] = "درخواست ثبت محصول با موفقیت انجام شد";
         return RedirectToAction("index", "home", new { area = "Supplier" });
     }
 
-
     private async Task SaveImages(ProductGenerateViewModel product, string root, List<string> uploadedFiles, CancellationToken cancellation)
     {
-        product.ProductDto.Images=new List<ImageCommand>();
+        product.ProductDto.Images = new List<ImageCommand>();
         foreach (var image in product.ProductImages)
         {
             var newFileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
@@ -113,15 +114,75 @@ public class ProductController : Controller
             }
         }
     }
-
     private void DeleteImages(List<string> uploadedFiles)
     {
         foreach (var file in uploadedFiles)
         {
-            if (System.IO.File.Exists(file))   
-                System.IO.File.Delete(file);         
+            if (System.IO.File.Exists(file))
+                System.IO.File.Delete(file);
         }
     }
+
+
+
+
+
+
+    public async Task<IActionResult> GetAllProducts(CancellationToken cancellation, string? serachText = null, int pageIndex = 1,int pageSize = 10)
+    {
+        var products = new ProductSupplierViewModel
+        {
+            Products = await _productService.GetAllProductPanelsAsync(cancellation, serachText, ConfirmationStatus.Confirmed, pageIndex, pageSize),
+            SerachText=serachText
+        };
+        return View(products);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddProductSupplier(ProductSupplierCommand ProductSupplier, CancellationToken cancellation)
+    {
+        if (!ModelState.IsValid || !Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out Guid requester))
+        {
+            TempData["ToastError"] = "اطلاعات ورودی نامعتبر";
+            return RedirectToAction("GetAllProducts", "Product", new { area = "Supplier" });
+        }
+           
+        ProductSupplier.SupplierId = requester;
+        try
+        {
+            await _productSupplierService.AddSupplierToProduct(ProductSupplier, cancellation);
+        }
+        catch (BadRequestException ex)
+        {
+            TempData["ToastError"] = ex.Message.Replace("Bad request!","");
+            return RedirectToAction("GetAllProducts");
+        }
+        return RedirectToAction("GetAllProducts");//بعد اضافه بشه
+        //بعد اضافه بشه
+    }
+
+
+
+
+
+
+
+
+
+    public async Task<IActionResult> GetAllProductSuppliers(CancellationToken cancellation, string? serachText = null, int pageIndex = 1, int pageSize = 10)
+    {
+        var productSuppliers =await _productSupplierService.GetAllProductSupplierByPerson(cancellation, pageIndex, pageSize);
+        return View(productSuppliers);
+    }
+
+
+
+
+
+
+
+
+
 
 }
 

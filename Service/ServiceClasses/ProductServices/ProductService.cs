@@ -259,13 +259,12 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
 
 
 
-    public async Task<PaginatedList<ProductPanelResult>> GetProductPanelsAsync(CancellationToken cancellationToken, ConfirmationStatus? confirmation = null, int pageIndex = 1, int pageSize = 20)
+    public async Task<PaginatedList<ProductPanelResult>> GetAllProductPanelsAsync(CancellationToken cancellationToken,string? searchText =null , ConfirmationStatus? confirmation = null, int pageIndex = 1, int pageSize = 20)
     {
         Expression<Func<Product, bool>> predicate = x => true;
-        if (confirmation != null)
-        {
+        if (confirmation != null)        
             predicate = x => x.IsConfirmed == (byte)confirmation.Value;
-        }
+        
         var query = await _productRepository.GetAllDataAsync(x => new ProductPanelResult
         {
             Description = x.Description,
@@ -290,8 +289,10 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
             }).ToList()
         }, cancellationToken, predicate);
 
-        return await PaginatedList<ProductPanelResult>.CreateAsync(query,pageIndex,pageSize,cancellationToken);
+        if (!string.IsNullOrWhiteSpace(searchText))
+            query = query.Where(x => x.Name.Contains(searchText) || x.Titel.Contains(searchText));
 
+        return await PaginatedList<ProductPanelResult>.CreateAsync(query,pageIndex,pageSize,cancellationToken);
     }
 
 }

@@ -9,7 +9,7 @@ namespace DataTransferObject.DTOClasses.Product.Commands;
 
 public class BrandCommand
 {
-    [Length(1, 50)]
+    [StringLength(50, ErrorMessage = "حداکثر 50 کاراکتر")]
     [Required(ErrorMessage = "وارد کردن نام برند الزامی است.")]
     [RegularExpression(@"^(?=.*[a-zA-Z\u0600-\u06FF]).*$", ErrorMessage = "نام باید فقط شامل حروف فارسی، انگلیسی باشد.")]
     [Display(Name = "برند")]

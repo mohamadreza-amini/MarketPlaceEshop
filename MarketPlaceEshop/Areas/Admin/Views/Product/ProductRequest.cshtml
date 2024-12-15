@@ -10,7 +10,7 @@
         <!-- Header with actions -->
         <!-- Table -->
         <div class="table-responsive ">
-            <table class="table table-striped table-bordered">
+            <table class="table table-sm table-striped table-bordered">
                 <thead class="table-primary">
                     <tr>
 
@@ -78,7 +78,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="productStartDate" class="form-label">تاریخ شروع:</label>
-                                                    <input type="text" id="productStartDate" class="form-control" value="@product.StartDate" readonly>
+                                                    <input type="text" id="productStartDate" class="form-control" value="@product.StartDate.ToAD().ToString("yyyy/MM/dd")" readonly>
                                                 </div>
                                             </div>
                                             <div class="row g-3 mt-3">

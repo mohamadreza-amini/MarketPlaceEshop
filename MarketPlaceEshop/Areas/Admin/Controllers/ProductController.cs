@@ -89,7 +89,7 @@ public class ProductController : Controller
     //category Feature
     public async Task<IActionResult> CategoryFeature(CancellationToken cancellation, int? categoryId)
     {
-        var atr =await PrepareCategoryFeature(cancellation, categoryId);
+        var atr = await PrepareCategoryFeature(cancellation, categoryId);
         return View(atr);
     }
 
@@ -238,14 +238,14 @@ public class ProductController : Controller
     //confirm product
     public async Task<IActionResult> ProductRequest(CancellationToken cancellation, int pageIndex = 1, int pageSize = 10)
     {
-        var productsDto = await _productService.GetProductPanelsAsync(cancellation,ConfirmationStatus.Unchecked,pageIndex,pageSize);
+        var productsDto = await _productService.GetAllProductPanelsAsync(cancellation, null, ConfirmationStatus.Unchecked, pageIndex, pageSize);
         return View(productsDto);
     }
 
 
     public async Task ConfirmProduct(Guid productId, CancellationToken cancellation)
     {
-        await _productService.ChangeProductStatus(productId, ConfirmationStatus.Confirmed,cancellation);
+        await _productService.ChangeProductStatus(productId, ConfirmationStatus.Confirmed, cancellation);
     }
 
     public async Task RejectProduct(Guid productId, CancellationToken cancellation)

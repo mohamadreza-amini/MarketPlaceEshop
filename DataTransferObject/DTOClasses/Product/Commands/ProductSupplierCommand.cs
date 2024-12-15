@@ -14,7 +14,7 @@ public class ProductSupplierCommand
     [Required(ErrorMessage = "وارد کردن موجودی محصول الزامی است.")]
     [Display(Name = "موجودی محصول")]
     public int Ventory { get; set; }
-
+    [Required(ErrorMessage = "وارد کردن مقدار تخفیف الزامی است")]
     [Display(Name = "تخفیف")]
     public decimal Discount { get; set; }
 

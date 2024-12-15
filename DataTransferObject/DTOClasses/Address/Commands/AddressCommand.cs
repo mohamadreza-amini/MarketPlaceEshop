@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -12,11 +12,14 @@ public class AddressCommand
 {
     [Required(ErrorMessage = "وارد کردن محله الزامی است")]
     [RegularExpression(@"^(?=.*[a-zA-Z\u0600-\u06FF0-9]).*$", ErrorMessage = "ورودی صحیح نمی باشد")]
+    [StringLength(50, ErrorMessage = "حداکثر 50 کاراکتر")]
     [Display(Name = "محله")]
     public string Neighborhood { get; set; }
 
     [Required(ErrorMessage = "وارد کردن آدرس الزامی است")]
     [Display(Name = "آدرس")]
+    [StringLength(200, ErrorMessage = "حداکثر 200 کاراکتر")]
+
     [RegularExpression(@"^(?=.*[a-zA-Z\u0600-\u06FF0-9]).*$", ErrorMessage = "ورودی صحیح نمی باشد")]
     public string AddressDetail { get; set; }
 

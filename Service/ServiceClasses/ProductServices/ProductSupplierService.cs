@@ -49,7 +49,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         if (!await IsConfirmedProduct(productSupplier.ProductId, cancellationToken))
             throw new BadRequestException("product isn't confirmed");
 
-        if (productSupplierDto.PriceValue >= productSupplierDto.Discount)
+        if (productSupplierDto.PriceValue <= productSupplierDto.Discount)
             throw new BadRequestException("تخفیف از قیمت بزرگتر وارد شده");
 
         if (productSupplier.Ventory > 0)
@@ -65,6 +65,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
             productSupplier.Discount = 0;
         }
         productSupplier.CreatorUserId = Guid.Parse(_userService.RequesterId() ?? Guid.Empty.ToString());
+        productSupplier.UpdaterUserId = productSupplier.CreatorUserId;
         productSupplier.Validate();
 
         await _productSupplierRepository.CreateAsync(productSupplier, cancellationToken);

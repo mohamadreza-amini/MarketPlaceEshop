@@ -35,6 +35,7 @@ public class PriceService : ServiceBase<Price, PriceResult, Guid>, IPriceService
         var price = Translate<PriceCommand, Price>(priceDto);
         price.StartTime = DateTime.Now;
         price.CreatorUserId = Guid.Parse(_userService.RequesterId() ?? Guid.Empty.ToString());
+        price.UpdaterUserId = price.CreatorUserId;
         await _priceRepository.CreateAsync(price, cancellation);
         return true;
         //کامیت نمیکنه در اضافه شدن تامین کننده به محصول به صورت یونیت اف ورک یکجا اضافه میشه

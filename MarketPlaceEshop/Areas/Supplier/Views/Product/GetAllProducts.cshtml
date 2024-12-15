@@ -1,0 +1,364 @@
+﻿@using DataTransferObject.DTOClasses.Product.Results
+@using MarketPlaceEshop.Areas.Supplier.Models
+@using Service.ServiceClasses
+@using Shared
+@model ProductSupplierViewModel
+
+
+
+<div id="tablecontent">
+    <div class=" container mb-5 mt-5">
+        <!-- Header with actions -->
+        <!-- Table -->
+        <form method="get" asp-area="Supplier" asp-controller="Product" asp-action="GetAllProducts"  asp-route-pageSize=@Model.Products.PageSize asp-route-pageIndex=@Model.Products.PageIndex class="p-3" style="background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-10">
+                    <label for="searchInput" class="form-label">جستجو:</label>
+                    <input name="serachText" type="text" id="searchInput" name="query" value="@Model.SerachText" class="form-control" placeholder="نام یا عنوان محصول" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100 mt-4">جستجو</button>
+                </div>
+            </div>
+        </form>
+
+
+
+
+        <div class="table-responsive ">
+            <table class="table table-sm table-striped table-bordered">
+                <thead class="table-primary">
+                    <tr>
+
+                        <th scope="row">#</th>
+                        <th>نام محصول</th>
+                        <th>عنوان محصول</th>
+                        <th>تاریخ ثبت</th>
+                        <th>دسته بندی</th>
+                        <th>برند</th>
+
+                        <th>جزییات محصول</th>
+
+                        <th>
+                            اضافه شدن به فروشندگان
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var index = (Model.Products.PageIndex - 1) * Model.Products.PageSize + 1;
+                    }
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+
+                            <th scope="row">@(index++)</th>
+                            <td >@product.Name</td>
+                            <td >@product.Titel</td>
+                            <td>@product.StartDate.ToAD().ToString("yyyy/MM/dd")</td>
+                            <td>@product.CategoryName</td>
+                            <td>@product.BrandName</td>
+                            <td>
+                                <button type="button" class="text-nowrap btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#@string.Concat("Modal", product.Id.ToString())">
+                                    نمایش جزئیات
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="text-nowrap btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#@string.Concat("Modalinput", product.Id.ToString())">
+                                    اضافه شدن به فروشندگان
+                                </button>
+                            </td>
+
+                        </tr>
+                       
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+        @foreach (var product in Model.Products)
+        {
+            <!-- Modal product details -->
+
+            <div class="modal fade" id="@string.Concat("Modal",product.Id.ToString())" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title secondary-font" id="modalProductViewTitle">جزئیات محصول</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- اطلاعات عمومی -->
+                            <h6 class="text-muted mb-3">اطلاعات عمومی</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="productName" class="form-label">نام:</label>
+                                    <input type="text" id="productName" class="form-control" value="@product.Name" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="productTitle" class="form-label">عنوان:</label>
+                                    <input type="text" id="productTitle" class="form-control" value="@product.Titel" readonly>
+                                </div>
+                            </div>
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label for="productDescription" class="form-label">توضیحات:</label>
+                                    <textarea id="productDescription" class="form-control" rows="2" readonly>@product.Description</textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="productStartDate" class="form-label">تاریخ شروع:</label>
+                                    <input type="text" id="productStartDate" class="form-control" value="@product.StartDate.ToAD().ToString("yyyy/MM/dd")" readonly>
+                                </div>
+                            </div>
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label for="productCategoryName" class="form-label">دسته‌بندی:</label>
+                                    <input type="text" id="productCategoryName" class="form-control" value="@product.CategoryName" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="productBrandName" class="form-label">برند:</label>
+                                    <input type="text" id="productBrandName" class="form-control" value="@product.BrandName" readonly>
+                                </div>
+                            </div>
+
+                            <!-- تصاویر محصول -->
+                            <h6 class="text-muted mt-4 mb-3">تصاویر محصول</h6>
+                            <div id="productImages" class="d-flex flex-wrap">
+                                <!-- تصاویر به صورت داینامیک اینجا اضافه می‌شوند -->
+                                @foreach (var image in product.Images)
+                                {
+                                    <a href="@Url.Content( @image.Path.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\"))" target="_blank">
+                                        <img src="@image.Path.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")" alt="تصویر محصول" class="" style="width: 150px; height: 150px;">
+                                    </a>
+                                }
+                            </div>
+
+                            <!-- ویژگی‌های محصول -->
+                            <h6 class="text-muted mt-4 mb-3">ویژگی‌های محصول</h6>
+                            <div id="productFeatures" class="row g-3">
+                                <!-- ویژگی‌ها به صورت داینامیک اینجا اضافه می‌شوند -->
+                                @foreach (var feature in product.ProductFeatureValues)
+                                {
+                                    <div class="col-md-6">
+                                        <label class="form-label">@feature.FeatureName</label>
+                                        <input type="text" class="form-control" value="@feature.FeatureValue" readonly>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">بستن</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            <!-- Modal form -->
+            <div class="modal fade" id="@string.Concat("Modalinput",product.Id.ToString())" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">ورود اطلاعات فروش محصول</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form asp-area="Supplier" asp-controller="Product" asp-action="AddProductSupplier" method="post">
+                            <div class="modal-body">
+                                <div class="row mb-3">
+
+                                    <div class="col">
+                                        <input name="ProductSupplier.ProductId" value="@product.Id" hidden readonly />
+                                        <label asp-for="ProductSupplier.Ventory" class="form-label">موجودی</label>
+                                        <input asp-for="ProductSupplier.Ventory" class="form-control" placeholder="موجودی محصول" required>
+                                        <span asp-validation-for="ProductSupplier.Ventory" class="text-danger"></span>
+
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <label asp-for="ProductSupplier.PriceValue" class="form-label">قیمت</label>
+                                        <input asp-for="ProductSupplier.PriceValue" class="form-control" placeholder="قیمت به ریال" required>
+                                        <span asp-validation-for="ProductSupplier.PriceValue" class="text-danger"></span>
+
+                                    </div>
+                                    <div class="col">
+                                        <label asp-for="ProductSupplier.Discount" class="form-label">تخفیف</label>
+                                        <input asp-for="ProductSupplier.Discount" value="0" class="form-control" placeholder="تخفیف به ریال" required>
+                                        <span asp-validation-for="ProductSupplier.Discount" class="text-danger"></span>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                                <button type="submit" class="btn btn-primary">ذخیره</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        }
+
+
+
+        <!-- Footer with pagination and rows per page -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+                <select onchange="getAllProducts()" id="pagesize" class="form-select form-select-sm" style="width: auto;">
+                    @if (Model.Products.PageSize == 1)
+                    {
+                        <option selected value="1">1</option>
+                    }
+                    else
+                    {
+                        <option value="1">1</option>
+                    }
+                    @if (Model.Products.PageSize == 3)
+                    {
+                        <option selected value="3">3</option>
+                    }
+                    else
+                    {
+                        <option value="3">3</option>
+                    }
+
+                    @if (Model.Products.PageSize == 5)
+                    {
+                        <option selected value="5">5</option>
+                    }
+                    else
+                    {
+                        <option value="5">5</option>
+                    }
+                    @if (Model.Products.PageSize == 10)
+                    {
+                        <option selected value="10">10</option>
+                    }
+                    else
+                    {
+                        <option value="10">10</option>
+                    }
+                    @if (Model.Products.PageSize == 20)
+                    {
+                        <option selected value="20">20</option>
+                    }
+                    else
+                    {
+                        <option value="20">20</option>
+                    }
+                    @if (Model.Products.PageSize == 30)
+                    {
+                        <option selected value="30">30</option>
+                    }
+                    else
+                    {
+                        <option value="30">30</option>
+                    }
+
+
+
+
+
+                </select>
+            </div>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+
+                    @if (Model.Products.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link paginate_button page-item" asp-area="Supplier" asp-controller="Product" asp-action="GetAllProducts" asp-route-serachText="@Model.SerachText" asp-route-pageIndex="@(Model.Products.PageIndex-1)" asp-route-pageSize=@Model.Products.PageSize> قبلی </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">قبلی</span>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= Model.Products.TotalPages; i++)
+                    {
+                        if (i == Model.Products.PageIndex)
+                        {
+                            <li class="page-item active">
+                                <span class="page-link">@i <span class="sr-only">(current)</span></span>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-area="Supplier" asp-controller="Product" asp-action="GetAllProducts" asp-route-serachText="@Model.SerachText" asp-route-pageSize=@Model.Products.PageSize asp-route-pageIndex="@i">@i</a>
+                            </li>
+                        }
+                    }
+
+                    @if (Model.Products.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-area="Supplier" asp-controller="Product" asp-action="GetAllProducts" asp-route-serachText="@Model.SerachText" asp-route-pageIndex="@(Model.Products.PageIndex+1)" asp-route-pageSize=@Model.Products.PageSize>بعدی</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">بعدی</span>
+                        </li>
+                    }
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+    <script>
+        function getAllProducts() {
+            const PageSize = $("#pagesize").val();
+
+            $.ajax({
+                url: "/supplier/product/GetAllProducts",
+                type: "GET",
+                data: {
+                    pageSize: PageSize
+                },
+                success: function (response) {
+                    var content = $(response).find('#tablecontent').html();
+
+                    $("#tablecontent").html(content);
+                },
+                error: function (xhr, status, error) {
+                    console.error("خطا در ارسال درخواست:", error);
+                }
+            });
+
+        }
+
+
+
+    </script>
+}
+
+@section FooterContent {
+    <script src="~/assets/vendor/libs/jquery/jquery.js"></script>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
