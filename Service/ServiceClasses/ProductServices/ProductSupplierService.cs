@@ -93,7 +93,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         if (!await IsConfirmedProduct(productSupplier.ProductId, cancellationToken))
             throw new BadRequestException("product isn't confirmed");
 
-        if (productSupplierDto.PriceValue >= productSupplierDto.Discount)
+        if (productSupplierDto.PriceValue <= productSupplierDto.Discount)
             throw new BadRequestException("تخفیف از قیمت بزرگتر وارد شده");
 
         if (productSupplier.Ventory > 0)
@@ -202,7 +202,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
                CategoryName = x.Product.Category.CategoryName,
                Titel = x.Product.Titel,
                ProductName = x.Product.Name,
-               AverageScore = x.Product.Scores != null && x.Product.Scores.Any() ? x.Product.Scores.Select(s => s.StarRating).DefaultIfEmpty(0).Average() : 0
+               AverageScore = x.Product.Scores != null && x.Product.Scores.Any() ? x.Product.Scores.Select(s => s.StarRating).Average() : 0
            }
            , cancellation, predicate);
 

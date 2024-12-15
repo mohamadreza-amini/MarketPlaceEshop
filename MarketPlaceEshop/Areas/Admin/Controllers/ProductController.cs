@@ -5,10 +5,12 @@ using MarketPlaceEshop.Areas.Admin.Models;
 using MarketPlaceEshop.Areas.Supplier.Models;
 using Microsoft.AspNetCore.Mvc;
 using Model.Entities.Categories;
+using Model.Exceptions;
 using Service.ServiceClasses.ProductServices;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.ProductServices;
 using Shared.Enums;
+using System.Security.Claims;
 
 namespace MarketPlaceEshop.Areas.Admin.Controllers;
 
@@ -19,12 +21,14 @@ public class ProductController : Controller
     private readonly ICategoryService _categoryService;
     private readonly ICategoryFeatureService _categoryFeatureService;
     private readonly IProductService _productService;
-    public ProductController(IBrandService brandService, ICategoryService categoryService, ICategoryFeatureService categoryFeatureService, IProductService productService)
+    private readonly IProductSupplierService _productSupplierService;
+    public ProductController(IBrandService brandService, ICategoryService categoryService, ICategoryFeatureService categoryFeatureService, IProductService productService, IProductSupplierService productSupplierService)
     {
         _brandService = brandService;
         _categoryService = categoryService;
         _categoryFeatureService = categoryFeatureService;
         _productService = productService;
+        _productSupplierService = productSupplierService;
     }
 
     public IActionResult Index()
@@ -255,6 +259,66 @@ public class ProductController : Controller
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+    //دیدن محصولات
+    public async Task<IActionResult> GetAllProducts(CancellationToken cancellation, string? serachText = null, int pageIndex = 1, int pageSize = 10)
+    {
+        var products = new ProductSupplierViewModel
+        {
+            Products = await _productService.GetAllProductPanelsAsync(cancellation, serachText, ConfirmationStatus.Confirmed, pageIndex, pageSize),
+            SerachText = serachText
+        };
+        return View(products);
+    }
+
+   
+
+
+
+
+
+    //دیدن و تغیر محصولات تامین کننده
+    public async Task<IActionResult> GetAllProductSuppliers(CancellationToken cancellation, string? serachText = null, int pageIndex = 1, int pageSize = 10)
+    {
+        var productSupplier = new ProductSupplierViewModel
+        {
+            ProductSuppliers = await _productSupplierService.GetAllProductSupplierByPerson(cancellation, pageIndex, pageSize)
+        };
+        return View(productSupplier);
+    }
+
+
+
+    [HttpPost]
+    public async Task<IActionResult> EditProductSupplier(ProductSupplierCommand ProductSupplier, CancellationToken cancellation)
+    {
+        if (!ModelState.IsValid )
+        {
+            TempData["ToastError"] = "اطلاعات ورودی نامعتبر";
+            return RedirectToAction("GetAllProductSuppliers", "Product", new { area = "Admin" });
+        }
+   
+        try
+        {
+            await _productSupplierService.UpdateSupplierProduct(ProductSupplier, cancellation);
+        }
+        catch (BadRequestException ex)
+        {
+            TempData["ToastError"] = ex.Message.Replace("Bad request!", "");
+        }
+        return RedirectToAction("GetAllProductSuppliers", "Product", new { area = "admin" });
+    }
 
 
 

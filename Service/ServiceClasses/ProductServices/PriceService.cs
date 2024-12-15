@@ -57,6 +57,7 @@ public class PriceService : ServiceBase<Price, PriceResult, Guid>, IPriceService
         // در این حالت تامین کننده ساخته شده اما یا قیمت نداره یا قیمت باز نداره
         lastPrice.ExpiredTime = DateTime.Now;
         lastPrice.UpdaterUserId = Guid.Parse(_userService.RequesterId() ?? Guid.Empty.ToString());
-        return await _priceRepository.CommitAsync(cancellation) > 0;
+        return true;
+        //کامیت نمیشه تا جای دیگه کامیت کنه
     }
 }

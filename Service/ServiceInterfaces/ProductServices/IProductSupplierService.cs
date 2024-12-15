@@ -14,6 +14,7 @@ namespace Service.ServiceInterfaces.ProductServices;
 public interface IProductSupplierService : IServiceBase<ProductSupplier, ProductSupplierResult, Guid>
 {
     Task AddSupplierToProduct(ProductSupplierCommand productSupplierDto, CancellationToken cancellationToken);
+    Task UpdateSupplierProduct(ProductSupplierCommand productSupplierDto, CancellationToken cancellationToken);
     Task<Guid?> GetSuppierIdById(Guid ProductSupplierId, CancellationToken cancellation);
     Task<int> GetInventory(Guid productSupplierId, CancellationToken cancellation);
     Task<bool> HasInventory(Guid productSupplierId, int quantity, CancellationToken cancellation);

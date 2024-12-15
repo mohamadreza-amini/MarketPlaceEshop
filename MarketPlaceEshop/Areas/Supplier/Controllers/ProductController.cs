@@ -127,7 +127,7 @@ public class ProductController : Controller
 
 
 
-
+    //اضافه شدن تامین کننده به محصول
     public async Task<IActionResult> GetAllProducts(CancellationToken cancellation, string? serachText = null, int pageIndex = 1,int pageSize = 10)
     {
         var products = new ProductSupplierViewModel
@@ -155,10 +155,9 @@ public class ProductController : Controller
         catch (BadRequestException ex)
         {
             TempData["ToastError"] = ex.Message.Replace("Bad request!","");
-            return RedirectToAction("GetAllProducts");
+            return RedirectToAction("GetAllProducts", "Product", new { area = "Supplier" });
         }
-        return RedirectToAction("GetAllProducts");//بعد اضافه بشه
-        //بعد اضافه بشه
+        return RedirectToAction("GetAllProductSuppliers", "Product", new {area="Supplier"});
     }
 
 
@@ -168,19 +167,38 @@ public class ProductController : Controller
 
 
 
-
+    //دیدن و تغیر محصولات تامین کننده
     public async Task<IActionResult> GetAllProductSuppliers(CancellationToken cancellation, string? serachText = null, int pageIndex = 1, int pageSize = 10)
     {
-        var productSuppliers =await _productSupplierService.GetAllProductSupplierByPerson(cancellation, pageIndex, pageSize);
-        return View(productSuppliers);
+        var productSupplier = new ProductSupplierViewModel
+        {
+           ProductSuppliers= await _productSupplierService.GetAllProductSupplierByPerson(cancellation, pageIndex, pageSize)
+        };
+        return View(productSupplier);
     }
 
 
 
+    [HttpPost]
+    public async Task<IActionResult> EditProductSupplier(ProductSupplierCommand ProductSupplier, CancellationToken cancellation)
+    {
+        if (!ModelState.IsValid || !Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out Guid requester))
+        {
+            TempData["ToastError"] = "اطلاعات ورودی نامعتبر";
+            return RedirectToAction("GetAllProductSuppliers", "Product", new { area = "Supplier" });
+        }
 
-
-
-
+        ProductSupplier.SupplierId = requester;
+        try
+        {
+            await _productSupplierService.UpdateSupplierProduct(ProductSupplier, cancellation);
+        }
+        catch (BadRequestException ex)
+        {
+            TempData["ToastError"] = ex.Message.Replace("Bad request!", "");
+        }
+        return RedirectToAction("GetAllProductSuppliers", "Product", new { area = "Supplier" });
+    }
 
 
 

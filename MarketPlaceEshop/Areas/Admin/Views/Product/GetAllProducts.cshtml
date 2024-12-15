@@ -13,7 +13,7 @@
         </div>
         <!-- Header with actions -->
         <!-- Table -->
-        <form method="get" asp-area="Supplier" asp-controller="Product" asp-action="GetAllProducts"  asp-route-pageSize=@Model.Products.PageSize asp-route-pageIndex=@Model.Products.PageIndex class="p-3" style="background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <form method="get" asp-area="Admin" asp-controller="Product" asp-action="GetAllProducts"  asp-route-pageSize=@Model.Products.PageSize asp-route-pageIndex=@Model.Products.PageIndex class="p-3" style="background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
             <div class="row g-3 align-items-center">
                 <div class="col-md-10">
                     <label for="searchInput" class="form-label">جستجو:</label>
@@ -42,9 +42,7 @@
 
                         <th>جزییات محصول</th>
 
-                        <th>
-                            اضافه شدن به فروشندگان
-                        </th>
+                       
                     </tr>
                 </thead>
                 <tbody>
@@ -66,11 +64,7 @@
                                     نمایش جزئیات
                                 </button>
                             </td>
-                            <td>
-                                <button type="button" class="text-nowrap btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#@string.Concat("Modalinput", product.Id.ToString())">
-                                    اضافه شدن به فروشندگان
-                                </button>
-                            </td>
+                            
 
                         </tr>
                        
@@ -159,57 +153,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-
-
-
-
-
-            <!-- Modal form -->
-            <div class="modal fade" id="@string.Concat("Modalinput",product.Id.ToString())" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">ورود اطلاعات فروش محصول</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form asp-area="Supplier" asp-controller="Product" asp-action="AddProductSupplier" method="post">
-                            <div class="modal-body">
-                                <div class="row mb-3">
-
-                                    <div class="col">
-                                        <input name="ProductSupplier.ProductId" value="@product.Id" hidden readonly />
-                                        <label asp-for="ProductSupplier.Ventory" class="form-label">موجودی</label>
-                                        <input asp-for="ProductSupplier.Ventory" class="form-control" placeholder="موجودی محصول" required>
-                                        <span asp-validation-for="ProductSupplier.Ventory" class="text-danger"></span>
-
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col">
-                                        <label asp-for="ProductSupplier.PriceValue" class="form-label">قیمت</label>
-                                        <input asp-for="ProductSupplier.PriceValue" class="form-control" placeholder="قیمت به ریال" required>
-                                        <span asp-validation-for="ProductSupplier.PriceValue" class="text-danger"></span>
-
-                                    </div>
-                                    <div class="col">
-                                        <label asp-for="ProductSupplier.Discount" class="form-label">تخفیف</label>
-                                        <input asp-for="ProductSupplier.Discount" value="0" class="form-control" placeholder="تخفیف به ریال" required>
-                                        <span asp-validation-for="ProductSupplier.Discount" class="text-danger"></span>
-
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                                <button type="submit" class="btn btn-primary">ذخیره</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            </div>  
 
 
         }
@@ -282,7 +226,7 @@
                     @if (Model.Products.HasPreviousPage)
                     {
                         <li class="page-item">
-                            <a class="page-link paginate_button page-item" asp-area="Supplier" asp-controller="Product" asp-action="GetAllProducts" asp-route-serachText="@Model.SerachText" asp-route-pageIndex="@(Model.Products.PageIndex-1)" asp-route-pageSize=@Model.Products.PageSize> قبلی </a>
+                            <a class="page-link paginate_button page-item" asp-area="Admin" asp-controller="Product" asp-action="GetAllProducts" asp-route-serachText="@Model.SerachText" asp-route-pageIndex="@(Model.Products.PageIndex-1)" asp-route-pageSize=@Model.Products.PageSize> قبلی </a>
                         </li>
                     }
                     else
@@ -303,7 +247,7 @@
                         else
                         {
                             <li class="page-item">
-                                <a class="page-link" asp-area="Supplier" asp-controller="Product" asp-action="GetAllProducts" asp-route-serachText="@Model.SerachText" asp-route-pageSize=@Model.Products.PageSize asp-route-pageIndex="@i">@i</a>
+                                <a class="page-link" asp-area="Admin" asp-controller="Product" asp-action="GetAllProducts" asp-route-serachText="@Model.SerachText" asp-route-pageSize=@Model.Products.PageSize asp-route-pageIndex="@i">@i</a>
                             </li>
                         }
                     }
@@ -311,7 +255,7 @@
                     @if (Model.Products.HasNextPage)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-area="Supplier" asp-controller="Product" asp-action="GetAllProducts" asp-route-serachText="@Model.SerachText" asp-route-pageIndex="@(Model.Products.PageIndex+1)" asp-route-pageSize=@Model.Products.PageSize>بعدی</a>
+                            <a class="page-link" asp-area="Admin" asp-controller="Product" asp-action="GetAllProducts" asp-route-serachText="@Model.SerachText" asp-route-pageIndex="@(Model.Products.PageIndex+1)" asp-route-pageSize=@Model.Products.PageSize>بعدی</a>
                         </li>
                     }
                     else
@@ -337,7 +281,7 @@
             const PageSize = $("#pagesize").val();
 
             $.ajax({
-                url: "/supplier/product/GetAllProducts",
+                url: "/Admin/product/GetAllProducts",
                 type: "GET",
                 data: {
                     pageSize: PageSize
