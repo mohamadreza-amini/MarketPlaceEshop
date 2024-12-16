@@ -1,0 +1,360 @@
+﻿@using Shared.Enums
+ @model ProductsFilterViewModel
+
+<!--------------------------------- Main Content -->
+<main class="main-content dt-sl mb-3">
+    <div class="container main-container">
+        <div class="row">
+            <!-- Start Sidebar -->
+            <div class="col-lg-3 col-md-12 col-sm-12 sticky-sidebar filter-options-sidebar">
+                <div class="d-md-none">
+                    <div class="header-filter-options">
+                        <span>جستجوی پیشرفته <i class="fad fa-sliders-h"></i></span>
+                        <button class="btn-close-filter-sidebar"><i class="fal fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="dt-sn dt-sn--box mb-3 mt-3">
+                    <form id="formFilter" asp-controller="Product" asp-action="Search" method="get">
+                        <div class="col-12">
+                            <div class="section-title text-sm-title title-wide mb-1 no-after-title-wide">
+                                <h2>فیلتر محصولات</h2>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="widget-search">
+                                <input asp-for="Filter.SearchText" placeholder="نام محصول مورد نظر را بنویسید...">
+                                <button class="btn-search-widget">
+                                    <img src="~/assets/img/theme/search.png" alt="">
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-12 filter-product mb-3">
+                            <div class="accordion" id="accordionExample">
+                                <div class="card">
+                                    <div class="card-header" id="headingOne">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-block text-right collapsed" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                                                    aria-expanded="false" aria-controls="collapseOne">
+                                                دسته بندی
+                                                <i class="fad fa-chevron-down"></i>
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                         data-parent="#accordionExample">
+                                        <div class="card-body">
+
+
+
+
+                                            @foreach (var category in Model.Filter.CategoryList)
+                                            {
+                                                <div class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input"
+                                                           id="category_@category.Id"
+                                                           value="@category.Id"
+                                                           name="Filter.SelectedCategoryId"
+                                                    @(Model.Filter.SelectedCategoryId == category.Id ? "checked" : "") />
+                                                    <label class="custom-control-label" for="category_@category.Id">@category.CategoryName</label>
+                                                </div>
+                                            }
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingTwo">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-block text-right collapsed" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                                                    aria-expanded="false" aria-controls="collapseTwo">
+                                                برند
+                                                <i class="fad fa-chevron-down"></i>
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                                         data-parent="#accordionExample">
+                                        <div class="card-body">
+
+
+
+
+                                            @foreach (var brand in Model.Filter.BrandList)
+                                            {
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="brand_@brand.Id" name="Filter.SelectedBrandIds" value="@brand.Id" @(Model.Filter.SelectedBrandIds.Contains(brand.Id) ? "checked" : "") />
+                                                    <label class="custom-control-label" for="brand_@brand.Id">@brand.BrandName</label>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <input id="SortProduct" asp-for="Filter.SortProduct" hidden value="@(Model.Filter.SortProduct==0 ? 0:Model.Filter.SortProduct)" />
+                        <input id="pageindex" asp-for="Filter.PageIndex" hidden value="1" />
+
+                        <div class="col-12 mb-3">
+                            <div class="parent-switcher">
+                                <label class="ui-statusswitcher">
+                                    <input asp-for="Filter.OnlyAvailable" type="checkbox" id="switcher-1">
+                                    <span class="ui-statusswitcher-slider">
+                                        <span class="ui-statusswitcher-slider-toggle"></span>
+                                    </span>
+                                </label>
+                                <label class="label-switcher" for="switcher-1">فقط کالاهای موجود</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-info btn-block" type="submit">
+                                فیلتر
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- End Sidebar -->
+            <!-- Start Content -->
+            <div class="col-lg-9 col-md-12 col-sm-12 search-card-res mt-3">
+                <div class="d-md-none">
+                    <button class="btn-filter-sidebar">
+                        جستجوی پیشرفته <i class="fad fa-sliders-h"></i>
+                    </button>
+                </div>
+
+                <div class="dt-sl dt-sn px-0 search-amazing-tab">
+                    <div class="ah-tab-wrapper dt-sl">
+                        <div class="ah-tab dt-sl sorting-links">
+                            <a class="ah-tab-item" @(Model.Filter.SortProduct == 0 ? "data-ah-tab-active=true" : "") href="javascript:void(0);" onclick="ChangeSortPage(0)">پیش فرض</a>
+                            <a class="ah-tab-item" @(Model.Filter.SortProduct == SortProduct.Newest ? "data-ah-tab-active=true" : "") href="javascript:void(0);" onclick="ChangeSortPage(1)">جدید ترین</a>
+                            <a class="ah-tab-item" @(Model.Filter.SortProduct == SortProduct.Oldest ? "data-ah-tab-active=true" : "") href="javascript:void(0);" onclick="ChangeSortPage(2)">قدیمی ترین</a>
+                            <a class="ah-tab-item" @(Model.Filter.SortProduct == SortProduct.Cheapest ? "data-ah-tab-active=true" : "") href="javascript:void(0);" onclick="ChangeSortPage(3)">ارزان ترین</a>
+                            <a class="ah-tab-item" @(Model.Filter.SortProduct == SortProduct.MostExpensive ? "data-ah-tab-active=true" : "") href="javascript:void(0);" onclick="ChangeSortPage(4)">گران ترین</a>
+
+                        </div>
+                    </div>
+
+
+                    <div class="ah-tab-content-wrapper dt-sl px-res-0">
+
+
+                        <div class="ah-tab-content dt-sl" data-ah-tab-active="true">
+
+                            <div class="row mb-3 mx-0 px-res-0">
+
+
+                                <!--هر محصول -->
+                                @foreach (var product in Model.Products)
+                                {
+
+                                    <div class="col-lg-3 col-md-4 col-sm-6 col-12 px-10 mb-1 px-res-0">
+                                        <div class="product-card mb-2 mx-res-0">
+                                            @if (product.Discount)
+                                            {
+                                                <div class="promotion-badge">فروش ویژه</div>
+
+                                            }
+                                            <div class="product-head">
+                                                <div class="rating-stars">
+                                                    @for(var star = 1;star<= 5; star++)
+                                                    {
+                                                        if (product.AverageScore >= star)
+                                                        {
+                                                            <i class="fa fa-star active"></i>
+                                                        }
+                                                        <i class="fa fa-star"></i>
+                                                    }                                                 
+                                                </div>
+                                                @if (product.Discount)
+                                                {
+                                                    <div class="discount">
+                                                        <span>تخفیف </span>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <a class="product-thumb" href="#">
+                                                <img src="@product.ImagePath.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")" alt="Product Thumbnail" />
+                                            </a>
+                                            <div class="product-card-body">
+                                               
+                                                <h5 class="product-title">
+                                                    <a href="#">@product.Name</a>
+                                                </h5>
+                                                <a class="product-meta" href="shop-categories.html">@product.Titel</a>
+                                                <span class="product-price">@((product.Price / 10).ToString("0")) تومان</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+
+
+
+                                <!--هر محصول -->
+
+
+
+
+
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="pagination pagination-links">
+
+
+                                        @if (Model.Products.HasPreviousPage)
+                                        {
+                                            <a href="javascript:void(0);" onclick=" ChangePageIndex(@(Model.Products.PageIndex - 1))" class=" prev">
+                                                <i>
+                                                    <svg width="30px"
+                                                         height="30px"
+                                                         viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.1"
+                                                              d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z"
+                                                              fill="#323232"></path>
+                                                        <path d="M11 15L13.7158 12.2842V12.2842C13.8728 12.1272 13.8728 11.8728 13.7158 11.7158V11.7158L11 9"
+                                                              stroke="#323232"
+                                                              stroke-width="2"
+                                                              stroke-linecap="round"
+                                                              stroke-linejoin="round"></path>
+                                                        <path d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z"
+                                                              stroke="#323232"
+                                                              stroke-width="2"></path>
+                                                    </svg>
+                                                </i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a class="prev" href="javascript:void(0);">
+                                                <i>
+                                                    <svg width="30px"
+                                                         height="30px"
+                                                         viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.1"
+                                                              d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z"
+                                                              fill="#323232"></path>
+                                                        <path d="M11 15L13.7158 12.2842V12.2842C13.8728 12.1272 13.8728 11.8728 13.7158 11.7158V11.7158L11 9"
+                                                              stroke="#323232"
+                                                              stroke-width="2"
+                                                              stroke-linecap="round"
+                                                              stroke-linejoin="round"></path>
+                                                        <path d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z"
+                                                              stroke="#323232"
+                                                              stroke-width="2"></path>
+                                                    </svg>
+                                                </i>
+                                            </a>
+                                        }
+
+                                        @for (int i = 1; i <= Model.Products.TotalPages; i++)
+                                        {
+                                            if (i == Model.Products.PageIndex)
+                                            {
+                                                <a href="javascript:void(0);" class=" active-page">@i</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="javascript:void(0);" onclick=" ChangePageIndex(@i)" class=" ">@i</a>
+                                            }
+                                        }
+
+
+                                        @if (Model.Products.HasNextPage)
+                                        {
+                                            <a href="javascript:void(0);" onclick="ChangePageIndex(@(Model.Products.PageIndex + 1))" class=" next">
+                                                <i>
+                                                    <svg width="30px"
+                                                         height="30px"
+                                                         viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.1"
+                                                              d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z"
+                                                              fill="#323232"></path>
+                                                        <path d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z"
+                                                              stroke="#323232"
+                                                              stroke-width="2"></path>
+                                                        <path d="M13 9L10.2625 11.7375V11.7375C10.1175 11.8825 10.1175 12.1175 10.2625 12.2625V12.2625L13 15"
+                                                              stroke="#323232"
+                                                              stroke-width="2"
+                                                              stroke-linecap="round"
+                                                              stroke-linejoin="round"></path>
+                                                    </svg>
+                                                </i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="javascript:void(0);" class="next">
+                                                <i>
+                                                    <svg width="30px"
+                                                         height="30px"
+                                                         viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.1"
+                                                              d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z"
+                                                              fill="#323232"></path>
+                                                        <path d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z"
+                                                              stroke="#323232"
+                                                              stroke-width="2"></path>
+                                                        <path d="M13 9L10.2625 11.7375V11.7375C10.1175 11.8825 10.1175 12.1175 10.2625 12.2625V12.2625L13 15"
+                                                              stroke="#323232"
+                                                              stroke-width="2"
+                                                              stroke-linecap="round"
+                                                              stroke-linejoin="round"></path>
+                                                    </svg>
+                                                </i>
+                                            </a>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <!-- End Content -->
+
+            </div>
+
+        </div>
+    </div>
+</main>
+<!--------------------------------- Main Content -->
+@section Scripts {
+
+
+    <script>
+        function ChangePageIndex(pagenumber) {
+            $("#pageindex").val(pagenumber);
+            $("#formFilter").submit();
+
+        }
+
+
+        function ChangeSortPage(Sort) {
+            $("#SortProduct").val(Sort);
+            $("#formFilter").submit();
+
+        }
+    </script>
+}

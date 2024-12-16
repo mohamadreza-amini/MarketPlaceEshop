@@ -12,9 +12,9 @@ public class ProductminiResult:BaseDTO<Guid>
 {
     public string Titel { get; set; }
     public string Name { get; set; }   
-    //public double AverageScore { get; set; }
+    public double AverageScore { get; set; }
     public string ImagePath { get; set; }
-    //public decimal Discount { get; set; }
+    public bool Discount { get; set; }
     public decimal Price { get; set; }
 }
 //حذف شدن کامنت ها

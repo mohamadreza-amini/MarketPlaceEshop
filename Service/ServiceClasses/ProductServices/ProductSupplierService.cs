@@ -160,7 +160,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
                 Discount = x.Discount,
                 Price = x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault()
             }
-        , cancellation, x => x.ProductId == productId, x => x.Include(x => x.Supplier).Include(x => x.Prices));
+        , cancellation, x => x.ProductId == productId && x.Ventory > 0, x => x.Include(x => x.Supplier).Include(x => x.Prices));  // && x.Ventory > 0 یعدا اضافه شد
         if (query == null)
             return new List<ProductSupplierResult>();
         return await query.OrderBy(x => x.Price).ToListAsync(cancellation);
@@ -196,6 +196,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
                Ventory = x.Ventory,
                Discount = x.Discount,
                Price = x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(),
+              // Price = x.Prices !=null && x.Prices.Any() ? x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(), //اگع بالایی مشکل داشت این خط
                StartDate = x.Product.StartDate,
                BrandName = x.Product.Brand.BrandName,
                CategoryId = x.Product.CategoryId,
@@ -220,9 +221,10 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         {
             return await _productSupplierRepository.GetTotalInventory(cancellation);
         }
-        else if (_userService.IsInRole("Supplier") && Guid.TryParse(_userService.RequesterId(), out Guid supplierId)){
+        else if (_userService.IsInRole("Supplier") && Guid.TryParse(_userService.RequesterId(), out Guid supplierId))
+        {
 
-            return await _productSupplierRepository.GetTotalInventoryBySupplierId(supplierId,cancellation);
+            return await _productSupplierRepository.GetTotalInventoryBySupplierId(supplierId, cancellation);
         }
         throw new AccessDeniedException();
     }

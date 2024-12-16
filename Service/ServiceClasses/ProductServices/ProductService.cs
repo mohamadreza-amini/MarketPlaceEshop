@@ -191,7 +191,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
 
     public async Task<PaginatedList<ProductminiResult>> GetAllbyFilterCommand(ProductFilterCommand filterDto, CancellationToken cancellation, int pageIndex = 1, int pageSize = 20)
     {
-        var query = await _productRepository.GetAllDataAsync(x => x, cancellation, x => x.IsConfirmed == 2, x => x.Include(x => x.Images).Include(x => x.productSuppliers).ThenInclude(x => x.Prices));
+        var query = await _productRepository.GetAllDataAsync(x => x, cancellation, x => x.IsConfirmed == 2);
 
         if (query == null)
             return new PaginatedList<ProductminiResult>(new List<ProductminiResult>(), 0, 1, pageSize);
@@ -206,7 +206,11 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
             Name = x.Name,
             Titel = x.Titel,
             ImagePath = x.Images.Select(x => x.Path).FirstOrDefault()!,
-            Price = x.productSuppliers.SelectMany(x => x.Prices).Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).Min()
+            /*Price = x.productSuppliers != null && x.productSuppliers.Any(ps => ps.Prices != null && ps.Prices.Any()) ?
+             x.productSuppliers.Where(ps => ps.Prices != null && ps.Prices.Any()).SelectMany(ps => ps.Prices).Where(p => p.ExpiredTime == null).Select(p => (decimal?)p.PriceValue).Min() ?? 0 : 0, حالت دیگر*/
+            Price = x.productSuppliers.Where(ps => ps.Prices != null && ps.Prices.Any()).SelectMany(ps => ps.Prices).Where(p => p.ExpiredTime == null).Select(p => (decimal?)p.PriceValue).Min() ?? 0,
+            AverageScore = x.Scores != null && x.Scores.Any() ? x.Scores.Select(s => s.StarRating).Average() : 0,//این خط بعدا اضافه شده
+            Discount = x.productSuppliers.Any(x => x.Discount > 0&& x.Ventory>0)
         }));
 
         return await PaginatedList<ProductminiResult>.CreateAsync(products, pageIndex, pageSize, cancellation);
@@ -244,12 +248,12 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
                 query = query.OrderBy(x => x.CreateDatetime);
                 break;
             case SortProduct.Cheapest:
-                query = query.OrderBy(x => x.productSuppliers.SelectMany(x => x.Prices)
-                .Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).DefaultIfEmpty(decimal.MaxValue).Min());
+                query = query.OrderBy(x => x.productSuppliers.Where(ps => ps.Prices != null && ps.Prices.Any()).SelectMany(x => x.Prices)
+                .Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).Min());
                 break;
             case SortProduct.MostExpensive:
                 query = query.OrderByDescending(x => x.productSuppliers.SelectMany(x => x.Prices)
-                .Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).DefaultIfEmpty(decimal.MinValue).Min());
+                .Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).Min());
                 break;
             default: break;
         }
@@ -259,12 +263,12 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
 
 
 
-    public async Task<PaginatedList<ProductPanelResult>> GetAllProductPanelsAsync(CancellationToken cancellationToken,string? searchText =null , ConfirmationStatus? confirmation = null, int pageIndex = 1, int pageSize = 20)
+    public async Task<PaginatedList<ProductPanelResult>> GetAllProductPanelsAsync(CancellationToken cancellationToken, string? searchText = null, ConfirmationStatus? confirmation = null, int pageIndex = 1, int pageSize = 20)
     {
         Expression<Func<Product, bool>> predicate = x => true;
-        if (confirmation != null)        
+        if (confirmation != null)
             predicate = x => x.IsConfirmed == (byte)confirmation.Value;
-        
+
         var query = await _productRepository.GetAllDataAsync(x => new ProductPanelResult
         {
             Description = x.Description,
@@ -290,9 +294,9 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
         }, cancellationToken, predicate);
 
         if (!string.IsNullOrWhiteSpace(searchText))
-            query = query.Where(x => x.Name.Contains(searchText) || x.Titel.Contains(searchText));
+            query = query?.Where(x => x.Name.Contains(searchText) || x.Titel.Contains(searchText));
 
-        return await PaginatedList<ProductPanelResult>.CreateAsync(query,pageIndex,pageSize,cancellationToken);
+        return await PaginatedList<ProductPanelResult>.CreateAsync(query, pageIndex, pageSize, cancellationToken);
     }
 
 }
