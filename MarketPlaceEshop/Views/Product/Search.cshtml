@@ -1,5 +1,5 @@
 ﻿@using Shared.Enums
- @model ProductsFilterViewModel
+@model ProductsFilterViewModel
 
 <!--------------------------------- Main Content -->
 <main class="main-content dt-sl mb-3">
@@ -22,8 +22,8 @@
                         </div>
                         <div class="col-12 mb-3">
                             <div class="widget-search">
-                                <input asp-for="Filter.SearchText" placeholder="نام محصول مورد نظر را بنویسید...">
-                                <button class="btn-search-widget">
+                                <input asp-for="Filter.SearchText"  placeholder="نام محصول مورد نظر را بنویسید...">
+                                <button onclick="sendFilterForm()" class="btn-search-widget">
                                     <img src="~/assets/img/theme/search.png" alt="">
                                 </button>
                             </div>
@@ -46,7 +46,12 @@
                                         <div class="card-body">
 
 
-
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input"
+                                                       id="all22" name="Filter.SelectedCategoryId"
+                                                @(Model.Filter.SelectedCategoryId.HasValue == false || Model.Filter.SelectedCategoryId.Value==0 ? "checked" : "") />
+                                                <label class="custom-control-label" for="all22">همه</label>
+                                            </div>
 
                                             @foreach (var category in Model.Filter.CategoryList)
                                             {
@@ -177,15 +182,15 @@
                                                     </div>
                                                 }
                                             </div>
-                                            <a class="product-thumb" href="#">
+                                            <a class="product-thumb" asp-controller="Product" asp-action="GetProduct" asp-route-productId ="@product.Id">
                                                 <img src="@product.ImagePath.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")" alt="Product Thumbnail" />
                                             </a>
                                             <div class="product-card-body">
                                                
                                                 <h5 class="product-title">
-                                                    <a href="#">@product.Name</a>
+                                                    <a asp-controller="Product" asp-action="GetProduct" asp-route-productId="@product.Id">@product.Name</a>
                                                 </h5>
-                                                <a class="product-meta" href="shop-categories.html">@product.Titel</a>
+                                                <a class="product-meta" asp-controller="Product" asp-action="GetProduct" asp-route-productId="@product.Id">@product.Titel</a>
                                                 <span class="product-price">@((product.Price / 10).ToString("0")) تومان</span>
                                             </div>
                                         </div>
@@ -355,6 +360,11 @@
             $("#SortProduct").val(Sort);
             $("#formFilter").submit();
 
+        }
+
+
+        function sendFilterForm(){
+            $("#formFilter").submit();
         }
     </script>
 }

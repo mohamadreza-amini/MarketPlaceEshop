@@ -25,8 +25,8 @@ namespace MarketPlaceEshop.Controllers
 
         public async Task<IActionResult> Search(CancellationToken cancellation, ProductFilterCommand filter, int pageIndex = 1)
         {
-            pageIndex = filter.PageIndex.HasValue && filter.PageIndex!=0 ?filter.PageIndex.Value:pageIndex;
-            
+            pageIndex = filter.PageIndex.HasValue && filter.PageIndex != 0 ? filter.PageIndex.Value : pageIndex;
+
             var productsfilter = new ProductsFilterViewModel
             {
                 Products = await _productService.GetAllbyFilterCommand(filter, cancellation, pageIndex, 12),
@@ -37,6 +37,15 @@ namespace MarketPlaceEshop.Controllers
             productsfilter.Filter.BrandList = await _brandService.GetAllAsync(cancellation);
             return View(productsfilter);
 
+        }
+
+
+
+
+        public async Task<IActionResult> GetProduct(Guid productId, CancellationToken cancellation)
+        {
+            var product = await _productService.GetById(productId, cancellation);
+            return View(product);
         }
     }
 }

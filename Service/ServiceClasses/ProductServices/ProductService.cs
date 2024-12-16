@@ -136,13 +136,24 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
     public async Task<ProductResult> GetById(Guid productId, CancellationToken cancellation)
     {
         var query = await _productRepository.GetAllDataAsync(
-            x => TranslateToDTO(x), cancellation, x => x.Id == productId && x.IsConfirmed == 2, x => x.Include(x => x.Category).Include(x => x.Brand));
+            x => new ProductResult
+            {
+                Id=x.Id,
+                Name=x.Name,
+                StartDate=x.StartDate,
+                BrandName=x.Brand.BrandName,
+                Description=x.Description,
+                Titel=x.Titel,
+                CategoryName=x.Category.CategoryName,
+                CategoryId=x.CategoryId,            
+            }, cancellation, x => x.Id == productId && x.IsConfirmed == 2, x => x.Include(x => x.Category).Include(x => x.Brand));
         var product = await query?.FirstOrDefaultAsync(cancellation);
 
         if (product == null)
             throw new BadRequestException("محصول یافت نشد");
         //میشد برد توی ریپازیتوری یا کلا پروداکت رو کامل اورد به جای گرفتن از سرویس های مختلف
         //بخشی از کار دیگه که میشد کرد رو پایین نوشتم کامنته
+
         product.AverageScore = await _scoreService.GetProductAverageRating(productId, cancellation);
         product.ProductFeatureValues = await _productFeatureValueService.GetAllByProductId(productId, cancellation);
         product.Comments = await _commentService.GetAllCommentByProductId(productId, cancellation);
