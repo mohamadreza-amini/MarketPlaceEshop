@@ -97,7 +97,16 @@ public class CommentService : ServiceBase<Comment, CommentResult, Guid>, ICommen
     public async Task<List<CommentResult>> GetAllCommentByProductId(Guid productId, CancellationToken cancellation)
     {
         var confirmComments = await _commentRepository.GetAllDataAsync(
-            x => TranslateToDTO(x),
+            x => new CommentResult
+            {
+                CommentText=x.CommentText,
+                CustomerId=x.CustomerId,
+                DateOfRegistration=x.DateOfRegistration,
+                FullName=x.Customer.User.FirstName + " " + x.Customer.User.LastName,
+                Id=x.Id,
+                ProductId=x.ProductId,
+                ProductName=x.Product.Name
+            },
             cancellation,
             x => x.IsConfirmed == 2 && x.ProductId == productId,
             x => x.Include(x => x.Customer).ThenInclude(x => x.User).Include(x => x.Product));
@@ -106,3 +115,5 @@ public class CommentService : ServiceBase<Comment, CommentResult, Guid>, ICommen
         return await confirmComments.ToListAsync(cancellation);
     }
 }
+
+        

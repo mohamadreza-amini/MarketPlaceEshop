@@ -1,0 +1,251 @@
+﻿@using DataTransferObject.DTOClasses.Address.Commands
+@using DataTransferObject.DTOClasses.Address.Results
+@model AddressViewModel
+
+
+<!--------------------------------- Main Content -->
+<main class="main-content dt-sl mb-3">
+    <div class="container main-container">
+        <div class="row" style="margin-top: 20px; margin-bottom: 20px; transform: none;">
+            @await Component.InvokeAsync("ProfileTab")
+            <!-- Start Content -->
+            <div class="col-xl-9 col-lg-8 col-md-8 col-sm-12">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="section-title text-sm-title title-wide mb-1 no-after-title-wide dt-sl mb-2 px-res-1">
+                            <h2>آدرس ها</h2>
+                        </div>
+                        <div class="dt-sl">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="card-horizontal-address text-center px-4">
+                                        <button class="checkout-address-location" data-bs-toggle="modal" data-bs-target="#modal-location">
+                                            <strong>ایجاد آدرس جدید</strong>
+                                            <i class="mdi mdi-map-marker-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                @foreach (var address in Model.Addresses)
+                                {
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="card-horizontal-address">
+                                            <div class="card-horizontal-address-desc">
+                                                <h4 class="card-horizontal-address-full-name">@address.Neighborhood</h4>
+                                                <p>
+                                                    @(address.ProvinceName + " " + address.CityName + " " + address.Neighborhood + " " + address.AddressDetail + " -پلاک " + address.HouseNumber + " -واحد " + address.UnitNumber)
+                                                </p>
+                                            </div>
+                                            <div class="card-horizontal-address-data">
+                                                <ul class="card-horizontal-address-methods float-right">
+                                                    <li class="card-horizontal-address-method">
+                                                        <i class="mdi mdi-email-outline"></i>
+                                                        کدپستی : <span>@address.PostalCode</span>
+                                                    </li>
+
+                                                </ul>
+                                                @*  <div class="card-horizontal-address-actions">
+                                            <button class="btn-note" data-bs-toggle="modal"
+                                            data-bs-target="#modal-location-edit">
+                                            ویرایش
+                                            </button>
+                                            <button class="btn-note" data-bs-toggle="modal"
+                                            data-bs-target="#remove-location">
+                                            حذف
+                                            </button>
+                                            </div> *@
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Content -->
+        </div>
+    </div>
+</main>
+<!--------------------------------- Main Content -->
+<!-----------------------------Modal location new -->
+<div class="modal fade" id="modal-location" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-lg send-info modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">
+                    <i class="now-ui-icons location_pin"></i>
+                    افزودن آدرس جدید
+                </h5>
+                <button type="button" class="close" data-bs-toggle="modal" data-bs-target="#modal-location">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="form-ui dt-sl">
+                            <form class="form-account" asp-controller="account" asp-action="CreateAddress" method="post" style="max-width: 100%;">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12 mb-2">
+                                        <div class="form-row-title">
+                                            <h4>
+                                                استان
+                                            </h4>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="custom-select-ui">
+
+                                                <select name="provinceId" id="provinceSelect" class="right form-select">
+                                                    <option value="" selected>انتخاب کنید</option>
+                                                    @foreach (var province in Model.Provinces)
+                                                    {
+                                                        <option value="@province.Id">@province.ProvinceName</option>
+                                                    }
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 mb-2">
+                                        <div class="form-row-title">
+                                            <h4>
+                                                شهر
+                                            </h4>
+                                        </div>
+                                        <div class="form-row">
+                                            <div id="cityoptions" class="custom-select-ui">
+
+
+                                                <select asp-for="AddressDto.CityId" class="right ">
+                                                    <option value="" selected>انتخاب کنید</option>
+                                                    @foreach (var city in Model.Cities)
+                                                    {
+                                                        <option value="@city.Id">@city.CityName</option>
+                                                    }
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 mb-2">
+                                        <div class="form-row-title">
+                                            <h4>
+                                                محله
+                                            </h4>
+                                        </div>
+                                        <div class="form-row">
+                                            <input class="input-ui pr-2 text-right" type="text" asp-for="AddressDto.Neighborhood" placeholder="نام خود را وارد نمایید">
+                                            <span asp-validation-for="AddressDto.Neighborhood" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <div class="form-row-title">
+                                            <h4>
+                                                پلاک
+                                            </h4>
+                                        </div>
+                                        <div class="form-row">
+                                            <input class="input-ui pl-2 dir-ltr text-left" type="text"
+                                                   asp-for="AddressDto.HouseNumber">
+                                            <span asp-validation-for="AddressDto.HouseNumber" class="text-danger"></span>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <div class="form-row-title">
+                                            <h4>
+                                                واحد
+                                            </h4>
+                                        </div>
+                                        <div class="form-row">
+                                            <input class="input-ui pl-2 dir-ltr text-left" type="text"
+                                                   asp-for="AddressDto.UnitNumber" >
+                                            <span asp-validation-for="AddressDto.UnitNumber" class="text-danger"></span>
+
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-12 mb-2">
+                                        <div class="form-row-title">
+                                            <h4>
+                                                آدرس
+                                            </h4>
+                                        </div>
+                                        <div class="form-row">
+                                            <textarea class="input-ui pr-2 text-right" asp-for="AddressDto.AddressDetail" placeholder=" آدرس تحویل گیرنده را وارد نمایید"></textarea>
+                                            <span asp-validation-for="AddressDto.AddressDetail" class="text-danger"></span>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <div class="form-row-title">
+                                            <h4>
+                                                کد پستی
+                                            </h4>
+                                        </div>
+                                        <div class="form-row">
+                                            <input class="input-ui pl-2 dir-ltr text-left placeholder-right" asp-for="AddressDto.PostalCode" type="text" placeholder=" کد پستی را بدون خط تیره بنویسید">
+                                            <span asp-validation-for="AddressDto.PostalCode" class="text-danger"></span>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-12 pr-4 pl-4">
+                                        <button type="submit" class="btn btn-sm btn-primary btn-submit-form" style="background: #f7858d;font-weight: 600;box-shadow: none;border: none;margin-top: 10px;color: #fff;">
+                                            ثبت
+                                            و
+                                            ارسال به این آدرس
+                                        </button>
+                                       
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-----------------------------Modal location new -->
+@section FooterContent {
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+
+
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+            $("#provinceSelect").change(function () {
+                var selectedValue = $(this).val();
+
+                if (selectedValue > 0) {
+
+                    $.ajax({
+                        url: "/Account/Address",
+                        type: "POST",
+                        data: { provinceId: selectedValue },
+                        success: function (response) {
+                            var content = $(response).find('#cityoptions').html();
+
+                            $("#cityoptions").html(content);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("خطا:", error);
+                        }
+                    });
+
+
+                }
+            });
+        });
+    </script>
+}
+
+

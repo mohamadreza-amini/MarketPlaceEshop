@@ -1,7 +1,10 @@
-﻿@model DataTransferObject.DTOClasses.Person.Commands.SupplierCommand
+﻿@using DataTransferObject.DTOClasses.Person.Commands
+@model UserCommand
 @{
-    Layout = null;
+    Layout = null;  
 }
+
+
 
 
 <!DOCTYPE html>
@@ -10,12 +13,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-    <title>ثبت نام فروشنده | دیجی مارکت</title>
+    <title>ثبت نام مشتری | دیجی مارکت</title>
 
     <meta name="description" content="">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="~/assets/img/seller-logo.png">
+    <link rel="icon" type="image/x-icon" href="~/assets/img/favicon/favicon.ico">
 
     <!-- Icons -->
     <link rel="stylesheet" href="~/assets/vendor/fonts/boxicons.css">
@@ -77,8 +80,8 @@
                         <a href="index.html" class="app-brand-link gap-2 mb-3">
                             <img src="~/assets/img/svg/logo.svg" />
                             <span class="app-brand-logo demo">
-                                
-                                    <title>آیکن</title>
+                                <title>آیکن</title>
+                                    
                                     <defs>
                                         <lineargradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
                                             <stop stop-color="#5A8DEE" offset="0%"></stop>
@@ -113,91 +116,76 @@
                         <div class=" shadow-none">
 
                             <div class="bs-stepper-content pt-4">
-                                <form asp-area="Supplier" asp-controller="Account" asp-action="Register">
+                                <form  asp-controller="Account" asp-action="Register">
                                     <!-- Account Details -->
                                     <div id="accountDetailsValidation" class="content">
                                         <div class="content-header mb-3">
-                                            <h4 class="secondary-font">ثبت نام تامین کننده</h4>
+                                            <h4 class="secondary-font">ثبت نام مشتری</h4>
                                             <span>اطلاعات حساب خود را وارد کنید</span>
                                         </div>
                                         <div class="row g-3">
                                             <div class="col-sm-6">
                                                 <label class="form-label">نام </label>
-                                                <input type="text" asp-for="@Model.UserDto.FirstName" class="form-control text-start" placeholder="johndoe" dir="ltr">
-                                                <span asp-validation-for="@Model.UserDto.FirstName" class="text-danger"></span>
+                                                <input type="text" asp-for="@Model.FirstName" class="form-control text-start" placeholder="johndoe" dir="ltr">
+                                                <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
                                             </div>
                                             <div class="col-sm-6">
                                                 <label class="form-label"> نام خانوادگی </label>
-                                                <input type="text" asp-for="@Model.UserDto.LastName" class="form-control text-start" placeholder="johndoe" dir="ltr">
-                                                <span asp-validation-for="@Model.UserDto.LastName" class="text-danger"></span>
+                                                <input type="text" asp-for="@Model.LastName" class="form-control text-start" placeholder="johndoe" dir="ltr">
+                                                <span asp-validation-for="@Model.LastName" class="text-danger"></span>
                                             </div>
 
                                             <div class="col-sm-6">
                                                 <label class="form-label">ایمیل</label>
-                                                <input asp-for="@Model.UserDto.Email" class="form-control text-start" autocomplete="off" placeholder="john.doe@email.com" aria-label="john.doe@email.com" dir="ltr">
-                                                <span asp-validation-for="@Model.UserDto.Email" class="text-danger"></span>
+                                                <input asp-for="@Model.Email" class="form-control text-start" autocomplete="off" placeholder="john.doe@email.com" aria-label="john.doe@email.com" dir="ltr">
+                                                <span asp-validation-for="@Model.Email" class="text-danger"></span>
 
                                             </div>
 
 
                                             <div class="col-sm-6">
                                                 <label class="form-label">کد ملی </label>
-                                                <input type="text" asp-for="@Model.UserDto.NationalCode" class="form-control text-start" placeholder="0123456789" dir="ltr">
-                                                <span asp-validation-for="@Model.UserDto.NationalCode" class="text-danger"></span>
+                                                <input type="text" asp-for="@Model.NationalCode" class="form-control text-start" placeholder="0123456789" dir="ltr">
+                                                <span asp-validation-for="@Model.NationalCode" class="text-danger"></span>
                                             </div>
 
                                             <div class="col-sm-6">
                                                 <label class="form-label">موبایل </label>
-                                                <input type="text" asp-for="@Model.UserDto.MobileNumber" class="form-control text-start" placeholder="09120000000" dir="ltr">
-                                                <span asp-validation-for="@Model.UserDto.MobileNumber" class="text-danger"></span>
+                                                <input type="text" asp-for="@Model.MobileNumber" class="form-control text-start" placeholder="09120000000" dir="ltr">
+                                                <span asp-validation-for="@Model.MobileNumber" class="text-danger"></span>
                                             </div>
                                             <div class="col-sm-6">
                                                 <label class="form-label">تلفن </label>
-                                                <input type="text" asp-for="@Model.UserDto.PhoneNumber" class="form-control text-start" placeholder="02188888888" dir="ltr">
-                                                <span asp-validation-for="@Model.UserDto.PhoneNumber" class="text-danger"></span>
+                                                <input type="text" asp-for="@Model.PhoneNumber" class="form-control text-start" placeholder="02188888888" dir="ltr">
+                                                <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
                                             </div>
 
-                                            <div class="col-sm-6">
-                                                <label class="form-label">شماره حساب </label>
-                                                <input type="text" asp-for="@Model.BankAccountNumber" class="form-control text-start" placeholder="111111111" dir="ltr">
-                                                <span asp-validation-for="@Model.BankAccountNumber" class="text-danger"></span>
-                                            </div>
+                                         
 
 
                                             <div class="col-md-6 col-12 mb-4">
                                                 <label for="flatpickr-date" class="form-label">تولد</label>
-                                                <input class="form-control flatpickr-input" asp-for="@Model.UserDto.DateOfBirth" placeholder="YYYY/MM/DD" id="flatpickr-date">
-                                                <span asp-validation-for="@Model.UserDto.DateOfBirth" class="text-danger"></span>
+                                                <input class="form-control flatpickr-input"  asp-for="@Model.DateOfBirth" placeholder="YYYY/MM/DD" id="flatpickr-date">
+                                                <span asp-validation-for="@Model.DateOfBirth" class="text-danger"></span>
                                             </div>
 
-                                            <div class="col-sm-6">
-                                                <label class="form-label">نام شرکت </label>
-                                                <input type="text" asp-for="@Model.CompanyName" class="form-control text-start" placeholder="zzzz" dir="ltr">
-                                                <span asp-validation-for="@Model.CompanyName" class="text-danger"></span>
-                                            </div>
-
-                                            <div class="col-sm-6">
-                                                <label class="form-label"> شماره ثبت شرکت </label>
-                                                <input type="text" asp-for="@Model.CompanyRegistrationNumber" class="form-control text-start" placeholder="zzzzz" dir="ltr">
-                                                <span asp-validation-for="@Model.CompanyRegistrationNumber" class="text-danger"></span>
-                                            </div>
-
+                                        
                                             <div class="col-sm-6 form-password-toggle">
                                                 <label class="form-label">رمز عبور</label>
                                                 <div class="input-group input-group-merge">
-                                                    <input type="password" asp-for="@Model.UserDto.Password" class="form-control text-start" placeholder="············" aria-describedby="multiStepsPass2" dir="ltr">
+                                                    <input type="password" asp-for="@Model.Password" class="form-control text-start" placeholder="············" aria-describedby="multiStepsPass2" dir="ltr">
                                                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                                                 </div>
-                                                <span asp-validation-for="@Model.UserDto.Password" class="text-danger"></span>
+                                                <span asp-validation-for="@Model.Password" class="text-danger"></span>
 
                                             </div>
                                             <div class="col-sm-6 form-password-toggle">
                                                 <label class="form-label">تایید رمز عبور</label>
                                                 <div class="input-group input-group-merge">
-                                                    <input type="password" asp-for="@Model.UserDto.ConfirmPassword" class="form-control text-start" placeholder="············" aria-describedby="multiStepsConfirmPass2" dir="ltr">
+                                                    <input type="password" asp-for="@Model.ConfirmPassword" class="form-control text-start" placeholder="············" aria-describedby="multiStepsConfirmPass2" dir="ltr">
                                                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                                                 </div>
-                                                <span asp-validation-for="@Model.UserDto.ConfirmPassword" class="text-danger"></span>
+                                                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
 
                                             </div>
 

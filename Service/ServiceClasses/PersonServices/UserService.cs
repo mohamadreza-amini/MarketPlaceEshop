@@ -35,6 +35,7 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
 
     public async Task<User?> GetRequesterUserAsync() => await _userManager.GetUserAsync(_claimsPrincipal);
 
+    public async Task<UserResult> GetRequesterUserResult() => TranslateToDTO(await GetRequesterUserAsync()??new User());
     public string? RequesterId() => _claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
     public bool IsInRole(string role) => _claimsPrincipal.IsInRole(role);

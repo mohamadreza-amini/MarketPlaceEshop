@@ -14,6 +14,7 @@ namespace Service.ServiceInterfaces.PersonServices;
 public interface IUserService : IServiceBase<User, UserResult, Guid>
 {
     Task<User?> GetRequesterUserAsync();
+    Task<UserResult> GetRequesterUserResult();
     string? RequesterId();
     bool IsInRole(string role);
     Task<string?> GetRole();
@@ -26,6 +27,7 @@ public interface IUserService : IServiceBase<User, UserResult, Guid>
     Task<User?> GetUserbyIdAsync(Guid userId);
 
     Task<bool> AddToRoleAsync(User user, string roleName);
+
     /*  Task<IdentityResult> Create(UserDTO userDTO);
       Task<UserDTO> GetUser(Guid id);
       Task<List<UserDTO>> GetAllUser();

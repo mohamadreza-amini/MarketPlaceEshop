@@ -2,10 +2,54 @@
 @using Shared
 @model ProductResult
 
+@section HeadContent {
+    <style>
+        #ratingSection {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
 
+        .rating-stars {
+            display: flex;
+            direction: rtl;
+            font-size: 50px; /* اندازه ستاره‌ها بزرگتر شد */
+            line-height: 1;
+        }
+
+            .rating-stars .fa-star {
+                color: #ccc;
+                cursor: pointer;
+                transition: color 0.3s;
+                margin: 0 5px; /* فاصله بین ستاره‌ها */
+            }
+
+                .rating-stars .fa-star.active,
+                .rating-stars .fa-star.selected {
+                    color: #ffcc00; /* رنگ ستاره‌های انتخابی */
+                }
+
+        #submitRating {
+            margin-top: 15px;
+            font-weight: 700;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+            #submitRating:hover {
+                background-color: #0056b3;
+            }
+    </style>
+}
 <!--------------------------------- Main Content -->
 <main class="main-content dt-sl mb-3">
     <div class="container main-container">
+
+
+
+
         <!-- Start title - breadcrumb -->
         @*          مسیر و دسته بندی های پدر
         *@     @*    <div class="title-breadcrumb-special dt-sl mb-3">
@@ -237,7 +281,7 @@
                                     </div>
                                 </div>
                             }
-                            else if(Model.productSuppliers.Any())
+                            else if (Model.productSuppliers.Any())
                             {
                                 <div class="col-lg-6">
 
@@ -337,7 +381,7 @@
                                                     <a href="#">
                                                         <div class="product-seller-row-main">
                                                             <img src="./assets/img/seller-logo.png" alt="">
-                                                           
+
                                                         </div>
                                                     </a>
 
@@ -350,13 +394,13 @@
                                                         <i class="far fa-box-check product-delivery-warehouse"></i>
                                                         فعلا موجود نیست
                                                     </a>
-                                                    
+
                                                 </li>
                                             </ul>
                                             <div class="product-seller-row product-seller-row--price">
                                                 <div class="product-seller-price-info">
                                                 </div>
-                                                
+
 
                                             </div>
                                             <div class="product-seller-row product-seller-row--add-to-cart">
@@ -535,7 +579,7 @@
                                             </g>
                                         </svg>
                             </i> ثبت نظر
-                            
+
                         </a>
                     </div>
                 </div>
@@ -557,7 +601,7 @@
                                 </p>
                             </div>
                         </div>
-                        
+
                     </div>
                     <div class="ah-tab-content params dt-sl">
                         <div class="section-title text-sm-title title-wide no-after-title-wide mb-0 dt-sl">
@@ -572,8 +616,8 @@
                         <section>
                             <h3 class="params-title">مشخصات کلی</h3>
                             <ul class="params-list">
-                               
-                                @foreach(var productFeature in Model.ProductFeatureValues)
+
+                                @foreach (var productFeature in Model.ProductFeatureValues)
                                 {
                                     <li>
                                         <div class="params-list-key">
@@ -581,16 +625,16 @@
                                         </div>
                                         <div class="params-list-value">
                                             <span class="d-block">
-                                               @productFeature.FeatureValue
+                                                @productFeature.FeatureValue
                                             </span>
                                         </div>
                                     </li>
                                 }
-                                
-                              
+
+
                             </ul>
                         </section>
-                       
+
                     </div>
                     <div class="ah-tab-content comments-tab dt-sl">
                         <div class="section-title title-wide no-after-title-wide mb-0 dt-sl">
@@ -602,9 +646,9 @@
                             </h1>
                             <h3>
                                 @Model.Titel
-                               <span class="rate-product">(از  @Model.ScoreCount نظر)</span>
+                                <span class="rate-product">(از  @Model.ScoreCount نظر)</span>
                             </h3>
-                            
+
                         </div>
                         <div class="dt-sl">
                             <div class="row">
@@ -619,49 +663,53 @@
                                                     {
                                                         <i class="fa fa-star active"></i>
                                                     }
-                                                    <i class="fa fa-star"></i>
+                                                    else
+                                                    {
+                                                        <i class="fa fa-star"></i>
+
+                                                    }
                                                 }
                                             </div>
                                         </li>
-                                       
+
 
 
                                         @*
-                                       
-                                       
-                                       <li>
-                                            <div class="cell">ارزش خرید</div>
-                                            <div class="cell">
-                                                <div class="rating rating--general" data-rate-digit="عالی">
-                                                    <div class="rating-rate" data-rate-value="100%"
-                                                         style="width: 20%;"></div>
-                                                </div>
-                                            </div>
+
+
+                                        <li>
+                                        <div class="cell">ارزش خرید</div>
+                                        <div class="cell">
+                                        <div class="rating rating--general" data-rate-digit="عالی">
+                                        <div class="rating-rate" data-rate-value="100%"
+                                        style="width: 20%;"></div>
+                                        </div>
+                                        </div>
                                         </li>
                                         <li>
-                                            <div class="cell">کیفیت ساخت</div>
-                                            <div class="cell">
-                                                <div class="rating rating--general" data-rate-digit="عالی">
-                                                    <div class="rating-rate" data-rate-value="100%"
-                                                         style="width: 80%;"></div>
-                                                </div>
-                                            </div>
+                                        <div class="cell">کیفیت ساخت</div>
+                                        <div class="cell">
+                                        <div class="rating rating--general" data-rate-digit="عالی">
+                                        <div class="rating-rate" data-rate-value="100%"
+                                        style="width: 80%;"></div>
+                                        </div>
+                                        </div>
                                         </li>
                                         <li>
-                                            <div class="cell">امکانات و قابلیت ها</div>
-                                            <div class="cell">
-                                                <div class="rating rating--general" data-rate-digit="عالی">
-                                                    <div class="rating-rate" data-rate-value="100%"
-                                                         style="width: 30%;"></div>
-                                                </div>
-                                            </div>
+                                        <div class="cell">امکانات و قابلیت ها</div>
+                                        <div class="cell">
+                                        <div class="rating rating--general" data-rate-digit="عالی">
+                                        <div class="rating-rate" data-rate-value="100%"
+                                        style="width: 30%;"></div>
+                                        </div>
+                                        </div>
                                         </li> *@
                                     </ul>
 
-                                    
+
 
                                 </div>
-                             
+
                                 <div class="col-md-6 col-sm-12">
                                     <div class="comments-summary-note">
                                         <span>
@@ -675,7 +723,7 @@
                                             شما به عنوان مالک محصول ثبت خواهد شد.
                                         </p>
                                         <div class="dt-sl mt-2">
-                                            <a href="#commenttag"  class="btn-primary-cm btn-with-icon">
+                                            <a href="#commenttag" class="btn-primary-cm btn-with-icon">
                                                 <i>
                                                     <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill-rule="evenodd" clip-rule="evenodd" d="M5.17157 6.17157C4 7.34315 4 9.22876 4 13V17V18.5858C4 19.4767 5.07714 19.9229 5.70711 19.2929L7.85355 17.1464C7.92581 17.0742 7.96194 17.0381 8.00788 17.019C8.05383 17 8.10492 17 8.20711 17H14C15.8638 17 16.7956 17 17.5307 16.6955C18.5108 16.2895 19.2895 15.5108 19.6955 14.5307C20 13.7956 20 12.8638 20 11C20 9.13623 20 8.20435 19.6955 7.46927C19.2895 6.48915 18.5108 5.71046 17.5307 5.30448C16.7956 5 15.8638 5 14 5H12C8.22876 5 6.34315 5 5.17157 6.17157Z" fill="#2A4157" fill-opacity="0.24"></path>
@@ -697,7 +745,7 @@
                                 </div>
                                 <ol class="comment-list">
                                     <!-- #comment-## -->
-                                    @foreach(var comment in Model.Comments)
+                                    @foreach (var comment in Model.Comments)
                                     {
                                         <li>
                                             <div class="comment-body">
@@ -705,7 +753,7 @@
 
                                                     <div class="col-md-9 col-sm-12 comment-content">
                                                         <div class="comment-title">
-                                                           @Model.Name
+                                                            @Model.Name
                                                         </div>
                                                         <div class="comment-author">
                                                             توسط @comment.FullName
@@ -721,8 +769,8 @@
                                             </div>
                                         </li>
                                     }
-                                   
-                                   
+
+
                                 </ol>
                             </div>
                         </div>
@@ -732,13 +780,72 @@
                             <h2 class="mb-3">ثبت نظر</h2>
                             <p class="count-comment" style="font-weight: 500;font-size: 16px;color: #f26b7b;">نظر خود را در مورد محصول مطرح نمایید</p>
                         </div>
+                        <div id="commentResult">
+                            @if (TempData["ToastError"] != null)
+                            {
+                                <!-- Alert Box -->
+                                <div id="resultMessage" class="alert alert-danger " role="alert">
+                                    @TempData["ToastError"].ToString()
+                                </div>
+                            }
+
+                            @if (TempData["ToastSuccess"] != null)
+                            {
+                                <!-- Alert Box -->
+                                <div id="resultMessage" class="alert alert-success " role="alert">
+                                    @TempData["ToastSuccess"].ToString()
+                                </div>
+                            }
+                        </div>
+
                         <div id="commenttag" class="form-question-answer dt-sl mb-3">
-                            <form action="">
-                                <textarea class="form-control mb-3" rows="5"></textarea>
-                                <button class="btn ml-3 w-100 mb-3" style="font-weight: 700; color: #fff; background-color: #ee384e;box-shadow: none;">ثبت پرسش</button>
-                               
+                            <form id="commentForm">
+                                <textarea name="comment.CommentText"
+                                          id="commentInput"
+                                          class="form-control mb-3"
+                                          rows="5"
+                                          maxlength="500"
+                                          minlength="1"
+                                          value=""
+                                          required
+                                          pattern="^(?=.*[a-zA-Z\u0600-\u06FF0-9]).*$"
+                                          title="نظر باید بین 1 تا 500 کاراکتر باشد و حداقل شامل حروف فارسی یا انگلیسی باشد.">
+                                    </textarea>
+
+                                <input name="comment.ProductId" hidden readonly value="@Model.Id" />
+                                <button type="submit" class="btn ml-3 w-100 mb-3" style="font-weight: 700; color: #fff; background-color: #ee384e;box-shadow: none;">ثبت پرسش</button>
+
                             </form>
                         </div>
+                        <div id="scoreResult">
+                            @if (TempData["ToastError"] != null)
+                            {
+                                <!-- Alert Box -->
+                                <div id="resultMessage" class="alert alert-danger " role="alert">
+                                    @TempData["ToastError"].ToString()
+                                </div>
+                            }
+
+                            @if (TempData["ToastSuccess"] != null)
+                            {
+                                <!-- Alert Box -->
+                                <div id="resultMessage" class="alert alert-success " role="alert">
+                                    @TempData["ToastSuccess"].ToString()
+                                </div>
+                            }
+                        </div>
+                        <div id="ratingSection">
+                            <div class="rating-stars">
+                                <i class="fa fa-star" data-index="1"></i>
+                                <i class="fa fa-star" data-index="2"></i>
+                                <i class="fa fa-star" data-index="3"></i>
+                                <i class="fa fa-star" data-index="4"></i>
+                                <i class="fa fa-star" data-index="5"></i>
+                            </div>
+                            <!-- دکمه ثبت امتیاز -->
+                            <button id="submitRating" class="btn btn-primary">ثبت امتیاز</button>
+                        </div>
+
                     </div>
                 </div>
             </section>
@@ -746,7 +853,10 @@
         </div>
         <!-- End Product -->
 
+
     </div>
+
+
 </main>
 <!--------------------------------- Main Content -->
 @section FooterContent {
@@ -765,3 +875,108 @@
     <script src="~/assets/js/js-product/js-product.js"></script>
 }
 
+
+
+
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+            
+            $("#commentForm").on("submit", function (event) {
+                event.preventDefault(); 
+
+                const commentInput = $("#commentInput").val();   
+                const productId = $("input[name='comment.ProductId']").val(); 
+
+                if (!commentInput.trim()) {
+                    alert("لطفاً نظر خود را وارد کنید.");
+                    return;
+                }
+
+                $.ajax({
+                    url: '/Product/AddComments',
+                    type: "POST",
+                    data: { CommentText: commentInput, ProductId: productId },
+                    success: function (response) {
+                        var content = $(response).find('#commentResult').html();
+
+                        $("#commentResult").html(content);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("خطا در ارسال درخواست:", error);
+                    }
+                });
+            });
+        });
+
+
+
+
+
+
+
+
+
+        $(document).ready(function () {
+            let selectedRating = 0;
+
+            // اضافه کردن حالت فعال به ستاره‌ها
+            $(".rating-stars .fa-star").on("mouseover", function () {
+                var index = $(this).data("index");
+                $(this).parent().children().each(function (i) {
+                    if (i < index) {
+                        $(this).addClass("active");
+                    } else {
+                        $(this).removeClass("active");
+                    }
+                });
+            });
+
+            // تغییر حالت ستاره‌ها هنگام کلیک
+            $(".rating-stars .fa-star").on("click", function () {
+                var index = $(this).data("index");
+                selectedRating = index;  // ذخیره تعداد ستاره انتخابی
+
+                $(this).parent().children().each(function (i) {
+                    if (i < index) {
+                        $(this).addClass("selected");
+                    } else {
+                        $(this).removeClass("selected");
+                    }
+                });
+            });
+
+            // پاک کردن حالت فعال بعد از ترک موس از روی ستاره‌ها
+            $(".rating-stars .fa-star").on("mouseout", function () {
+                $(this).parent().children().removeClass("active");
+            });
+
+            // ارسال امتیاز  
+            $("#submitRating").on("click", function () {
+                if (selectedRating > 0) {
+                    $.ajax({
+                        url: '/Product/AddScore',  
+                        type: 'POST',
+                        data: { StarRating: selectedRating, ProductId: '@Model.Id' }, 
+                        success: function (response) {
+                            var content = $(response).find("#scoreResult").html();
+
+                            $("#scoreResult").html(content);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("خطا در ارسال درخواست:", error);
+                        }
+                    });
+                } else {
+                    alert('لطفا ابتدا امتیاز خود را انتخاب کنید!');
+                }
+            });
+        });
+
+
+
+
+    </script>
+}

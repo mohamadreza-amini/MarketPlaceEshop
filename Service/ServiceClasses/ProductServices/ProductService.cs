@@ -147,6 +147,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
                 CategoryName=x.Category.CategoryName,
                 CategoryId=x.CategoryId,            
             }, cancellation, x => x.Id == productId && x.IsConfirmed == 2, x => x.Include(x => x.Category).Include(x => x.Brand));
+        
         var product = await query?.FirstOrDefaultAsync(cancellation);
 
         if (product == null)

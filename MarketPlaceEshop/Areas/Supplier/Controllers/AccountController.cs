@@ -36,11 +36,19 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid)
         {
-            ViewData["ToastRegster"] = "اطلاعات ورودی نامعتبر";
-            return RedirectToAction("Register");
+            TempData["ToastRegister"] = "اطلاعات ورودی نامعتبر";
+            return RedirectToAction("Register", "Account", new {area="Supplier"});
         }
         SupplierDto.UserDto.DateOfBirth = SupplierDto.UserDto.DateOfBirth.ToSolar();
-        await _supplierService.CreateAsync(SupplierDto, cancellation);
+        try
+        {
+            await _supplierService.CreateAsync(SupplierDto, cancellation);
+        }
+        catch (RegisterException ex)
+        {
+            TempData["ToastRegister"] = ex.Message;
+            return RedirectToAction("Register", "Account", new { area = "Supplier" });
+        }
         return View("SuccessfulRegistration");
     }
 

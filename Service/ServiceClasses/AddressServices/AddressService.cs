@@ -60,12 +60,12 @@ public class AddressService : ServiceBase<Address, AddressResult, Guid>, IAdress
         if (!_userService.IsAdmin() && !_userService.IsRequesterUser(customerid))
             throw new AccessDeniedException();
 
-        var query = await _addressRepository.GetAllDataAsync(x => Translate<Address, AddressResult>(x), cancellation, x => x.CustomerId == customerid, x => x.Include(x => x.City).ThenInclude(x => x.Province));
-        var addresses = await query?.ToListAsync(cancellation);
-        if (addresses == null)
-            return new List<AddressResult>();
+        var query = await _addressRepository.GetAllDataAsync(x => x, cancellation, x => x.CustomerId == customerid, x => x.Include(x => x.City).ThenInclude(x => x.Province));
 
-        return addresses;
+        if (query == null)
+            return new List<AddressResult>(); 
+        var addresses = await query?.ToListAsync(cancellation);     
+        return Translate<List<Address>,List<AddressResult>>(addresses);
     }
 
     public async Task<AddressResult> GetByAddressIdAsync(Guid addressid, CancellationToken cancellation)

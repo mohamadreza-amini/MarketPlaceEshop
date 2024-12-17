@@ -24,7 +24,7 @@ public class Comment : BaseEntity<Guid>
            CustomerId==Guid.Empty||
            ProductId==Guid.Empty)
         {
-            throw new ModelValidationException("Comment");
+            throw new ModelValidationException("کامنت نامعتبر");
         }
     }
 }

@@ -38,14 +38,14 @@ public class AddressCommand
     [Display(Name = "کد پستی")]
     public string PostalCode { get; set; }
 
-    [Required]
+    
     public int CityId { get; set; }
 
     [Display(Name = "استان")]
-    public string ProvinceName { get; set; }
+    public string? ProvinceName { get; set; }
 
     [Display(Name = "شهر")]
-    public string CityName { get; set; }
+    public string? CityName { get; set; }
 
 }
 //هم برای نمایش هم برای ساخت اوکیه

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -17,6 +18,7 @@
     <link rel="stylesheet" href="~/assets/plugin/go-to-top/style.css">
     <link rel="stylesheet" href="~/assets/plugin/iran-map/iranmap.css">
     <link rel="stylesheet" href="~/assets/css/main.css">
+    @RenderSection("HeadContent", required: false)
 
 </head>
 
@@ -123,159 +125,163 @@
                             </div>
                         </div>
                     </div>
-                    <div class="user-items">
-                        <div class="user-item">
-                            <a href="#">
-                                <svg width="23px" height="23px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path opacity="0.15" d="M4.3314 12.0474L12 20L19.6686 12.0474C20.5211 11.1633 21 9.96429 21 8.71405C21 6.11055 18.9648 4 16.4543 4C15.2487 4 14.0925 4.49666 13.24 5.38071L12 6.66667L10.76 5.38071C9.90749 4.49666 8.75128 4 7.54569 4C5.03517 4 3 6.11055 3 8.71405C3 9.96429 3.47892 11.1633 4.3314 12.0474Z" fill="#000000" />
-                                    <path d="M4.3314 12.0474L12 20L19.6686 12.0474C20.5211 11.1633 21 9.96429 21 8.71405C21 6.11055 18.9648 4 16.4543 4C15.2487 4 14.0925 4.49666 13.24 5.38071L12 6.66667L10.76 5.38071C9.90749 4.49666 8.75128 4 7.54569 4C5.03517 4 3 6.11055 3 8.71405C3 9.96429 3.47892 11.1633 4.3314 12.0474Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                <span class="bag-items-number">3</span>
-                            </a>
-                        </div>
-                        <div class="user-item cart-list">
-                            <a href="#">
-                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path opacity="0.15" d="M3 10H21L19 20H5L3 10Z" fill="#000000" />
-                                    <path d="M3 10H21M3 10L5 20H19L21 10M3 10L9 4M21 10L15 4" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                <span class="bag-items-number">2</span>
-                            </a>
-                            <ul>
-                                <li class="cart-items">
-                                    <ul class="do-nice-scroll">
-                                        <li class="cart-item">
-                                            <span class="d-flex align-items-center mb-2">
-                                                <a href="#">
-                                                    <img src="~/assets/img/cart/item-1.jpg" alt="">
-                                                </a>
-                                                <span>
+
+                    @if(User.Identity?.IsAuthenticated??false && User.IsInRole("Customer"))
+                    {
+
+                        <div class="user-items">
+                            @* سبد خرید *@
+                            <div class="user-item cart-list">
+                                <a href="#">
+                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path opacity="0.15" d="M3 10H21L19 20H5L3 10Z" fill="#000000" />
+                                        <path d="M3 10H21M3 10L5 20H19L21 10M3 10L9 4M21 10L15 4" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    <span class="bag-items-number">2</span>
+                                </a>
+                                <ul>
+                                    <li class="cart-items">
+                                        <ul class="do-nice-scroll">
+                                            <li class="cart-item">
+                                                <span class="d-flex align-items-center mb-2">
                                                     <a href="#">
-                                                        <span class="title-item"> گوشی موبایل </span>
+                                                        <img src="~/assets/img/cart/item-1.jpg" alt="">
                                                     </a>
-                                                    <span class="color d-flex align-items-center">
-                                                        رنگ: <span style="background-color: #8a2be2;"></span>
+                                                    <span>
+                                                        <a href="#">
+                                                            <span class="title-item"> گوشی موبایل </span>
+                                                        </a>
+                                                        <span class="color d-flex align-items-center">
+                                                            رنگ: <span style="background-color: #8a2be2;"></span>
+                                                        </span>
                                                     </span>
                                                 </span>
-                                            </span>
-                                            <span class="price"> 4,000,000 تومان</span>
-                                            <button class="remove-item">
-                                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M3 6.52381C3 6.12932 3.32671 5.80952 3.72973 5.80952H8.51787C8.52437 4.9683 8.61554 3.81504 9.45037 3.01668C10.1074 2.38839 11.0081 2 12 2C12.9919 2 13.8926 2.38839 14.5496 3.01668C15.3844 3.81504 15.4756 4.9683 15.4821 5.80952H20.2703C20.6733 5.80952 21 6.12932 21 6.52381C21 6.9183 20.6733 7.2381 20.2703 7.2381H3.72973C3.32671 7.2381 3 6.9183 3 6.52381Z" fill="#1C274C" />
-                                                    <path opacity="0.5" d="M11.5956 22.0001H12.4044C15.1871 22.0001 16.5785 22.0001 17.4831 21.1142C18.3878 20.2283 18.4803 18.7751 18.6654 15.8686L18.9321 11.6807C19.0326 10.1037 19.0828 9.31524 18.6289 8.81558C18.1751 8.31592 17.4087 8.31592 15.876 8.31592H8.12405C6.59127 8.31592 5.82488 8.31592 5.37105 8.81558C4.91722 9.31524 4.96744 10.1037 5.06788 11.6807L5.33459 15.8686C5.5197 18.7751 5.61225 20.2283 6.51689 21.1142C7.42153 22.0001 8.81289 22.0001 11.5956 22.0001Z" fill="#1C274C" />
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.42543 11.4815C9.83759 11.4381 10.2051 11.7547 10.2463 12.1885L10.7463 17.4517C10.7875 17.8855 10.4868 18.2724 10.0747 18.3158C9.66253 18.3592 9.29499 18.0426 9.25378 17.6088L8.75378 12.3456C8.71256 11.9118 9.01327 11.5249 9.42543 11.4815Z" fill="#1C274C" />
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14.5747 11.4815C14.9868 11.5249 15.2875 11.9118 15.2463 12.3456L14.7463 17.6088C14.7051 18.0426 14.3376 18.3592 13.9254 18.3158C13.5133 18.2724 13.2126 17.8855 13.2538 17.4517L13.7538 12.1885C13.795 11.7547 14.1625 11.4381 14.5747 11.4815Z" fill="#1C274C" />
-                                                </svg>
-                                            </button>
-                                        </li>
-                                        <li class="cart-item">
-                                            <span class="d-flex align-items-center mb-2">
-                                                <a href="#">
-                                                    <img src="~/assets/img/cart/item-2.jpg" alt="">
-                                                </a>
-                                                <span>
+                                                <span class="price"> 4,000,000 تومان</span>
+                                                <button class="remove-item">
+                                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M3 6.52381C3 6.12932 3.32671 5.80952 3.72973 5.80952H8.51787C8.52437 4.9683 8.61554 3.81504 9.45037 3.01668C10.1074 2.38839 11.0081 2 12 2C12.9919 2 13.8926 2.38839 14.5496 3.01668C15.3844 3.81504 15.4756 4.9683 15.4821 5.80952H20.2703C20.6733 5.80952 21 6.12932 21 6.52381C21 6.9183 20.6733 7.2381 20.2703 7.2381H3.72973C3.32671 7.2381 3 6.9183 3 6.52381Z" fill="#1C274C" />
+                                                        <path opacity="0.5" d="M11.5956 22.0001H12.4044C15.1871 22.0001 16.5785 22.0001 17.4831 21.1142C18.3878 20.2283 18.4803 18.7751 18.6654 15.8686L18.9321 11.6807C19.0326 10.1037 19.0828 9.31524 18.6289 8.81558C18.1751 8.31592 17.4087 8.31592 15.876 8.31592H8.12405C6.59127 8.31592 5.82488 8.31592 5.37105 8.81558C4.91722 9.31524 4.96744 10.1037 5.06788 11.6807L5.33459 15.8686C5.5197 18.7751 5.61225 20.2283 6.51689 21.1142C7.42153 22.0001 8.81289 22.0001 11.5956 22.0001Z" fill="#1C274C" />
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.42543 11.4815C9.83759 11.4381 10.2051 11.7547 10.2463 12.1885L10.7463 17.4517C10.7875 17.8855 10.4868 18.2724 10.0747 18.3158C9.66253 18.3592 9.29499 18.0426 9.25378 17.6088L8.75378 12.3456C8.71256 11.9118 9.01327 11.5249 9.42543 11.4815Z" fill="#1C274C" />
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M14.5747 11.4815C14.9868 11.5249 15.2875 11.9118 15.2463 12.3456L14.7463 17.6088C14.7051 18.0426 14.3376 18.3592 13.9254 18.3158C13.5133 18.2724 13.2126 17.8855 13.2538 17.4517L13.7538 12.1885C13.795 11.7547 14.1625 11.4381 14.5747 11.4815Z" fill="#1C274C" />
+                                                    </svg>
+                                                </button>
+                                            </li>
+                                            <li class="cart-item">
+                                                <span class="d-flex align-items-center mb-2">
                                                     <a href="#">
-                                                        <span class="title-item"> ساعت مچی هوشمند</span>
+                                                        <img src="~/assets/img/cart/item-2.jpg" alt="">
                                                     </a>
-                                                    <span class="color d-flex align-items-center">
-                                                        رنگ: <span style="background-color: #000;"></span>
+                                                    <span>
+                                                        <a href="#">
+                                                            <span class="title-item"> ساعت مچی هوشمند</span>
+                                                        </a>
+                                                        <span class="color d-flex align-items-center">
+                                                            رنگ: <span style="background-color: #000;"></span>
+                                                        </span>
                                                     </span>
                                                 </span>
-                                            </span>
-                                            <span class="price">700,000 تومان</span>
-                                            <button class="remove-item">
-                                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M3 6.52381C3 6.12932 3.32671 5.80952 3.72973 5.80952H8.51787C8.52437 4.9683 8.61554 3.81504 9.45037 3.01668C10.1074 2.38839 11.0081 2 12 2C12.9919 2 13.8926 2.38839 14.5496 3.01668C15.3844 3.81504 15.4756 4.9683 15.4821 5.80952H20.2703C20.6733 5.80952 21 6.12932 21 6.52381C21 6.9183 20.6733 7.2381 20.2703 7.2381H3.72973C3.32671 7.2381 3 6.9183 3 6.52381Z" fill="#1C274C" />
-                                                    <path opacity="0.5" d="M11.5956 22.0001H12.4044C15.1871 22.0001 16.5785 22.0001 17.4831 21.1142C18.3878 20.2283 18.4803 18.7751 18.6654 15.8686L18.9321 11.6807C19.0326 10.1037 19.0828 9.31524 18.6289 8.81558C18.1751 8.31592 17.4087 8.31592 15.876 8.31592H8.12405C6.59127 8.31592 5.82488 8.31592 5.37105 8.81558C4.91722 9.31524 4.96744 10.1037 5.06788 11.6807L5.33459 15.8686C5.5197 18.7751 5.61225 20.2283 6.51689 21.1142C7.42153 22.0001 8.81289 22.0001 11.5956 22.0001Z" fill="#1C274C" />
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.42543 11.4815C9.83759 11.4381 10.2051 11.7547 10.2463 12.1885L10.7463 17.4517C10.7875 17.8855 10.4868 18.2724 10.0747 18.3158C9.66253 18.3592 9.29499 18.0426 9.25378 17.6088L8.75378 12.3456C8.71256 11.9118 9.01327 11.5249 9.42543 11.4815Z" fill="#1C274C" />
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14.5747 11.4815C14.9868 11.5249 15.2875 11.9118 15.2463 12.3456L14.7463 17.6088C14.7051 18.0426 14.3376 18.3592 13.9254 18.3158C13.5133 18.2724 13.2126 17.8855 13.2538 17.4517L13.7538 12.1885C13.795 11.7547 14.1625 11.4381 14.5747 11.4815Z" fill="#1C274C" />
-                                                </svg>
-                                            </button>
-                                        </li>
-                                        <li class="cart-item">
-                                            <span class="d-flex align-items-center mb-2">
-                                                <a href="#">
-                                                    <img src="~/assets/img/cart/item-3.jpg" alt="">
-                                                </a>
-                                                <span>
+                                                <span class="price">700,000 تومان</span>
+                                                <button class="remove-item">
+                                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M3 6.52381C3 6.12932 3.32671 5.80952 3.72973 5.80952H8.51787C8.52437 4.9683 8.61554 3.81504 9.45037 3.01668C10.1074 2.38839 11.0081 2 12 2C12.9919 2 13.8926 2.38839 14.5496 3.01668C15.3844 3.81504 15.4756 4.9683 15.4821 5.80952H20.2703C20.6733 5.80952 21 6.12932 21 6.52381C21 6.9183 20.6733 7.2381 20.2703 7.2381H3.72973C3.32671 7.2381 3 6.9183 3 6.52381Z" fill="#1C274C" />
+                                                        <path opacity="0.5" d="M11.5956 22.0001H12.4044C15.1871 22.0001 16.5785 22.0001 17.4831 21.1142C18.3878 20.2283 18.4803 18.7751 18.6654 15.8686L18.9321 11.6807C19.0326 10.1037 19.0828 9.31524 18.6289 8.81558C18.1751 8.31592 17.4087 8.31592 15.876 8.31592H8.12405C6.59127 8.31592 5.82488 8.31592 5.37105 8.81558C4.91722 9.31524 4.96744 10.1037 5.06788 11.6807L5.33459 15.8686C5.5197 18.7751 5.61225 20.2283 6.51689 21.1142C7.42153 22.0001 8.81289 22.0001 11.5956 22.0001Z" fill="#1C274C" />
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.42543 11.4815C9.83759 11.4381 10.2051 11.7547 10.2463 12.1885L10.7463 17.4517C10.7875 17.8855 10.4868 18.2724 10.0747 18.3158C9.66253 18.3592 9.29499 18.0426 9.25378 17.6088L8.75378 12.3456C8.71256 11.9118 9.01327 11.5249 9.42543 11.4815Z" fill="#1C274C" />
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M14.5747 11.4815C14.9868 11.5249 15.2875 11.9118 15.2463 12.3456L14.7463 17.6088C14.7051 18.0426 14.3376 18.3592 13.9254 18.3158C13.5133 18.2724 13.2126 17.8855 13.2538 17.4517L13.7538 12.1885C13.795 11.7547 14.1625 11.4381 14.5747 11.4815Z" fill="#1C274C" />
+                                                    </svg>
+                                                </button>
+                                            </li>
+                                            <li class="cart-item">
+                                                <span class="d-flex align-items-center mb-2">
                                                     <a href="#">
-                                                        <span class="title-item"> هدفون بلوتوثی</span>
+                                                        <img src="~/assets/img/cart/item-3.jpg" alt="">
                                                     </a>
-                                                    <span class="color d-flex align-items-center">
-                                                        رنگ: <span style="background-color: #fff;"></span>
+                                                    <span>
+                                                        <a href="#">
+                                                            <span class="title-item"> هدفون بلوتوثی</span>
+                                                        </a>
+                                                        <span class="color d-flex align-items-center">
+                                                            رنگ: <span style="background-color: #fff;"></span>
+                                                        </span>
                                                     </span>
                                                 </span>
+                                                <span class="price">600,000 تومان</span>
+                                                <button class="remove-item">
+                                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M3 6.52381C3 6.12932 3.32671 5.80952 3.72973 5.80952H8.51787C8.52437 4.9683 8.61554 3.81504 9.45037 3.01668C10.1074 2.38839 11.0081 2 12 2C12.9919 2 13.8926 2.38839 14.5496 3.01668C15.3844 3.81504 15.4756 4.9683 15.4821 5.80952H20.2703C20.6733 5.80952 21 6.12932 21 6.52381C21 6.9183 20.6733 7.2381 20.2703 7.2381H3.72973C3.32671 7.2381 3 6.9183 3 6.52381Z" fill="#1C274C" />
+                                                        <path opacity="0.5" d="M11.5956 22.0001H12.4044C15.1871 22.0001 16.5785 22.0001 17.4831 21.1142C18.3878 20.2283 18.4803 18.7751 18.6654 15.8686L18.9321 11.6807C19.0326 10.1037 19.0828 9.31524 18.6289 8.81558C18.1751 8.31592 17.4087 8.31592 15.876 8.31592H8.12405C6.59127 8.31592 5.82488 8.31592 5.37105 8.81558C4.91722 9.31524 4.96744 10.1037 5.06788 11.6807L5.33459 15.8686C5.5197 18.7751 5.61225 20.2283 6.51689 21.1142C7.42153 22.0001 8.81289 22.0001 11.5956 22.0001Z" fill="#1C274C" />
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.42543 11.4815C9.83759 11.4381 10.2051 11.7547 10.2463 12.1885L10.7463 17.4517C10.7875 17.8855 10.4868 18.2724 10.0747 18.3158C9.66253 18.3592 9.29499 18.0426 9.25378 17.6088L8.75378 12.3456C8.71256 11.9118 9.01327 11.5249 9.42543 11.4815Z" fill="#1C274C" />
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M14.5747 11.4815C14.9868 11.5249 15.2875 11.9118 15.2463 12.3456L14.7463 17.6088C14.7051 18.0426 14.3376 18.3592 13.9254 18.3158C13.5133 18.2724 13.2126 17.8855 13.2538 17.4517L13.7538 12.1885C13.795 11.7547 14.1625 11.4381 14.5747 11.4815Z" fill="#1C274C" />
+                                                    </svg>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="cart-footer">
+                                        <span class="d-block text-center mb-3">
+                                            مبلغ کل: <span class="total"> 4,000,000 تومان</span>
+                                        </span>
+                                        <span class="d-block text-center px-2">
+                                            <a href="#" class="btn-cart">
+                                                مشاهده سبد خرید <i class="mi mi-ShoppingCart"></i>
+                                            </a>
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="user-item account">
+                                <!-- <a href="#" class="btn-auth"><i class="fal fa-user-circle"></i>
+                                        ورود و عضویت
+                                    </a> -->
+                                @{
+                                    var firstName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "نام";
+                                }
+
+                                <a asp-controller="Account" asp-action="Index">
+                                    پنل کاربری<i class="fad fa-chevron-down text-sm mr-1"></i>
+                                </a>
+                                <ul class="dropdown--wrapper">
+                                    <li class="header-profile-dropdown-account-container">
+                                        <a asp-controller="Account" asp-action="Index" class="d-block">
+                                            <span class="header-profile-dropdown-user">
+                                                <span class="header-profile-dropdown-user-img">
+                                                    <img src="~/assets/img/avatar/avatar.png">
+                                                </span>
+                                                <span class="header-profile-dropdown-user-info">
+                                                    <p class="header-profile-dropdown-user-name">@firstName </p>
+                                                    <span class="header-profile-dropdown-user-profile-link">مشاهده حساب کاربری</span>
+                                                </span>
                                             </span>
-                                            <span class="price">600,000 تومان</span>
-                                            <button class="remove-item">
-                                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M3 6.52381C3 6.12932 3.32671 5.80952 3.72973 5.80952H8.51787C8.52437 4.9683 8.61554 3.81504 9.45037 3.01668C10.1074 2.38839 11.0081 2 12 2C12.9919 2 13.8926 2.38839 14.5496 3.01668C15.3844 3.81504 15.4756 4.9683 15.4821 5.80952H20.2703C20.6733 5.80952 21 6.12932 21 6.52381C21 6.9183 20.6733 7.2381 20.2703 7.2381H3.72973C3.32671 7.2381 3 6.9183 3 6.52381Z" fill="#1C274C" />
-                                                    <path opacity="0.5" d="M11.5956 22.0001H12.4044C15.1871 22.0001 16.5785 22.0001 17.4831 21.1142C18.3878 20.2283 18.4803 18.7751 18.6654 15.8686L18.9321 11.6807C19.0326 10.1037 19.0828 9.31524 18.6289 8.81558C18.1751 8.31592 17.4087 8.31592 15.876 8.31592H8.12405C6.59127 8.31592 5.82488 8.31592 5.37105 8.81558C4.91722 9.31524 4.96744 10.1037 5.06788 11.6807L5.33459 15.8686C5.5197 18.7751 5.61225 20.2283 6.51689 21.1142C7.42153 22.0001 8.81289 22.0001 11.5956 22.0001Z" fill="#1C274C" />
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.42543 11.4815C9.83759 11.4381 10.2051 11.7547 10.2463 12.1885L10.7463 17.4517C10.7875 17.8855 10.4868 18.2724 10.0747 18.3158C9.66253 18.3592 9.29499 18.0426 9.25378 17.6088L8.75378 12.3456C8.71256 11.9118 9.01327 11.5249 9.42543 11.4815Z" fill="#1C274C" />
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14.5747 11.4815C14.9868 11.5249 15.2875 11.9118 15.2463 12.3456L14.7463 17.6088C14.7051 18.0426 14.3376 18.3592 13.9254 18.3158C13.5133 18.2724 13.2126 17.8855 13.2538 17.4517L13.7538 12.1885C13.795 11.7547 14.1625 11.4381 14.5747 11.4815Z" fill="#1C274C" />
-                                                </svg>
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="cart-footer">
-                                    <span class="d-block text-center mb-3">
-                                        مبلغ کل: <span class="total"> 4,000,000 تومان</span>
-                                    </span>
-                                    <span class="d-block text-center px-2">
-                                        <a href="#" class="btn-cart">
-                                            مشاهده سبد خرید <i class="mi mi-ShoppingCart"></i>
+                                            
                                         </a>
-                                    </span>
-                                </li>
-                            </ul>
+                                    </li>
+                                
+                                    <li>
+                                        <a asp-controller="Account" asp-action="Index"> پروفایل </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Account" asp-action="LogOut">خروج از حساب </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="user-item account">
-                            <!-- <a href="#" class="btn-auth"><i class="fal fa-user-circle"></i>
-                                    ورود و عضویت
-                                </a> -->
-                            <a href="#">
-                                محمد رضایی <i class="fad fa-chevron-down text-sm mr-1"></i>
-                            </a>
-                            <ul class="dropdown--wrapper">
-                                <li class="header-profile-dropdown-account-container">
-                                    <a href="#" class="d-block">
-                                        <span class="header-profile-dropdown-user">
-                                            <span class="header-profile-dropdown-user-img">
-                                                <img src="~/assets/img/avatar/avatar.png">
-                                            </span>
-                                            <span class="header-profile-dropdown-user-info">
-                                                <p class="header-profile-dropdown-user-name">محمد رضایی </p>
-                                                <span class="header-profile-dropdown-user-profile-link">مشاهده حساب کاربری</span>
-                                            </span>
-                                        </span>
-                                        <span class="header-profile-dropdown-account">
-                                            <span class="header-profile-dropdown-account-item">
-                                                <span class="header-profile-dropdown-account-item-title">اعتبار</span>
-                                                <span class="header-profile-dropdown-account-item-amount">
-                                                    <span class="header-profile-dropdown-account-item-amount-number">7,500,000</span> تومان
-                                                </span>
-                                            </span>
-                                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="dropdown--btn-primary">وارد شوید</a>
-                                </li>
-                                <li>
-                                    <span>کاربر جدید هستید؟</span>
-                                    <a href="#" class="border-bottom-dt">ثبت نام</a>
-                                </li>
-                                <hr>
-                                <li>
-                                    <a href="#"> پروفایل </a>
-                                </li>
-                                <li>
-                                    <a href="#"> پیگیری سفارش </a>
-                                </li>
-                            </ul>
+                    }
+                    else
+                    {
+                        <div class="user-items">
+                          
+                            <div class="user-item account">
+                                 <a asp-controller="Account" asp-action="Login" class="btn-auth"><i class="fal fa-user-circle"></i>
+                                        ورود و عضویت
+                                    </a> 
+                                                          
+                            </div>
                         </div>
-                    </div>
+                    }
+
+
+
+                 
                 </div>
                 <nav class="nav-wrapper container">
                     <ul>
@@ -1123,7 +1129,7 @@
                             <ul class="row">
                                 <li class="col-7">
                                     <a href="#">
-                                        مطالب بیشتر در دیجی پرس مگ تخفیف ها و پیشنهادها <i class="fad fa-chevron-left"></i>
+                                        مطالب بیشتر در دیجی مارکت مگ تخفیف ها و پیشنهادها <i class="fad fa-chevron-left"></i>
                                     </a>
                                     <ul class="row">
                                         <li class="col-6">
@@ -1182,7 +1188,7 @@
                                                 </li>
                                                 <li>
                                                     <a href="#" class="text-sm text-muted">
-                                                        <i class="fad fa-gift-card"></i> کارت هدیه خرید از دیجی پرس
+                                                        <i class="fad fa-gift-card"></i> کارت هدیه خرید از دیجی مارکت
                                                     </a>
                                                 </li>
                                                 <li>
@@ -1208,7 +1214,7 @@
                                         <path d="M15.8754 19.4874L16.0559 19.3625C16.6209 18.9719 16.9035 18.7765 17.1562 18.567C18.5294 17.4289 19.4518 15.8424 19.7588 14.0905C19.8153 13.7681 19.8446 13.4271 19.9033 12.7449L19.9337 12.3922C20.0309 11.2632 20.0212 10.1275 19.9048 9.00023L19.8687 8.65139C19.665 6.6787 18.4539 4.94971 16.6644 4.07663C13.7221 2.64112 10.2779 2.64112 7.33559 4.07663C5.54608 4.94971 4.33504 6.6787 4.13127 8.65139L4.09524 9.00023C3.9788 10.1275 3.96911 11.2632 4.0663 12.3922L4.09666 12.7449C4.15537 13.4271 4.18473 13.7681 4.24123 14.0905C4.54821 15.8424 5.47055 17.4289 6.8438 18.567C7.09652 18.7765 7.3791 18.9719 7.94406 19.3626L8.12461 19.4874C8.89273 20.0185 9.27682 20.2842 9.66175 20.4687C11.1393 21.1771 12.8607 21.1771 14.3382 20.4687C14.7232 20.2842 15.1073 20.0186 15.8754 19.4874Z" fill="#363853" fill-opacity="0.15" stroke="#363853" stroke-width="1.5" />
                                         <path d="M9.25 11.75L11.25 13.75L14.75 10" stroke="#363853" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
-                                </i>دیجی پرسی من
+                                </i>دیجی مارکتی من
                             </a>
                         </li>
                         <li>
@@ -1221,7 +1227,7 @@
                                         <path d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" stroke="#323232" stroke-width="2" />
                                     </svg>
                                 </i>
-                                دیجی پرس پلاس
+                                دیجی مارکت پلاس
                             </a>
                         </li>
                         <li>
@@ -1231,7 +1237,7 @@
                                         <path d="M232,104c0,24-40,48-104,48S24,128,24,104,64,56,128,56,232,80,232,104Z" opacity="0.2" />
                                         <path d="M207.57812,63.84473C186.84668,53.47852,159.3291,48,128,48S69.15332,53.47852,48.42188,63.84473C27.81738,74.14746,16,88.7832,16,104v48c0,15.2168,11.81738,29.85254,32.42188,40.15527C69.15332,202.52148,96.6709,208,128,208s58.84668-5.47852,79.57812-15.84473C228.18262,181.85254,240,167.2168,240,152V104C240,88.7832,228.18262,74.14746,207.57812,63.84473ZM128,64c62.63867,0,96,23.23047,96,40,0,9.94531-11.73535,22.16211-34.35059,30.459-.11132.03418-.21826.07764-.32714.1167C173.84082,140.20361,153.314,144,128,144s-45.84082-3.79639-61.32227-9.42432c-.10888-.03906-.21582-.08252-.32714-.1167C43.73535,126.16211,32,113.94531,32,104,32,87.23047,65.36133,64,128,64Zm-8,95.86328V191.855c-18.98486-.62207-35.02637-3.42822-48-7.49414V153.04541A203.76361,203.76361,0,0,0,120,159.86328Zm16,0a203.76361,203.76361,0,0,0,48-6.81787v31.31543c-12.97363,4.06592-29.01514,6.87207-48,7.49414ZM32,152V133.53076a82.6098,82.6098,0,0,0,16.42188,10.62451c2.43164,1.21582,4.96484,2.3584,7.57812,3.43848v30.43359C40.17334,170.16455,32,160.294,32,152Zm168,26.02734V147.59375c2.61328-1.08008,5.14648-2.22266,7.57812-3.43848A82.6098,82.6098,0,0,0,224,133.53076V152C224,160.294,215.82666,170.16455,200,178.02734Z" />
                                     </svg>
-                                </i>دیجی پرس کلاب
+                                </i>دیجی مارکت کلاب
                             </a>
                         </li>
                         <li>
@@ -1933,7 +1939,7 @@
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="widget-menu widget card">
                                 <header class="card-header">
-                                    <h3 class="card-title">راهنمای خرید از دیجی پرس</h3>
+                                    <h3 class="card-title">راهنمای خرید از دیجی مارکت</h3>
                                 </header>
                                 <ul class="footer-menu">
                                     <li>
@@ -1972,11 +1978,11 @@
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="widget-menu widget card">
                                 <header class="card-header">
-                                    <h3 class="card-title">با دیجی پرس</h3>
+                                    <h3 class="card-title">با دیجی مارکت</h3>
                                 </header>
                                 <ul class="footer-menu">
                                     <li>
-                                        <a href="#">فروش در دیجی پرس</a>
+                                        <a href="#">فروش در دیجی مارکت</a>
                                     </li>
                                     <li>
                                         <a href="#">همکاری با سازمان‌ها</a>
@@ -1985,10 +1991,10 @@
                                         <a href="#">فرصت‌های شغلی</a>
                                     </li>
                                     <li>
-                                        <a href="#">تماس با دیجی پرس</a>
+                                        <a href="#">تماس با دیجی مارکت</a>
                                     </li>
                                     <li>
-                                        <a href="#">درباره دیجی پرس</a>
+                                        <a href="#">درباره دیجی مارکت</a>
                                     </li>
                                 </ul>
                             </div>
@@ -2043,8 +2049,8 @@
                 <div class="container main-container">
                     <div class="row">
                         <div class="site-description col-12 col-lg-7">
-                            <h1 class="site-title">فروشگاه اینترنتی دیجی پرس، بررسی، انتخاب و خرید آنلاین</h1>
-                            <p> دیجی پرس به عنوان یکی از قدیمی‌ترین فروشگاه های اینترنتی با بیش از یک دهه تجربه، با پایبندی به سه اصل کلیدی، پرداخت در محل، 7 روز ضمانت بازگشت کالا و تضمین اصل‌بودن کالا، موفق شده تا همگام با فروشگاه‌های معتبر جهان، به بزرگ‌ترین فروشگاه اینترنتی ایران تبدیل شود. به محض ورود به دیجی پرس با یک سایت پر از کالا رو به رو می‌شوید! هر آنچه که نیاز دارید و به ذهن شما خطور می‌کند در اینجا پیدا خواهید کرد. </p>
+                            <h1 class="site-title">فروشگاه اینترنتی دیجی مارکت، بررسی، انتخاب و خرید آنلاین</h1>
+                            <p> دیجی مارکت به عنوان یکی از قدیمی‌ترین فروشگاه های اینترنتی با بیش از یک دهه تجربه، با پایبندی به سه اصل کلیدی، پرداخت در محل، 7 روز ضمانت بازگشت کالا و تضمین اصل‌بودن کالا، موفق شده تا همگام با فروشگاه‌های معتبر جهان، به بزرگ‌ترین فروشگاه اینترنتی ایران تبدیل شود. به محض ورود به دیجی مارکت با یک سایت پر از کالا رو به رو می‌شوید! هر آنچه که نیاز دارید و به ذهن شما خطور می‌کند در اینجا پیدا خواهید کرد. </p>
                         </div>
                         <div class="symbol col-12 col-lg-5">
                             <a href="#" target="_blank">
@@ -2059,9 +2065,13 @@
             </div>
             <div class="copyright">
                 <div class="container main-container">
-                    <p> استفاده از مطالب فروشگاه اینترنتی دیجی پرس فقط برای مقاصد غیرتجاری و با ذکر منبع بلامانع است. کلیه حقوق این سایت متعلق به شرکت نوآوران فن آوازه (فروشگاه آنلاین دیجی پرس) می‌باشد. </p>
+                    <p> استفاده از مطالب فروشگاه اینترنتی دیجی مارکت فقط برای مقاصد غیرتجاری و با ذکر منبع بلامانع است. کلیه حقوق این سایت متعلق به شرکت نوآوران فن آوازه (فروشگاه آنلاین دیجی مارکت) می‌باشد. </p>
                 </div>
             </div>
+           
+
+
+
         </footer>
         <!-------------------------------- Footer Section -->
         <!----------------------------- Go To Top Section -->
@@ -2085,8 +2095,12 @@
             </svg>
         </div>
         <!----------------------------- Go To Top Section -->
-
+        
     </div>
+
+
+   
+
 
 
     <!-- Core JS Files -->
@@ -2105,5 +2119,13 @@
     <script src="~/assets/js/js-home-1/js-home-1.js"></script>
     @RenderSection("FooterContent", required: false)
     @await RenderSectionAsync("Scripts", required: false)
+
+
+
+
+  
+ 
+
+
 </body>
 </html>​

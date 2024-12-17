@@ -1,4 +1,6 @@
-﻿@model DataTransferObject.DTOClasses.Person.Commands.LoginCommand
+﻿@using DataTransferObject.DTOClasses.Person.Commands
+@model LoginCommand
+
 @{
     Layout = null;
 
@@ -10,12 +12,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-    <title>ورود فروشنده | دیجی مارکت</title>
+    <title>ورود مشتری | دیجی مارکت</title>
 
     <meta name="description" content="">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="~/assets/img/seller-logo.png">
+    <link rel="icon" type="image/x-icon" href="~/assets/img/favicon/favicon.ico">
 
     <!-- Icons -->
     <link rel="stylesheet" href="~/assets/vendor/fonts/boxicons.css">
@@ -56,18 +58,18 @@
                     <div class="card-body">
                         <!-- Logo -->
                         <div class="app-brand justify-content-center">
-                            <a href="index.html" class="app-brand-link gap-2">
-
+                            <a  href="/" class="app-brand-link gap-2">
                                 <img src="~/assets/img/svg/logo.svg" />
 
+                               
                                 <span class="app-brand-text demo h3 mb-0 fw-bold"></span>
                             </a>
                         </div>
                         <!-- /Logo -->
-                        <h4 class="mb-3 secondary-font">ورود فروشنده</h4>
+                        <h4 class="mb-3 secondary-font">ورود مشتری</h4>
                         <p class="mb-4">لطفا اطلاعات حساب خودرا وارد کنید</p>
 
-                        <form id="formAuthentication" class="mb-3" asp-area="supplier" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewData["returnurl"]" method="POST">
+                        <form id="formAuthentication" class="mb-3" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewData["returnurl"]" method="POST">
                             <div class="mb-3">
                                 <label asp-for="@Model.Email" class="form-label">ایمیل</label>
                                 <input type="text" asp-for="@Model.Email" class="form-control text-start" id="email" placeholder="ایمیل خود را وارد کنید" autofocus dir="ltr">
@@ -108,7 +110,7 @@
 
                         <p class="text-center">
                             <span>کاربر جدید هستید؟</span>
-                            <a asp-area="supplier" asp-controller="Account" asp-action="Register">
+                            <a  asp-controller="Account" asp-action="Register">
                                 <span>یک حساب بسازید</span>
                             </a>
                         </p>
