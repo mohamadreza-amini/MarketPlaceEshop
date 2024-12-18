@@ -194,7 +194,16 @@
                                                     <a asp-controller="Product" asp-action="GetProduct" asp-route-productId="@product.Id">@product.Name</a>
                                                 </h5>
                                                 <a class="product-meta" asp-controller="Product" asp-action="GetProduct" asp-route-productId="@product.Id">@product.Titel</a>
-                                                <span class="product-price">@((product.Price / 10).ToString("0")) تومان</span>
+                                                @if (product.Price == 0)
+                                                {
+                                                    <span class=" product-price">ناموجود</span>
+
+                                                }
+                                                else
+                                                {
+                                                    <span class="product-price">@((product.Price / 10).ToString("N0")) تومان</span>
+
+                                                }
                                             </div>
                                         </div>
                                     </div>

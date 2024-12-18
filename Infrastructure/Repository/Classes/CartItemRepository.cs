@@ -50,20 +50,32 @@ public class CartItemRepository : BaseRepository<CartItem, Guid>, ICartItemRepos
 
     public async Task<decimal> GetCartTotalPriceByCustomerId(Guid customerId, CancellationToken cancellation)
     {
-        return await _entitySet
-            .Where(x => x.CustomerId == customerId)
-            .SumAsync(x => x.ProductSupplier.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault());
+        var prices =await _entitySet
+     .Select(x => new
+     {
+         x.Quantity,
+         PriceValue = x.ProductSupplier.Prices
+             .Where(price => price.ExpiredTime == null)
+             .Select(price => price.PriceValue)
+             .FirstOrDefault()
+     }).ToListAsync(cancellation);
+
+        var total = prices.Sum(x => x.Quantity * x.PriceValue );
+        return total;
     }
 
     public async Task<decimal> GetCartTotalDiscountByCustomerId(Guid customerId, CancellationToken cancellation)
     {
-        return await _entitySet.Where(x => x.CustomerId == customerId).SumAsync(x => x.ProductSupplier.Discount);
+        return await _entitySet.Where(x => x.CustomerId == customerId).SumAsync(x => x.ProductSupplier.Discount * x.Quantity);
     }
 
 
     public async Task<decimal> GetTotalValueOfCarts(CancellationToken cancellation)
     {
-        return await _entitySet.SumAsync(x => x.Quantity * x.ProductSupplier.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(), cancellation);
+        return await _entitySet
+            .SumAsync(x => x.Quantity * (x.ProductSupplier.Prices != null && x.ProductSupplier.Prices.Any()
+            ? x.ProductSupplier.Prices.Where(price => price.ExpiredTime == null).Select(x => x.PriceValue).DefaultIfEmpty(0).FirstOrDefault() : 0), cancellation);
+        //مثل بالاییش تفیر کنه
     }
 
 

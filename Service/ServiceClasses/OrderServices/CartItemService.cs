@@ -64,7 +64,7 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
             throw new BadRequestException("ابتدا باید لاگین کنید");
         cartItem.Validate();
         var inventory = await _productSupplierService.GetInventory(cartItem.ProductSupplierId, cancellation);
-        if (inventory > cartItem.Quantity)
+        if (inventory < cartItem.Quantity)
             throw new BadRequestException("تعداد نامعتبر");
         if (await _productSupplierService.IsActiveProductSupplier(cartItem.ProductSupplierId, cancellation))
             throw new BadRequestException("محصول نامعتبر");
@@ -159,7 +159,7 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
     //گرفتن سبد خرید یک شخص
     public async Task<CartResult?> GetCartByCustomerId(CancellationToken cancellation)
     {
-        if (Guid.TryParse(_userService.RequesterId(), out Guid customerId))
+        if (!Guid.TryParse(_userService.RequesterId(), out Guid customerId))
             throw new AccessDeniedException();
 
         var query = await _cartItemRepository.GetAllDataAsync(x => new CartItemResult

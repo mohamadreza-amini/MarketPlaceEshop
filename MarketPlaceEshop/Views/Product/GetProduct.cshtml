@@ -41,6 +41,7 @@
             #submitRating:hover {
                 background-color: #0056b3;
             }
+
     </style>
 }
 <!--------------------------------- Main Content -->
@@ -250,7 +251,7 @@
                                                 </div>
                                             </div>
                                             <div class="product-seller-row product-seller-row--add-to-cart">
-                                                <a href="#" class="btn-add-to-cart btn-add-to-cart--full-width">
+                                                <a href="javascript:void(0);" onclick="scrollToQuantityInput('@Model.productSuppliers.OrderByDescending(x=>x.Discount).FirstOrDefault()!.Id')" class="btn-add-to-cart btn-add-to-cart--full-width">
                                                     <span class="btn-add-to-cart-txt">افزودن به سبد خرید</span>
                                                 </a>
                                                 <div class="product-seller-digiclub">
@@ -294,7 +295,7 @@
                                                             <img src="./assets/img/seller-logo.png" alt="">
                                                             <div class="font-weight-bold  product-seller-first-line">
                                                                 فروشنده:
-                                                                <span class="font-weight-bold text-bg-dark product-seller-name">@Model.productSuppliers.OrderByDescending(x => x.Discount).FirstOrDefault()!.CompanyName </span>
+                                                                <span class="font-weight-bold text-bg-dark product-seller-name">@Model.productSuppliers.OrderBy(x => x.Price).FirstOrDefault()!.CompanyName </span>
 
                                                             </div>
 
@@ -333,13 +334,14 @@
                                                 <div class="product-seller-price-info">
                                                 </div>
                                                 <div class="product-seller-price-real">
-                                                    <div class="product-seller-price-raw">@(((Model.productSuppliers.OrderByDescending(x => x.Discount).FirstOrDefault()!.Price - Model.productSuppliers.OrderByDescending(x => x.Discount).FirstOrDefault()!.Discount) / 10).ToString("N0"))</div>
+                                                    <div class="product-seller-price-raw">@(((Model.productSuppliers.OrderBy(x => x.Price).FirstOrDefault()!.Price - Model.productSuppliers.OrderBy(x => x.Price).FirstOrDefault()!.Discount) / 10).ToString("N0"))</div>
                                                     تومان
                                                 </div>
 
                                             </div>
                                             <div class="product-seller-row product-seller-row--add-to-cart">
-                                                <a href="#" class="btn-add-to-cart btn-add-to-cart--full-width">
+
+                                                <a href="javascript:void(0);" onclick="scrollToQuantityInput('@Model.productSuppliers.OrderBy(x => x.Price).FirstOrDefault()!.Id')" class="btn-add-to-cart btn-add-to-cart--full-width">
                                                     <span class="btn-add-to-cart-txt">افزودن به سبد خرید</span>
                                                 </a>
                                                 <div class="product-seller-digiclub">
@@ -488,9 +490,14 @@
                     </div>
                     <div class="product-seller-col">
                         <div class="product-seller-price-action">
-                            <div class="product-seller-price">@(productSupplier.Price - productSupplier.Discount)<span class="currency">تومان</span></div>
+                            <div class="product-seller-price">@(((productSupplier.Price - productSupplier.Discount) / 10).ToString("N0"))<span class="currency">تومان</span></div>
+
+                            <input id="@productSupplier.Id" type="number" class="form-control product-quantity custom-number-input" value="1" min="1" max="@productSupplier.Ventory" step="1" style="width: 60px; margin-top: 10px; display:none" oninput="this.value = Math.min(Math.max(this.value, 1), @productSupplier.Ventory)" />
+
+
+
                             <div class="product-seller-action">
-                                <a href="#" class="btn btn-outline-danger">
+                                <a href="javascript:void(0);" onclick="sendTOCart('@productSupplier.Id')" class="btn btn-outline-danger">
                                     افزودن به
                                     سبد
                                 </a>
@@ -883,12 +890,12 @@
     <script>
 
         $(document).ready(function () {
-            
-            $("#commentForm").on("submit", function (event) {
-                event.preventDefault(); 
 
-                const commentInput = $("#commentInput").val();   
-                const productId = $("input[name='comment.ProductId']").val(); 
+            $("#commentForm").on("submit", function (event) {
+                event.preventDefault();
+
+                const commentInput = $("#commentInput").val();
+                const productId = $("input[name='comment.ProductId']").val();
 
                 if (!commentInput.trim()) {
                     alert("لطفاً نظر خود را وارد کنید.");
@@ -953,13 +960,13 @@
                 $(this).parent().children().removeClass("active");
             });
 
-            // ارسال امتیاز  
+            // ارسال امتیاز
             $("#submitRating").on("click", function () {
                 if (selectedRating > 0) {
                     $.ajax({
-                        url: '/Product/AddScore',  
+                        url: '/Product/AddScore',
                         type: 'POST',
-                        data: { StarRating: selectedRating, ProductId: '@Model.Id' }, 
+                        data: { StarRating: selectedRating, ProductId: '@Model.Id' },
                         success: function (response) {
                             var content = $(response).find("#scoreResult").html();
 
@@ -978,5 +985,46 @@
 
 
 
+
+
+
+
+
+        function sendTOCart(productSupplierId) {
+            var quantity = $("#" + productSupplierId).val();
+
+            $("#" + productSupplierId).css("display", "block");
+
+            $.ajax({
+                url: '/Cart/AddToCart',  
+                type: "POST",
+                data: { Quantity: quantity, ProductSupplierId: productSupplierId },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.log("خطا در ارسال داده‌ها: ", error);
+                }
+            });
+        }
+
+
+
+
+
+        function scrollToQuantityInput(productSupplierId) {
+            sendTOCart(productSupplierId);
+
+            var element = document.getElementById(productSupplierId);
+            // اسکرول به سمت عنصر با تنظیم فاصله 10px از بالای صفحه
+            element.scrollIntoView({
+                behavior: "smooth", // اسکرول به صورت نرم و روان
+                block: "center" // عنصر در ابتدای صفحه قرار می‌گیرد
+            });
+
+            // نمایان کردن input که در ابتدا مخفی بود
+            element.style.display = "block";
+        }
     </script>
 }
+
