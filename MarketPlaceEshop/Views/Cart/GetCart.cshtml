@@ -1,0 +1,278 @@
+﻿@using DataTransferObject.DTOClasses.Order.Results
+@model CartResult
+
+<!--------------------------------- Main Content -->
+<main class="main-content dt-sl mb-3">
+    <div id="cartPage" class="container main-container">
+
+        @if(Model.CartItems?.Any()??false){
+
+
+        <div class="row mx-0">
+            <div class="col-xl-9 col-lg-8 col-md-12 col-sm-12 mb-2 mt-2" style="padding-left: 0;padding-right: 0;">
+                <nav class="tab-cart-page">
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link d-inline-flex w-auto active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">سبد خرید<span class="count-cart">1</span></a>
+                    </div>
+                </nav>
+            </div>
+            <div class="col-12">
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                         aria-labelledby="nav-home-tab">
+                        <div class="row">
+                            <!-- w-res-sidebar --->
+                           <div class="col-xl-9 col-lg-8 col-12 px-0">
+                                <div class="table-responsive checkout-content dt-sl">
+                                   
+                                    <div class="checkout-section-content-dd-k">
+                                        <div class="cart-items-dd-k">
+                                            @*                             بخش محصولات داخل سبد
+                                            *@
+                                            @foreach(var cartitem in Model.CartItems)
+                                            {
+
+
+                                                <div class="cart-item py-4 px-3">
+                                                    <div class="item-thumbnail">
+                                                        <a href="#">
+                                                            <img src="@cartitem.ImagePath.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")" alt="item">
+                                                        </a>
+                                                    </div>
+                                                    <div class="item-info flex-grow-1">
+                                                        <div class="item-title">
+                                                            <h2>
+                                                                <a asp-controller="Product" asp-action="GetProduct" asp-route-productId="@cartitem.ProductId">
+                                                                    @cartitem.ProductName
+                                                                </a>
+                                                            </h2>
+                                                        </div>
+                                                        <div class="item-detail">
+                                                            <ul>
+                                                               
+                                                               
+                                                                <li>
+                                                                    <i class="far fa-store-alt text-muted"></i>
+                                                                    <span>@cartitem.CompanyName</span>
+                                                                </li>
+                                                                <li>
+                                                                    <i class="far fa-clipboard-check text-primary"></i>
+                                                                    <span>موجود در انبار</span>
+                                                                </li>
+                                                            </ul>
+                                                            <div class="item-quantity--item-price">
+                                                                    <div class="item-quantity d-flex align-items-center gap-2">
+                                                                        <input id="@cartitem.ProductSupplierId" type="number" class="form-control mt-0 product-quantity custom-number-input" value="@cartitem.Quantity" min="1" max="@cartitem.Ventory" step="1" style="width: 60px; margin-top: 10px; " oninput="this.value = Math.min(Math.max(this.value, 1), @cartitem.Ventory)" />
+
+                                                                        <button onclick="sendTOCartPage('@cartitem.ProductSupplierId')" class="item-remove-btn mr-3">
+                                                                            <i class="fa fa-pencil" ></i>
+
+                                                                            ویرایش
+                                                                        </button>
+
+
+
+                                                                        <button onclick="DeleteCartPage('@cartitem.ProductSupplierId')" class="item-remove-btn mr-3">
+                                                                        <i class="far fa-trash-alt"></i>
+                                                                        حذف
+                                                                    </button>
+                                                                </div>
+                                                                <div class="item-price">
+                                                                    @((((cartitem.PriceValue-cartitem.Discount)*cartitem.Quantity)/10).ToString("N0"))<span class="text-sm mr-1">تومان</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            }
+
+                                            
+                                         
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+@*                             بخش فاکتور و هزینه ها
+ *@                            <div class="col-xl-3 col-lg-4 col-12 sticky-sidebar">
+                                <div class="widget-post1 dt-sn dt-sn--box border mb-2">
+                                    <ul class="checkout-summary-summary">
+                                        <li>
+                                            <span>مبلغ کل (@Model.CartItems.Count کالا)</span><span>@((Model.TotalPrice/10).ToString("N0")) تومان</span>
+                                        </li>
+                                        <li class="checkout-summary-discount">
+                                            <span>سود شما از خرید</span><span>
+                                                <span>(۱٪)</span>@((Model.TotalDiscount/10).ToString("N0"))
+                                                تومان
+                                            </span>
+                                        </li>
+                                        <li>
+                                          
+                                        </li>
+                                        <li class="checkout-club-container">
+                                           
+                                        </li>
+                                    </ul>
+                                    <div class="checkout-summary-devider">
+                                        <div></div>
+                                    </div>
+                                    <div class="checkout-summary-content">
+                                        <div class="checkout-summary-price-title">مبلغ قابل پرداخت:</div>
+                                        <div class="checkout-summary-price-value">
+                                            <span class="checkout-summary-price-value-amount">@((Model.TotalAmountPaid/10).ToString("N0"))</span>
+                                            تومان
+                                        </div>
+                                            <a asp-controller="Cart" asp-action="AddOrder" class="mb-2 d-block">
+                                            <button class="btn-primary-cm btn-with-icon w-100 text-center pr-0">
+                                                <i>
+                                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <g id="Iconly/Curved/Arrow - Left">
+                                                            <g id="Arrow - Left">
+                                                                <path id="Stroke 1" d="M4.24988 12.2742L19.2499 12.2742" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                                <path id="Stroke 3" d="M10.3002 18.2988C10.3002 18.2988 4.25017 15.0378 4.25017 12.2758C4.25017 9.51176 10.3002 6.24976 10.3002 6.24976" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                            </g>
+                                                        </g>
+                                                    </svg>
+                                                </i>
+                                                ادامه ثبت سفارش
+                                            </button>
+                                        </a>
+                                        <div>
+                                            <span>
+                                                کالاهای موجود در سبد شما ثبت و رزرو نشده‌اند، برای ثبت سفارش
+                                                مراحل بعدی را تکمیل کنید.
+                                            </span><span class="help-sn" data-toggle="tooltip" data-html="true"
+                                                         data-placement="bottom"
+                                                         title="<div class='help-container is-right'><div class='help-arrow'></div><p class='help-text'>محصولات موجود در سبد خرید شما تنها در صورت ثبت و پرداخت سفارش برای شما رزرو می‌شوند. در صورت عدم ثبت سفارش، دیجی پرس هیچگونه مسئولیتی در قبال تغییر قیمت یا موجودی این کالاها ندارد.</p></div>">
+                                                <span class="mdi mdi-information-outline"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        }
+        else
+        {
+            <div class="row mt-2">
+                <div style="margin: 0 auto;" class="col-xl-10 col-lg-9 col-md-12 col-sm-12">
+                    <div class="dt sl dt-sn dt-sn--box border pt-3 pb-5" style="box-shadow: 0 3px 7px 0 rgba(0, 0, 0, .13), 0 1px 2px 0 rgba(0, 0, 0, .11);">
+                        <div class="cart-page cart-empty">
+                            <div class="circle-box-icon">
+                                <i>
+                                    <svg width="70px" height="70px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2 3L2.26491 3.0883C3.58495 3.52832 4.24497 3.74832 4.62248 4.2721C5 4.79587 5 5.49159 5 6.88304V9.5C5 12.3284 5 13.7426 5.87868 14.6213C6.75736 15.5 8.17157 15.5 11 15.5H19" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path>
+                                        <path opacity="0.5" d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" stroke="#1C274C" stroke-width="1.5"></path>
+                                        <path opacity="0.5" d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" stroke="#1C274C" stroke-width="1.5"></path>
+                                        <path opacity="0.5" d="M11 9H8" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path>
+                                        <path d="M5 6H16.4504C18.5054 6 19.5328 6 19.9775 6.67426C20.4221 7.34853 20.0173 8.29294 19.2078 10.1818L18.7792 11.1818C18.4013 12.0636 18.2123 12.5045 17.8366 12.7523C17.4609 13 16.9812 13 16.0218 13H5" stroke="#1C274C" stroke-width="1.5"></path>
+                                    </svg>
+                                </i>
+                            </div>
+                            <p class="cart-empty-title mb-2">سبد خرید شما خالیست!</p>
+                            <p class="mb-3">می‌توانید برای مشاهده محصولات بیشتر به صفحات زیر بروید:</p>
+                            
+                            <a asp-controller="product" asp-action="search" class="btn-primary-cm">ادامه خرید در دیجی مارکت</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</main>
+<!--------------------------------- Main Content -->
+
+
+
+
+
+
+
+@section Scripts{
+    <script>
+
+        //به روز کردن  کل صفحه
+        function RefreshCartPage() {            
+            $.ajax({
+                url: '/Cart/GetCart',
+                type: "GET",
+                success: function (response) {
+                    var content = $(response).find("#cartPage").html();
+
+                    $("#cartPage").html(content);
+                },
+                error: function (error) {
+                    console.log("خطا در ارسال داده‌ها: ", error);
+                }
+            });
+        }
+
+
+
+        function DeleteCartPage(productSupplierId) {
+
+            $.ajax({
+                url: '/Cart/DeleteCart',
+                type: "POST",
+                data: { ProductSupplierId: productSupplierId },
+                success: function (response) {
+                    RefreshCartPage()
+                    RefreshTabCart()
+                },
+                error: function (error) {
+                    console.log("خطا در ارسال داده‌ها: ", error);
+                }
+            });
+        }
+
+
+
+
+        function sendTOCartPage(productSupplierId) {
+          
+
+            var quantity = $("#" + productSupplierId).val();
+
+            $("#" + productSupplierId).css("display", "block");
+
+            $.ajax({
+                url: '/Cart/AddToCart',
+                type: "POST",
+                data: { Quantity: quantity, ProductSupplierId: productSupplierId },
+                success: function (response) {
+                    RefreshCartPage()
+                    RefreshTabCart()
+                },
+                error: function (error) {
+                    console.log("خطا در ارسال داده‌ها: ", error);
+                }
+            });
+
+
+        }
+
+
+        //به روز کردن تب سبد خرید
+        function RefreshTabCart() {
+            $.ajax({
+                url: '/Home/index',
+                type: "GET",
+                success: function (response) {
+                    var content = $(response).find("#cartTab").html();
+
+                    $("#cartTab").html(content);
+                },
+                error: function (error) {
+                    console.log("خطا در ارسال داده‌ها: ", error);
+                }
+            });
+        }
+
+    </script>
+}

@@ -1,0 +1,182 @@
+﻿@using DataTransferObject.DTOClasses.Address.Results
+@using Shared
+@model List<AddressResult>
+
+
+<!--------------------------- Main Content Section-->
+<main class="main-content dt-sl mt-4 mb-3">
+    <div class="container main-container">
+        <div class="row" style="margin-top: 50px;">
+            <div class="cart-page-content col-xl-9 col-lg-8 col-12 px-0">
+
+                <section class="page-content dt-sl">
+
+                    <form asp-controller="Cart" asp-action="AddOrder" method="post" id="shipping-data-form" class="dt-sn dt-sn--box pt-3 pb-3">
+
+                        <div class="section-title text-sm-title title-wide no-after-title-wide mb-0 px-res-1">
+                            <h2>انتخاب آدرس </h2>
+                        </div>
+
+                        @foreach (var address in Model)
+                        {
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title"> @address.Neighborhood</h5>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input"
+                                               value="@address.Id"
+                                               name="orderDto.AddressId"
+                                               id="address-@address.Id" @(address == Model.First() ? "checked" : "") />  <!-- اولین رادیو به طور پیش‌فرض انتخاب می‌شود -->
+
+                                        <label class="custom-control-label" for="address-@address.Id">
+                                            @(address.ProvinceName + " " + address.CityName + " " + address.Neighborhood + " " + address.AddressDetail + " -پلاک " + address.HouseNumber + " -واحد " + address.UnitNumber)
+                                        </label>
+
+                                        <!-- استفاده از d-flex برای تراز کردن آدرس و کد پستی -->
+                                        <div class="d-flex align-items-baseline mt-2">
+                                            <p class="mb-0 mr-3">کد پستی: @address.PostalCode</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @{
+                            var today = DateTime.Now;
+                            var persianDaysOfWeek = new Dictionary<DayOfWeek, string>
+                        {
+                        { DayOfWeek.Saturday, "شنبه" },
+                        { DayOfWeek.Sunday, "یک‌شنبه" },
+                        { DayOfWeek.Monday, "دوشنبه" },
+                        { DayOfWeek.Tuesday, "سه‌شنبه" },
+                        { DayOfWeek.Wednesday, "چهارشنبه" },
+                        { DayOfWeek.Thursday, "پنجشنبه" },
+                        { DayOfWeek.Friday, "جمعه" }
+                        };}
+
+
+                        <div class="section-title text-sm-title title-wide no-after-title-wide mb-0 px-res-1">
+                            <h2>انتخاب تاریخ ارسال</h2>
+                        </div>
+                        @for (var day = 1; day <= 7; day++)
+                        {
+
+                            <div class="card mb-1" style="max-width: 300px;">
+                                <div class="card-body p-2">
+                                    <h6 class="card-title mb-1 text-truncate">
+                                        @persianDaysOfWeek[today.AddDays(day).DayOfWeek].ToString()
+                                    </h6>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input"
+                                               id="date-@day"
+                                               value="@today.AddDays(day)"
+                                               name="orderDto.ShippedDate"
+                                        @(day == 1 ? "checked" : "") />
+
+                                        <label class="custom-control-label" for="date-@day">
+                                            @(today.AddDays(day).ToAD().ToString("yyyy/MM/dd"))
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                       
+
+
+               
+                    </form>
+                    <div class="mt-5">
+                        <a href="#" class="float-right border-bottom-dt">
+                            <i class="mdi mdi-chevron-double-right"></i>بازگشت به سبد خرید
+                        </a>
+                        <a href="#" class="float-left border-bottom-dt">
+                            تایید و ادامه ثبت سفارش<i class="mdi mdi-chevron-double-left"></i>
+                        </a>
+                    </div>
+                </section>
+            </div>
+            @*  بخش فاکتور *@
+            <div class="col-xl-3 col-lg-4 col-12 sticky-sidebar">
+                <div class="widget-post1 dt-sn dt-sn--box border mb-2">
+                    <ul class="checkout-summary-summary">
+                        <li>
+                            <span>مبلغ کل (۲ کالا)</span><span>10,000,000 تومان</span>
+                        </li>
+                        <li class="checkout-summary-discount">
+                            <span>سود شما از خرید</span><span>
+                                <span>(۱٪)</span>300,000
+                                تومان
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                هزینه ارسال<span class="help-sn" data-toggle="tooltip" data-html="true"
+                                                 data-placement="bottom"
+                                                 title="<div class='help-container is-right'><div class='help-arrow'></div><p class='help-text'>هزینه ارسال مرسولات می‌تواند وابسته به شهر و آدرس گیرنده متفاوت باشد. در صورتی که هر یک از مرسولات حداقل ارزشی برابر با ۱۵۰هزار تومان داشته باشد، آن مرسوله بصورت رایگان ارسال می‌شود.<br>'حداقل ارزش هر مرسوله برای ارسال رایگان، می تواند متغیر باشد.'</p></div>">
+                                    <span class="mdi mdi-information-outline"></span>
+                                </span>
+                            </span><span>وابسته به آدرس</span>
+                        </li>
+                        <li class="checkout-club-container">
+                            <span>
+                                دیجی پرس<span class="help-sn" data-toggle="tooltip" data-html="true"
+                                              data-placement="bottom"
+                                              title="<div class='help-container is-right'><div class='help-arrow'></div><p class='help-text'>با امتیازهای خود در باشگاه مشتریان دیجی پرس (دیجی کلاب) از بین جوایز متنوع انتخاب کنید.</p></div>">
+                                    <span class="mdi mdi-information-outline"></span>
+                                </span>
+                            </span><span><span>200+</span><span> امتیاز</span></span>
+                        </li>
+                    </ul>
+                    <div class="checkout-summary-devider">
+                        <div></div>
+                    </div>
+                    <div class="checkout-summary-content">
+                        <div class="checkout-summary-price-title">مبلغ قابل پرداخت:</div>
+                        <div class="checkout-summary-price-value">
+                            <span class="checkout-summary-price-value-amount">10,000,000</span>
+                            تومان
+                        </div>
+                        <a href="#" class="mb-2 d-block">
+                            <button onclick="sendOrder()" class="btn-primary-cm btn-with-icon w-100 text-center pr-0 pl-0">
+                                <i>
+                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g id="Iconly/Curved/Arrow - Left">
+                                            <g id="Arrow - Left">
+                                                <path id="Stroke 1" d="M4.24988 12.2742L19.2499 12.2742" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                <path id="Stroke 3" d="M10.3002 18.2988C10.3002 18.2988 4.25017 15.0378 4.25017 12.2758C4.25017 9.51176 10.3002 6.24976 10.3002 6.24976" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </i>
+                                تایید و ادامه ثبت سفارش
+                            </button>
+                        </a>
+                        <div>
+                            <span>
+                                کالاهای موجود در سبد شما ثبت و رزرو نشده‌اند، برای ثبت سفارش
+                                مراحل بعدی را تکمیل کنید.
+                            </span><span class="help-sn" data-toggle="tooltip" data-html="true"
+                                         data-placement="bottom"
+                                         title="<div class='help-container is-right'><div class='help-arrow'></div><p class='help-text'>محصولات موجود در سبد خرید شما تنها در صورت ثبت و پرداخت سفارش برای شما رزرو می‌شوند. در صورت عدم ثبت سفارش، دیجی پرس هیچگونه مسئولیتی در قبال تغییر قیمت یا موجودی این کالاها ندارد.</p></div>">
+                                <span class="mdi mdi-information-outline"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+<!--------------------------- Main Content Section-->
+@section FooterContent {
+    <script src="assets/js/js-shopping/js-shopping.js"></script>
+}
+
+@section Scripts{
+    <script>
+        function sendOrder(){
+            $("#shipping-data-form").submit();
+        }
+    </script>
+}

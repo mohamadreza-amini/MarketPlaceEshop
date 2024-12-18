@@ -1,4 +1,4 @@
-﻿@using System.Security.Claims
+﻿    @using System.Security.Claims
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -131,7 +131,9 @@
 
                         <div class="user-items">
                             @* سبد خرید *@
+                            <div id="cartTab">
                             @await Component.InvokeAsync("CartTab")
+                            </div>
 
                             <div class="user-item account">
                                 <!-- <a href="#" class="btn-auth"><i class="fal fa-user-circle"></i>

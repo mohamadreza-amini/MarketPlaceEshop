@@ -23,14 +23,14 @@ public class CartItemRepository : BaseRepository<CartItem, Guid>, ICartItemRepos
         return affectedItems;
     }
 
-    public async Task<int> UpdateAllQuantities(CancellationToken cancellation)
+   /* public async Task<int> UpdateAllQuantities(CancellationToken cancellation)
     {
-        var affectedItems = await _entitySet
-            .Where(x => x.ProductSupplier.Ventory < x.Quantity)
-            .ExecuteUpdateAsync(x => x.SetProperty(cartitem => cartitem.Quantity, cartitem => cartitem.ProductSupplier.Ventory), cancellation);
-        await RemoveWithoutCapacity(cancellation);
-        return affectedItems;
-    }
+            var affectedItems = await _entitySet
+                .Where(x => x.ProductSupplier.Ventory < x.Quantity)
+                .ExecuteUpdateAsync(x => x.SetProperty(cartitem => cartitem.Quantity, cartitem => cartitem.ProductSupplier.Ventory), cancellation);
+            await RemoveWithoutCapacity(cancellation);
+            return affectedItems;
+    }*/
 
     public async Task<int> RemoveWithoutCapacity(CancellationToken cancellation)
     {
@@ -50,7 +50,7 @@ public class CartItemRepository : BaseRepository<CartItem, Guid>, ICartItemRepos
 
     public async Task<decimal> GetCartTotalPriceByCustomerId(Guid customerId, CancellationToken cancellation)
     {
-        var prices =await _entitySet
+        var prices = await _entitySet
      .Select(x => new
      {
          x.Quantity,
@@ -60,7 +60,7 @@ public class CartItemRepository : BaseRepository<CartItem, Guid>, ICartItemRepos
              .FirstOrDefault()
      }).ToListAsync(cancellation);
 
-        var total = prices.Sum(x => x.Quantity * x.PriceValue );
+        var total = prices.Sum(x => x.Quantity * x.PriceValue);
         return total;
     }
 

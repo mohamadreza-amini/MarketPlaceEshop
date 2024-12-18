@@ -251,7 +251,7 @@
                                                 </div>
                                             </div>
                                             <div class="product-seller-row product-seller-row--add-to-cart">
-                                                <a href="javascript:void(0);" onclick="scrollToQuantityInput('@Model.productSuppliers.OrderByDescending(x=>x.Discount).FirstOrDefault()!.Id')" class="btn-add-to-cart btn-add-to-cart--full-width">
+                                                <a href="javascript:void(0);" onclick="scrollToQuantityInput('@Model.productSuppliers.OrderByDescending(x=>x.Discount).FirstOrDefault()!.Id',@User.IsInRole("Customer").ToString().ToLower())" class="btn-add-to-cart btn-add-to-cart--full-width">
                                                     <span class="btn-add-to-cart-txt">افزودن به سبد خرید</span>
                                                 </a>
                                                 <div class="product-seller-digiclub">
@@ -341,7 +341,7 @@
                                             </div>
                                             <div class="product-seller-row product-seller-row--add-to-cart">
 
-                                                <a href="javascript:void(0);" onclick="scrollToQuantityInput('@Model.productSuppliers.OrderBy(x => x.Price).FirstOrDefault()!.Id')" class="btn-add-to-cart btn-add-to-cart--full-width">
+                                                <a href="javascript:void(0);" onclick="scrollToQuantityInput('@Model.productSuppliers.OrderBy(x => x.Price).FirstOrDefault()!.Id',@User.IsInRole("Customer").ToString().ToLower())" class="btn-add-to-cart btn-add-to-cart--full-width">
                                                     <span class="btn-add-to-cart-txt">افزودن به سبد خرید</span>
                                                 </a>
                                                 <div class="product-seller-digiclub">
@@ -497,7 +497,7 @@
 
 
                             <div class="product-seller-action">
-                                <a href="javascript:void(0);" onclick="sendTOCart('@productSupplier.Id')" class="btn btn-outline-danger">
+                                <a href="javascript:void(0);" onclick="sendTOCart('@productSupplier.Id',@User.IsInRole("Customer").ToString().ToLower())" class="btn btn-outline-danger">
                                     افزودن به
                                     سبد
                                 </a>
@@ -990,7 +990,16 @@
 
 
 
-        function sendTOCart(productSupplierId) {
+        function sendTOCart(productSupplierId, isAuthenticated) {
+            if (!isAuthenticated) {
+                // دریافت آدرس فعلی صفحه
+                var currentUrl = window.location.pathname + window.location.search;
+
+                // انتقال به صفحه لاگین با ارسال returnUrl
+                window.location.href = '/Account/Login?returnUrl=' + encodeURIComponent(currentUrl);
+                return;
+            }
+
             var quantity = $("#" + productSupplierId).val();
 
             $("#" + productSupplierId).css("display", "block");
@@ -1000,7 +1009,26 @@
                 type: "POST",
                 data: { Quantity: quantity, ProductSupplierId: productSupplierId },
                 success: function (response) {
-                    console.log(response);
+                    RefreshTabCart()
+                },
+                error: function (error) {
+                    console.log("خطا در ارسال داده‌ها: ", error);
+                }
+            });
+
+            
+        }
+
+
+        //به روز کردن تب سبد خرید
+        function RefreshTabCart() {           
+            $.ajax({
+                url: '/Home/index',
+                type: "GET",
+                success: function (response) {
+                    var content = $(response).find("#cartTab").html();
+
+                    $("#cartTab").html(content);
                 },
                 error: function (error) {
                     console.log("خطا در ارسال داده‌ها: ", error);
@@ -1011,9 +1039,8 @@
 
 
 
-
-        function scrollToQuantityInput(productSupplierId) {
-            sendTOCart(productSupplierId);
+        function scrollToQuantityInput(productSupplierId, isAuthenticated) {
+            sendTOCart(productSupplierId, isAuthenticated);
 
             var element = document.getElementById(productSupplierId);
             // اسکرول به سمت عنصر با تنظیم فاصله 10px از بالای صفحه

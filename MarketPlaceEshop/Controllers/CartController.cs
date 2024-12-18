@@ -1,7 +1,9 @@
 ﻿using DataTransferObject.DTOClasses.Order.Commands;
+using DataTransferObject.DTOClasses.Order.Results;
 using Infrastructure.Contracts.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Model.Exceptions;
+using Service.ServiceInterfaces.AddressServices;
 using Service.ServiceInterfaces.OrderServices;
 using System.Security.Claims;
 
@@ -10,10 +12,13 @@ namespace MarketPlaceEshop.Controllers
     public class CartController : Controller
     {
         private readonly ICartItemService _cartItemService;
-
-        public CartController(ICartItemService cartItemService)
+        private readonly IOrderService _orderService;
+        private readonly IAdressService _adressService;
+        public CartController(ICartItemService cartItemService, IOrderService orderService, IAdressService adressService)
         {
             _cartItemService = cartItemService;
+            _orderService = orderService;
+            _adressService = adressService;
         }
 
         public IActionResult Index()
@@ -29,10 +34,54 @@ namespace MarketPlaceEshop.Controllers
                 await _cartItemService.AddCartItemAsync(CartItemDto, cancellation);
                 return "به سبد خرید اضافه شد";
             }
-            catch (BaseException ex) {
+            catch (BaseException ex)
+            {
                 return ex.Message;
             }
 
+        }
+
+        public async Task<string> DeleteCart(Guid productSupplierId, CancellationToken cancellation)
+        {
+            var customerId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new AccessDeniedException());
+            try
+            {
+                await _cartItemService.DeleteCartItem(customerId, productSupplierId, cancellation);
+                return "از سبد خرید حذف شد";
+            }
+            catch (BaseException ex)
+            {
+                return ex.Message;
+            }
+
+        }
+
+
+
+        public async Task<IActionResult> GetCart(CancellationToken cancellation)
+        {
+            var carts = await _cartItemService.GetCartByCustomerId(cancellation);
+            return View(carts);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> AddOrder(CancellationToken cancellation)
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new AccessDeniedException(), out Guid customerId);
+            var address = await _adressService.GetAllByCustomerIdAsync(customerId, cancellation);
+            if (address == null || !address.Any())           
+                return RedirectToAction("Account", "address");
+            
+            return View(address);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddOrder(OrderCommand orderDto, CancellationToken cancellation)
+        {
+           orderDto.CustomerId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new AccessDeniedException());
+
+            await _orderService.AddOrderAsync(orderDto, cancellation);
+            return View();//تغیر کنه
         }
     }
 }

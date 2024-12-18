@@ -20,7 +20,6 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
     private readonly ICartItemRepository _cartItemRepository;
     private readonly IProductSupplierService _productSupplierService;
     private readonly IUserService _userService;
-
     public CartItemService(ICartItemRepository cartItemRepository, IProductSupplierService productSupplierService, IUserService userService)
     {
         _cartItemRepository = cartItemRepository;
@@ -36,7 +35,14 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
     //رفرش کردن ظرفیت تمام سبد خرید های مشکل دار
     public async Task RefreshAllCartQuantitiesAsync(CancellationToken cancellation)
     {
-        await _cartItemRepository.UpdateAllQuantities(cancellation);
+        var query = await _cartItemRepository.GetAllDataAsync(x => x, cancellation, x => x.Quantity > x.ProductSupplier.Ventory, x => x.Include(x => x.ProductSupplier), false);
+        if (query == null) return;
+        var carts = await query.ToListAsync(cancellation);
+        carts.ForEach(x => x.Quantity = x.ProductSupplier.Ventory);
+        await _cartItemRepository.CommitAsync(cancellation);
+        await _cartItemRepository.RemoveWithoutCapacity(cancellation);
+        //await _cartItemRepository.UpdateAllQuantities(cancellation); //این متد قابل پیاده سازی سمت دیتابیس نبود باید
+                                                                       // sql خام بنویسی
     }
 
     //بررسی بودن یک ایتم در سبد خرید
@@ -125,7 +131,7 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
         var result = true;
         foreach (var cartitem in cartitems)
         {
-            if (cartitem.Quantity != cartitem.ProductSupplier.Ventory)
+            if (cartitem.Quantity > cartitem.ProductSupplier.Ventory)
             {
                 await RefreshCartQuantitiesByIdAsync(cartitem.ProductSupplierId, cartitem.ProductSupplier.Ventory, cancellation);
                 result = false;
@@ -178,7 +184,7 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
         }, cancellation, x => x.CustomerId == customerId);
 
         if (query == null)
-            return null;
+            return new CartResult();
         var cartItems = await query.ToListAsync(cancellation);
         var totalPrice = await GetCartTotalPriceByCustomerId(customerId, cancellation);
         var totalDiscount = await GetCartTotalDiscountByCustomerId(customerId, cancellation);
