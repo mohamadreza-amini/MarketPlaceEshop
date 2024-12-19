@@ -20,6 +20,7 @@ public class IdentitySeedData
 
         if ((await userManger.FindByEmailAsync("mohamadreza@gmail.com")) == null)
         {
+            var userId= Guid.NewGuid();
             await userManger.CreateAsync(new User
             {
                 Email = "mohamadreza@gmail.com",
@@ -28,9 +29,9 @@ public class IdentitySeedData
                 MobileNumber = "09111111111",
                 PhoneNumber = "88888888",
                 UserName = "mohamadreza@gmail.com",
-                Id = Guid.Parse("CCBAC04B-F656-4671-851A-88512924B9CC"),
-                CreatorUserId = Guid.Parse("CCBAC04B-F656-4671-851A-88512924B9CC"),
-                UpdaterUserId = Guid.Parse("CCBAC04B-F656-4671-851A-88512924B9CC"),
+                Id = userId,
+                CreatorUserId = userId,
+                UpdaterUserId = userId,
                 DateOfBirth = new DateTime(1999, 1, 1),
                 NationalCode = "1234567890"
             }
@@ -47,7 +48,16 @@ public class IdentitySeedData
                 RoleDescription = "Site Manager",
                 CreatorUserId = user.Id,
                 UpdaterUserId = user.Id,
-            });
+            });                  
+        }
+
+        if(! await userManger.IsInRoleAsync(user, "Admin"))
+        {
+            await userManger.AddToRoleAsync(user, "Admin");
+        }
+
+        if (!await roleManager.RoleExistsAsync("Supplier"))
+        {
             await roleManager.CreateAsync(new Role
             {
                 Name = "Supplier",
@@ -55,6 +65,10 @@ public class IdentitySeedData
                 CreatorUserId = user.Id,
                 UpdaterUserId = user.Id,
             });
+        }
+
+        if(!await roleManager.RoleExistsAsync("Customer"))
+        {
             await roleManager.CreateAsync(new Role
             {
                 Name = "Customer",
@@ -62,8 +76,6 @@ public class IdentitySeedData
                 CreatorUserId = user.Id,
                 UpdaterUserId = user.Id
             });
-
-            await userManger.AddToRoleAsync(user, "Admin");
         }
 
         var admin = new Admin

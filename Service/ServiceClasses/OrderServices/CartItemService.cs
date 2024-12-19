@@ -153,7 +153,7 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
             cartitem.ProductSupplier.Ventory -= cartitem.Quantity;
             if (cartitem.ProductSupplier.Ventory == 0)
             {
-                var expirePrice = cartitem.ProductSupplier.Prices.Where(x => x.ExpiredTime != null).FirstOrDefault();
+                var expirePrice = cartitem.ProductSupplier.Prices.Where(x => x.ExpiredTime == null).FirstOrDefault();
                 if (expirePrice != null) expirePrice.ExpiredTime = DateTime.Now;
                 cartitem.ProductSupplier.Discount = 0;//این خط بعدا اضافه شده
             }

@@ -1,6 +1,7 @@
 ﻿@using DataTransferObject.DTOClasses.Address.Results
+@using DataTransferObject.DTOClasses.Order.Results
 @using Shared
-@model List<AddressResult>
+@model (List<AddressResult>,CartResult)
 
 
 <!--------------------------- Main Content Section-->
@@ -17,7 +18,7 @@
                             <h2>انتخاب آدرس </h2>
                         </div>
 
-                        @foreach (var address in Model)
+                        @foreach (var address in Model.Item1)
                         {
                             <div class="card mb-3">
                                 <div class="card-body">
@@ -26,7 +27,7 @@
                                         <input type="radio" class="custom-control-input"
                                                value="@address.Id"
                                                name="orderDto.AddressId"
-                                               id="address-@address.Id" @(address == Model.First() ? "checked" : "") />  <!-- اولین رادیو به طور پیش‌فرض انتخاب می‌شود -->
+                                               id="address-@address.Id" @(address == Model.Item1.First() ? "checked" : "") />  <!-- اولین رادیو به طور پیش‌فرض انتخاب می‌شود -->
 
                                         <label class="custom-control-label" for="address-@address.Id">
                                             @(address.ProvinceName + " " + address.CityName + " " + address.Neighborhood + " " + address.AddressDetail + " -پلاک " + address.HouseNumber + " -واحد " + address.UnitNumber)
@@ -100,40 +101,22 @@
                 <div class="widget-post1 dt-sn dt-sn--box border mb-2">
                     <ul class="checkout-summary-summary">
                         <li>
-                            <span>مبلغ کل (۲ کالا)</span><span>10,000,000 تومان</span>
+                            <span>مبلغ کل (۲ کالا)</span><span>@((Model.Item2.TotalPrice/10).ToString("N0")) تومان</span>
                         </li>
                         <li class="checkout-summary-discount">
                             <span>سود شما از خرید</span><span>
-                                <span>(۱٪)</span>300,000
+                                <span>(۱٪)</span>@(( Model.Item2.TotalDiscount / 10).ToString("N0"))
                                 تومان
                             </span>
                         </li>
-                        <li>
-                            <span>
-                                هزینه ارسال<span class="help-sn" data-toggle="tooltip" data-html="true"
-                                                 data-placement="bottom"
-                                                 title="<div class='help-container is-right'><div class='help-arrow'></div><p class='help-text'>هزینه ارسال مرسولات می‌تواند وابسته به شهر و آدرس گیرنده متفاوت باشد. در صورتی که هر یک از مرسولات حداقل ارزشی برابر با ۱۵۰هزار تومان داشته باشد، آن مرسوله بصورت رایگان ارسال می‌شود.<br>'حداقل ارزش هر مرسوله برای ارسال رایگان، می تواند متغیر باشد.'</p></div>">
-                                    <span class="mdi mdi-information-outline"></span>
-                                </span>
-                            </span><span>وابسته به آدرس</span>
-                        </li>
-                        <li class="checkout-club-container">
-                            <span>
-                                دیجی پرس<span class="help-sn" data-toggle="tooltip" data-html="true"
-                                              data-placement="bottom"
-                                              title="<div class='help-container is-right'><div class='help-arrow'></div><p class='help-text'>با امتیازهای خود در باشگاه مشتریان دیجی پرس (دیجی کلاب) از بین جوایز متنوع انتخاب کنید.</p></div>">
-                                    <span class="mdi mdi-information-outline"></span>
-                                </span>
-                            </span><span><span>200+</span><span> امتیاز</span></span>
-                        </li>
+                       
+                       
                     </ul>
-                    <div class="checkout-summary-devider">
-                        <div></div>
-                    </div>
+                   
                     <div class="checkout-summary-content">
                         <div class="checkout-summary-price-title">مبلغ قابل پرداخت:</div>
                         <div class="checkout-summary-price-value">
-                            <span class="checkout-summary-price-value-amount">10,000,000</span>
+                            <span class="checkout-summary-price-value-amount">@((Model.Item2.TotalAmountPaid/10).ToString("N0"))</span>
                             تومان
                         </div>
                         <a href="#" class="mb-2 d-block">

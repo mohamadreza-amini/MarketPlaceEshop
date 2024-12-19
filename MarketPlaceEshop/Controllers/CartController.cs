@@ -14,6 +14,7 @@ namespace MarketPlaceEshop.Controllers
         private readonly ICartItemService _cartItemService;
         private readonly IOrderService _orderService;
         private readonly IAdressService _adressService;
+
         public CartController(ICartItemService cartItemService, IOrderService orderService, IAdressService adressService)
         {
             _cartItemService = cartItemService;
@@ -70,18 +71,19 @@ namespace MarketPlaceEshop.Controllers
         {
             Guid.TryParse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new AccessDeniedException(), out Guid customerId);
             var address = await _adressService.GetAllByCustomerIdAsync(customerId, cancellation);
-            if (address == null || !address.Any())           
-                return RedirectToAction("Account", "address");
-            
-            return View(address);
+            if (address == null || !address.Any())
+                return RedirectToAction("address","Account");
+            var cart = await _cartItemService.GetCartByCustomerId(cancellation);
+
+            return View((address,cart));
         }
         [HttpPost]
         public async Task<IActionResult> AddOrder(OrderCommand orderDto, CancellationToken cancellation)
         {
-           orderDto.CustomerId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new AccessDeniedException());
-
+            orderDto.CustomerId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new AccessDeniedException());
             await _orderService.AddOrderAsync(orderDto, cancellation);
-            return View();//تغیر کنه
+            
+            return View("ShoppingComplete",orderDto.ShippedDate);
         }
     }
 }

@@ -25,12 +25,8 @@ public interface IUserService : IServiceBase<User, UserResult, Guid>
     Task<UserResult?> GetUserbyEmailAsync(string email);
     Task LogOutAsync();
     Task<User?> GetUserbyIdAsync(Guid userId);
-
     Task<bool> AddToRoleAsync(User user, string roleName);
+    Task UpdateUser(UserCommand userDto, Guid userId, CancellationToken cancellationToken);
 
-    /*  Task<IdentityResult> Create(UserDTO userDTO);
-      Task<UserDTO> GetUser(Guid id);
-      Task<List<UserDTO>> GetAllUser();
-      Task<SignInResult> LoginToSystem(string username, string password);*/
 
 }

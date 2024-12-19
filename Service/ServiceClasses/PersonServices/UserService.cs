@@ -35,7 +35,7 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
 
     public async Task<User?> GetRequesterUserAsync() => await _userManager.GetUserAsync(_claimsPrincipal);
 
-    public async Task<UserResult> GetRequesterUserResult() => TranslateToDTO(await GetRequesterUserAsync()??new User());
+    public async Task<UserResult> GetRequesterUserResult() => TranslateToDTO(await GetRequesterUserAsync() ?? new User());
     public string? RequesterId() => _claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
     public bool IsInRole(string role) => _claimsPrincipal.IsInRole(role);
@@ -66,7 +66,7 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
         return false;
     }
 
-    public async Task<bool> CreateAsync(UserCommand userDTO,Guid creatorId)
+    public async Task<bool> CreateAsync(UserCommand userDTO, Guid creatorId)
     {
         var user = Translate<UserCommand, User>(userDTO);
         user.Validate();
@@ -134,29 +134,52 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
 
 
 
+    public async Task UpdateUser(UserCommand userDto, Guid userId, CancellationToken cancellationToken)
+    {
+        if (!IsAdmin() && IsRequesterUser(userId))
+            throw new AccessDeniedException();
+
+        var newUser = Translate<UserCommand, User>(userDto);
+
+        newUser.Validate();
+
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            throw new BadRequestException("کاربر نامعتبر");
+
+        user.Email = newUser.Email;
+        user.UserName = newUser.Email;
+        user.UpdaterUserId = Guid.Parse(RequesterId()!);
+        user.DateOfBirth = newUser.DateOfBirth;
+        user.FirstName = newUser.FirstName;
+        user.LastName = newUser.LastName;
+        user.PhoneNumber = newUser.PhoneNumber;
+        user.MobileNumber = newUser.MobileNumber;
+
+        await _userManager.UpdateAsync(user);
+    }
 
 
 
-
-
-
-    //public async Task<List<UserDTO>> GetAllUser()
+    //public async Task DeleteUser(Guid userId, CancellationToken cancellationToken)
     //{
-    //    var users = await _userManager.Users.ToListAsync();
-    //    return users.Any() ? users.Select(TranslateToDTO).ToList() : new List<UserDTO>();
+    //    if (!IsAdmin() && IsRequesterUser(userId))
+    //        throw new AccessDeniedException();
+    //    var user = await _userManager.FindByIdAsync(userId.ToString());
+    //    if (user == null)
+    //        throw new BadRequestException("کاربر نامعتبر");
+
+    //    await _userManager.DeleteAsync(user); // اگه سافت دیلیت داری نباید اینکارو کنی و پایینی رو بزار 
+      
+        
+    //    user.IsDeleted = true;
+    //    await _userManager.UpdateAsync(user);
     //}
 
-    //public async Task<UserDTO> GetUser(Guid id)
-    //{
-    //    var user = await _userManager.FindByIdAsync(id.ToString());
-    //    return TranslateToDTO(user);
-    //}
 
-    //public async Task<SignInResult> LoginToSystem(string username, string password) {
 
-    //    return await _signInManager.PasswordSignInAsync(username, password,isPersistent:true,lockoutOnFailure:false);
 
-    //}
+
 
 
 }
