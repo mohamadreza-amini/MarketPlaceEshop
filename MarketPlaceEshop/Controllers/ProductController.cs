@@ -70,6 +70,8 @@ namespace MarketPlaceEshop.Controllers
         {
             try
             {
+                if (!User.IsInRole("Customer"))
+                    throw new BadRequestException("لطفا وارد حساب خود شوید");
                 await _commentService.AddCommentAsync(comment, cancellation);
                 TempData["ToastSuccess"] = "نظر با موفقیت ثبت شد و در انتظار تایید می باشد";
             }
@@ -86,6 +88,8 @@ namespace MarketPlaceEshop.Controllers
         {
             try
             {
+                if (!User.IsInRole("Customer"))
+                    throw new BadRequestException("لطفا وارد حساب خود شوید");
                 scoreDto.CustomerId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new AccessDeniedException());
                 await _scoreService.AddScoreAsync(scoreDto, cancellation);
                 TempData["ToastSuccess"] = "امتیاز با موفقیت ثبت شد ";

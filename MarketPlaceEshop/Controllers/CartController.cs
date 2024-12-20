@@ -3,6 +3,7 @@ using DataTransferObject.DTOClasses.Order.Results;
 using Infrastructure.Contracts.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Model.Exceptions;
+using Shared;
 using Service.ServiceInterfaces.AddressServices;
 using Service.ServiceInterfaces.OrderServices;
 using System.Security.Claims;
@@ -72,18 +73,25 @@ namespace MarketPlaceEshop.Controllers
             Guid.TryParse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new AccessDeniedException(), out Guid customerId);
             var address = await _adressService.GetAllByCustomerIdAsync(customerId, cancellation);
             if (address == null || !address.Any())
-                return RedirectToAction("address","Account");
+                return RedirectToAction("address", "Account");
             var cart = await _cartItemService.GetCartByCustomerId(cancellation);
 
-            return View((address,cart));
+            return View((address, cart));
         }
         [HttpPost]
         public async Task<IActionResult> AddOrder(OrderCommand orderDto, CancellationToken cancellation)
         {
             orderDto.CustomerId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new AccessDeniedException());
-            await _orderService.AddOrderAsync(orderDto, cancellation);
-            
-            return View("ShoppingComplete",orderDto.ShippedDate);
+            try
+            {
+                await _orderService.AddOrderAsync(orderDto, cancellation);
+            }
+            catch (BadRequestException ex)
+            {
+                ViewData["failed"] = ex.Message.Replace("Bad request!","");
+            }
+            ViewData["shippeddate"] = orderDto.ShippedDate.ToAD().ToString("yyyy/MM/dd");
+            return View("ShoppingComplete");
         }
     }
 }

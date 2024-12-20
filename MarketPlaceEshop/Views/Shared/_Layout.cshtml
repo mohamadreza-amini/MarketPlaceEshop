@@ -126,13 +126,12 @@
                         </div>
                     </div>
 
-                    @if(User.Identity?.IsAuthenticated??false && User.IsInRole("Customer"))
-                    {
-
+                    @if((User.Identity?.IsAuthenticated??false )&& User.IsInRole("Customer"))
+                    {                   
                         <div class="user-items">
                             @* سبد خرید *@
                             <div id="cartTab">
-                            @await Component.InvokeAsync("CartTab")
+                                @await Component.InvokeAsync("CartTab")
                             </div>
 
                             <div class="user-item account">
@@ -158,10 +157,10 @@
                                                     <span class="header-profile-dropdown-user-profile-link">مشاهده حساب کاربری</span>
                                                 </span>
                                             </span>
-                                            
+
                                         </a>
                                     </li>
-                                
+
                                     <li>
                                         <a asp-controller="Account" asp-action="Index"> پروفایل </a>
                                     </li>
@@ -175,19 +174,20 @@
                     else
                     {
                         <div class="user-items">
-                          
+
                             <div class="user-item account">
-                                 <a asp-controller="Account" asp-action="Login" class="btn-auth"><i class="fal fa-user-circle"></i>
-                                        ورود و عضویت
-                                    </a> 
-                                                          
+                                <a asp-controller="Account" asp-action="Login" class="btn-auth">
+                                    <i class="fal fa-user-circle"></i>
+                                    ورود و عضویت
+                                </a>
+
                             </div>
                         </div>
                     }
 
 
 
-                 
+
                 </div>
                 <nav class="nav-wrapper container">
                     <ul>
@@ -1692,8 +1692,6 @@
         </div>
         <!---------------------------- Page Loader Section-->
         <!--------------------------------- Main Content -->
-
-
         @*    <div id="layoutSidenav_content">
         <main>
         @RenderBody()
@@ -1974,7 +1972,7 @@
                     <p> استفاده از مطالب فروشگاه اینترنتی دیجی مارکت فقط برای مقاصد غیرتجاری و با ذکر منبع بلامانع است. کلیه حقوق این سایت متعلق به شرکت نوآوران فن آوازه (فروشگاه آنلاین دیجی مارکت) می‌باشد. </p>
                 </div>
             </div>
-           
+
 
 
 
@@ -2001,11 +1999,11 @@
             </svg>
         </div>
         <!----------------------------- Go To Top Section -->
-        
+
     </div>
 
 
-   
+
 
 
 
@@ -2029,8 +2027,8 @@
 
 
 
-  
- 
+
+
 
 
 </body>

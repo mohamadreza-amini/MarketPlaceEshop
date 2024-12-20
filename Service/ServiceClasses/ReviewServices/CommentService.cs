@@ -8,6 +8,7 @@ using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
 using Service.ServiceInterfaces.ProductServices;
 using Service.ServiceInterfaces.ReviewServices;
+using Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +62,7 @@ public class CommentService : ServiceBase<Comment, CommentResult, Guid>, ICommen
         return true;
     }
 
-    public async Task<bool> ConfirmCommentAsync(Guid commentId, CancellationToken cancellation)
+    public async Task<bool> ConfirmCommentAsync(Guid commentId, ConfirmationStatus confirmation, CancellationToken cancellation)
     {
         if (!_userService.IsAdmin())
             throw new AccessDeniedException();
@@ -72,7 +73,7 @@ public class CommentService : ServiceBase<Comment, CommentResult, Guid>, ICommen
 
         Guid.TryParse(_userService.RequesterId(), out Guid adminId);
 
-        comment.IsConfirmed = 2;
+        comment.IsConfirmed = (byte)confirmation;
         comment.ConfirmedDate = DateTime.Now;
         comment.AdminConfirmedId = adminId;
         comment.Validate();
@@ -80,14 +81,27 @@ public class CommentService : ServiceBase<Comment, CommentResult, Guid>, ICommen
         return await _commentRepository.CommitAsync(cancellation) > 0;
     }
 
+
+
+
+
+
     public async Task<PaginatedList<CommentResult>> GetAllUnConfirmComments(int pageIndex, int pageSize, CancellationToken cancellation)
     {
         if (!_userService.IsAdmin())
             throw new AccessDeniedException();
 
         var unConfirmComments = await _commentRepository.GetAllDataAsync(
-            x => TranslateToDTO(x),
-            cancellation,
+            x => new CommentResult
+            {
+                DateOfRegistration = x.DateOfRegistration,
+                CustomerId = x.CustomerId,
+                CommentText = x.CommentText,
+                FullName = x.Customer.User.FirstName + " " + x.Customer.User.LastName,
+                Id = x.Id,
+                ProductId = x.ProductId,
+                ProductName = x.Product.Name
+            }, cancellation,
             x => x.IsConfirmed == 1,
             x => x.Include(x => x.Customer).ThenInclude(x => x.User).Include(x => x.Product));
 
@@ -99,13 +113,13 @@ public class CommentService : ServiceBase<Comment, CommentResult, Guid>, ICommen
         var confirmComments = await _commentRepository.GetAllDataAsync(
             x => new CommentResult
             {
-                CommentText=x.CommentText,
-                CustomerId=x.CustomerId,
-                DateOfRegistration=x.DateOfRegistration,
-                FullName=x.Customer.User.FirstName + " " + x.Customer.User.LastName,
-                Id=x.Id,
-                ProductId=x.ProductId,
-                ProductName=x.Product.Name
+                CommentText = x.CommentText,
+                CustomerId = x.CustomerId,
+                DateOfRegistration = x.DateOfRegistration,
+                FullName = x.Customer.User.FirstName + " " + x.Customer.User.LastName,
+                Id = x.Id,
+                ProductId = x.ProductId,
+                ProductName = x.Product.Name
             },
             cancellation,
             x => x.IsConfirmed == 2 && x.ProductId == productId,
@@ -116,4 +130,3 @@ public class CommentService : ServiceBase<Comment, CommentResult, Guid>, ICommen
     }
 }
 
-        

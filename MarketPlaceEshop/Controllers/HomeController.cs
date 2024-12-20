@@ -16,12 +16,11 @@ namespace MarketPlaceEshop.Controllers
         {
             userService = _userService;
             _logger = logger;
-        } 
+        }
 
-        
+
         public IActionResult Index()
         {
-       
             return View();
         }
 
