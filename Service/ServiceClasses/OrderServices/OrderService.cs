@@ -103,9 +103,9 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
         if (query == null)
             return new PaginatedList<OrderResult>(new List<OrderResult> { new OrderResult() { OrderItems = new List<OrderItemResult>() } }, 0, 1, pageSize) { };
 
-        Func<OrderItem, bool> sentFilter = x => true;
-        await FilterByPerson(query);
-        SetFilters(query, sentFilter, sent, confirmationStatus);
+        Expression<Func<OrderItem, bool>> sentFilter = x => true;
+        query = await FilterByPerson(query);
+        query = SetFilters(query, sentFilter, sent, confirmationStatus);
         var result = SelectOrders(query, sentFilter);
         return await PaginatedList<OrderResult>.CreateAsync(result, pageIndex, pageSize, cancellation);
     }
@@ -117,30 +117,32 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
         if (query == null)
             return new PaginatedList<OrderItemResult>(new List<OrderItemResult>(), 0, 1, pageSize) { };
 
-        Func<OrderItem, bool> sentFilter = x => true;
-        await FilterByPerson(query);
-        SetFilters(query, sentFilter, sent, confirmationStatus);
+        Expression<Func<OrderItem, bool>> sentFilter = x => true;
+        query = await FilterByPerson(query);
+
+        query = SetFilters(query, sentFilter, sent, confirmationStatus);
         var result = GetOrderItems(query, sent);
         return await PaginatedList<OrderItemResult>.CreateAsync(result, pageIndex, pageSize, cancellation);
     }
 
 
 
-    private void SetFilters(IQueryable<Order> query, Func<OrderItem, bool> sentFilter, bool? sent = null, ConfirmationStatus? confirmationStatus = null)
+    private IQueryable<Order> SetFilters(IQueryable<Order> query, Expression<Func<OrderItem, bool>> sentFilter, bool? sent = null, ConfirmationStatus? confirmationStatus = null)
     {
         if (confirmationStatus != null)
         {
-            query = query.Where(x => x.IsConfirmed == (byte)confirmationStatus);
+            query = query.Where(x => x.IsConfirmed == (byte)confirmationStatus.Value);
         }
         if (sent != null)
         {
             query = query.Where(x => x.OrderItems.Any(x => x.Sent == sent));
             sentFilter = x => x.Sent == sent;
         }
+        return query;
     }
 
 
-    private async Task FilterByPerson(IQueryable<Order> query)
+    private async Task<IQueryable<Order>> FilterByPerson(IQueryable<Order> query)
     {
         if (!Guid.TryParse(_userService.RequesterId(), out Guid requesterId))
             throw new AccessDeniedException();
@@ -161,11 +163,12 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
             default:
                 throw new AccessDeniedException();
         }
+        return query;
     }
 
 
 
-    private IQueryable<OrderResult> SelectOrders(IQueryable<Order> query, Func<OrderItem, bool> sentFilter)
+    private static IQueryable<OrderResult> SelectOrders(IQueryable<Order> query, Expression<Func<OrderItem, bool>> sentFilter)
     {
         return query.Select(x => new OrderResult
         {
@@ -179,34 +182,28 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
             TotalDiscount = x.OrderItems.Sum(x => x.Quantity * x.UnitDiscount),
             TotalAmountPaid = x.OrderItems.Sum(x => x.Quantity * x.UnitCost) - x.OrderItems.Sum(x => x.Quantity * x.UnitDiscount),
             FullAddress = x.Address.City.Province.ProvinceName + "-" + x.Address.City.CityName + "-" + x.Address.Neighborhood + "," + x.Address.AddressDetail + " پلاک," + x.Address.HouseNumber + " واحد," + x.Address.UnitNumber + " کدپستی," + x.Address.PostalCode,
-            OrderItems = SelectOrderItems(x, sentFilter)
+            OrderItems = x.OrderItems.AsQueryable().Where(sentFilter).Select(x => new OrderItemResult
+            {
+                Id = x.Id,
+                DateOfPosting = x.DateOfPosting,
+                OrderId = x.OrderId,
+                ProductId = x.ProductSupplier.ProductId,
+                Sent = x.Sent,
+                UnitCost = x.UnitCost,
+                UnitDiscount = x.UnitDiscount,
+                ImagePath = x.ProductSupplier.Product.Images.Select(x => x.Path).FirstOrDefault()!,
+                Quantity = x.Quantity,
+                IsCanceled = x.IsCanceled,
+                ProductName = x.ProductSupplier.Product.Name,
+                ProductSupplierId = x.ProductSupplier.Id,
+                CompanyName = x.ProductSupplier.Supplier.CompanyName,
+            }).ToList()
         });
     }
 
-    private List<OrderItemResult> SelectOrderItems(Order order, Func<OrderItem, bool> sentFilter)
-    {
-        return order.OrderItems.Where(sentFilter).Select(x => new OrderItemResult
-        {
-            Id = x.Id,
-            DateOfPosting = x.DateOfPosting,
-            OrderId = x.OrderId,
-            ProductId = x.ProductSupplier.ProductId,
-            Sent = x.Sent,
-            UnitCost = x.UnitCost,
-            UnitDiscount = x.UnitDiscount,
-            ImagePath = x.ProductSupplier.Product.Images.Select(x => x.Path).FirstOrDefault()!,
-            Quantity = x.Quantity,
-            IsCanceled = x.IsCanceled,
-            ProductName = x.ProductSupplier.Product.Name,
-            ProductSupplierId = x.ProductSupplier.Id,
-            CompanyName = x.ProductSupplier.Supplier.CompanyName,
-        }).ToList();
-    }
+     
 
-
-
-
-    private IQueryable<OrderItemResult> GetOrderItems(IQueryable<Order> orders, bool? sent = null)
+    private static IQueryable<OrderItemResult> GetOrderItems(IQueryable<Order> orders, bool? sent = null)
     {
         Expression<Func<OrderItem, bool>> sentFilter = x => true;
         if (sent != null)

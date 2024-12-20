@@ -138,20 +138,21 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
         var query = await _productRepository.GetAllDataAsync(
             x => new ProductResult
             {
-                Id=x.Id,
-                Name=x.Name,
-                StartDate=x.StartDate,
-                BrandName=x.Brand.BrandName,
-                Description=x.Description,
-                Titel=x.Titel,
-                CategoryName=x.Category.CategoryName,
-                CategoryId=x.CategoryId,            
+                Id = x.Id,
+                Name = x.Name,
+                StartDate = x.StartDate,
+                BrandName = x.Brand.BrandName,
+                Description = x.Description,
+                Titel = x.Titel,
+                CategoryName = x.Category.CategoryName,
+                CategoryId = x.CategoryId,
             }, cancellation, x => x.Id == productId && x.IsConfirmed == 2, x => x.Include(x => x.Category).Include(x => x.Brand));
-        
-        var product = await query?.FirstOrDefaultAsync(cancellation);
 
-        if (product == null)
+        if (query == null || query.Any() == false)
             throw new BadRequestException("محصول یافت نشد");
+
+        var product = await query.FirstOrDefaultAsync(cancellation);
+
         //میشد برد توی ریپازیتوری یا کلا پروداکت رو کامل اورد به جای گرفتن از سرویس های مختلف
         //بخشی از کار دیگه که میشد کرد رو پایین نوشتم کامنته
 
@@ -222,7 +223,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
              x.productSuppliers.Where(ps => ps.Prices != null && ps.Prices.Any()).SelectMany(ps => ps.Prices).Where(p => p.ExpiredTime == null).Select(p => (decimal?)p.PriceValue).Min() ?? 0 : 0, حالت دیگر*/
             Price = x.productSuppliers.Where(ps => ps.Prices != null && ps.Prices.Any()).SelectMany(ps => ps.Prices).Where(p => p.ExpiredTime == null).Select(p => (decimal?)p.PriceValue).Min() ?? 0,
             AverageScore = x.Scores != null && x.Scores.Any() ? x.Scores.Select(s => s.StarRating).Average() : 0,//این خط بعدا اضافه شده
-            Discount = x.productSuppliers.Any(x => x.Discount > 0&& x.Ventory>0)
+            Discount = x.productSuppliers.Any(x => x.Discount > 0 && x.Ventory > 0)
         }));
 
         return await PaginatedList<ProductminiResult>.CreateAsync(products, pageIndex, pageSize, cancellation);

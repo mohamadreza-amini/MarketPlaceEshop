@@ -1,0 +1,253 @@
+﻿@using DataTransferObject.DTOClasses.Order.Results
+@using Service.ServiceClasses
+@using Shared
+@using Shared.Enums
+@model PaginatedList<OrderResult>
+
+
+<div id="tablecontent">
+    <div class=" container mt-5">
+        <!-- Header with actions -->
+        <!-- Table -->
+        <div class="table-responsive ">
+            <table class="table table-sm table-striped table-bordered">
+                <thead class="table-primary">
+                    <tr>
+
+                        <th scope="row">#</th>
+                        <th> تاریخ سفارش</th>
+                        <th>تاریخ ارسال درخواستی </th>
+                        <th>مبلغ کل</th>
+                        <th>تخفیف کل</th>
+                        <th>پرداخت</th>
+
+                        <th>جزئیات سفارش</th>
+                        <th>
+                            تعیین وضعیت
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var index = (Model.PageIndex - 1) * Model.PageSize + 1;
+                    }
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <th scope="row">@(index++)</th>
+                            <td>@order.OrderDate.ToAD().ToString("yyyy/MM/dd")</td>
+                            <td>@order.ShippedDate.ToAD().ToString("yyyy/MM/dd")</td>
+                            <td>@((order.TotalPrice/10).ToString("N0"))</td>
+                            <td>@((order.TotalDiscount/10).ToString("N0"))</td>
+                            <td>@((order.TotalAmountPaid/10).ToString("N0"))</td>
+                            
+
+
+
+
+
+                            <td>
+                                <button type="button" class="text-nowrap btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#@string.Concat("Modal", order.Id.ToString())">
+                                    جزئیات سفارش
+                                </button>
+                            </td>
+
+                            <td>
+                                <button type="button" onclick="ConfirmOrder('@order.Id','@(Model.Count()== 1?( Model.PageIndex-1<=0? 1 :Model.PageIndex-1 ): Model.PageIndex)')" class="btn btn-sm btn-success">تایید</button>
+                                <button type="button" onclick="RejectOrder('@order.Id','@(Model.Count()== 1? ( Model.PageIndex-1<=0? 1 :Model.PageIndex-1 ): Model.PageIndex)')" class="btn btn-sm btn-danger">رد</button>
+                            </td>
+                        </tr>
+                    }
+
+
+                </tbody>
+            </table>
+
+            @foreach (var order in Model)
+            {
+                <!-- Modal product details -->
+
+
+
+
+                <div class="modal fade" id="@string.Concat("Modal", order.Id.ToString())" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title secondary-font" id="orderModalTitle">جزئیات سفارش</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- بخش جزئیات سفارش -->
+                                <div class="mb-4">
+                                    <h6 class="text-primary">اطلاعات سفارش</h6>
+                                    <p><strong>تاریخ سفارش:</strong> @order.OrderDate.ToAD().ToString("yyyy/MM/dd")</p>
+                                    <p><strong>تاریخ ارسال:</strong> @order.ShippedDate.ToAD().ToString("yyyy/MM/dd")</p>
+                                    <p><strong>آدرس کامل:</strong> @order.FullAddress</p>
+                                    <p><strong>مبلغ کل پرداخت شده:</strong> @order.TotalAmountPaid.ToString("N0") تومان</p>
+                                    <p><strong>مجموع تخفیف:</strong> @order.TotalDiscount.ToString("N0") تومان</p>
+                                    <p><strong>مبلغ کل:</strong> @order.TotalPrice.ToString("N0") تومان</p>
+                                    <p><strong>وضعیت تایید:</strong> @(order.IsConfirm == ConfirmationStatus.Confirmed ? "تایید شده" : "تایید نشده")</p>
+                                </div>
+
+                                <!-- لیست آیتم‌های سفارش -->
+                                <div>
+                                    <h6 class="text-primary">آیتم‌های سفارش</h6>
+                                    <ul class="list-group">
+                                        @foreach (var item in order.OrderItems)
+                                        {
+                                            <li class="list-group-item d-flex align-items-start mb-2">
+                                                <a asp-area="" asp-controller="product" asp-action="GetProduct" asp-route-productId="@item.ProductId">
+                                                    <img src="@item.ImagePath.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")"
+                                                         class="img-thumbnail me-3" alt="@item.ProductName" style="width: 100px; height: 100px; object-fit: cover;">
+                                                </a>
+                                                
+                                                <div>
+                                                    <h6>@item.ProductName</h6>
+                                                    <p class="mb-0"><strong>تعداد:</strong> @item.Quantity</p>
+                                                    <p class="mb-0"><strong>فروشنده:</strong> @item.CompanyName</p>
+                                                    <p class="mb-0"><strong>قیمت :</strong> @(((item.UnitCost * item.Quantity) / 10).ToString("N0")) تومان</p>
+                                                    <p class="mb-0"><strong>تخفیف :</strong> @(((item.UnitDiscount * item.Quantity) / 10).ToString("N0")) تومان</p>
+                                                    <p class="mb-0"><strong>پرداختی :</strong> @((((item.UnitCost - item.UnitDiscount) / 10) * item.Quantity).ToString("N0")) تومان</p>
+                                                    <p class="mb-0"><strong>ارسال شده:</strong> @(item.Sent ? "بله" : "خیر")</p>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+        </div>
+        <!-- Footer with pagination and rows per page -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+
+                    @if (Model.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link paginate_button page-item  " asp-area="Admin" asp-controller="Sale" asp-action="CheckOrder" asp-route-PageIndex="@(Model.PageIndex-1)"> قبلی </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">قبلی</span>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        if (i == Model.PageIndex)
+                        {
+                            <li class="page-item active">
+                                <span class="page-link">@i <span class="sr-only">(current)</span></span>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-area="Admin" asp-controller="Sale" asp-action="CheckOrder" asp-route-PageIndex="@i">@i</a>
+                            </li>
+                        }
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-area="Admin" asp-controller="Sale" asp-action="CheckOrder" asp-route-PageIndex="@(Model.PageIndex+1)">بعدی</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">بعدی</span>
+                        </li>
+                    }
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+    <script>
+        function getOrderPage(pageIndex) {
+
+            $.ajax({
+                url: "/Admin/Sale/CheckOrder",
+                type: "GET",
+                data: { pageIndex: pageIndex },
+                success: function (response) {
+                    var content = $(response).find('#tablecontent').html();
+
+                    $("#tablecontent").html(content);
+                },
+                error: function (xhr, status, error) {
+                    console.error("خطا در ارسال درخواست:", error);
+                }
+            });
+
+        }
+
+
+
+
+
+        function ConfirmOrder(Id, pageIndex) {
+            $.ajax({
+                url: '/admin/Sale/ConfirmOrder',
+                type: "Post",
+                data: { orderId: Id },
+                success: function (response) {
+
+                    getOrderPage(pageIndex);
+                }
+            });
+        }
+
+
+        function RejectOrder(Id, pageIndex) {
+
+            $.ajax({
+                url: '/admin/Sale/RejectOrder',
+                type: "Post",
+                data: { orderId: Id },
+                success: function (response) {
+
+                    getOrderPage(pageIndex);
+                }
+            });
+        }
+
+    </script>
+}
