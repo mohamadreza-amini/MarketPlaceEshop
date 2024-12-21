@@ -124,5 +124,12 @@ public class SupplierService : ServiceBase<Supplier, UserResult, Guid>, ISupplie
         return await _userService.SignInAsync(loginDto, "Supplier");
     }
 
+
+    public async Task<int> NumberOfSupplier(ConfirmationStatus confirmation,CancellationToken cancellation)
+    {
+        if (!_userService.IsAdmin())
+            throw new AccessDeniedException();
+        return await _supplierRepository.CountAsync(x=>x.IsConfirmed==(byte)confirmation,cancellation);
+    }
   
 }

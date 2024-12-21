@@ -19,6 +19,7 @@ public interface IBaseRepository<T, KeyTypeId> where T : BaseEntity<KeyTypeId> w
     T Update(T data);
     Task<bool> HardDeleteAsync(KeyTypeId id, CancellationToken cancellation);
     Task<bool> SoftDeleteAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellation);
+    Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellation);
     Task<bool> IsExistAsync(T data, CancellationToken cancellation);
     Task<bool> IsExistAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellation);
     Task<int> CommitAsync(CancellationToken cancellation);

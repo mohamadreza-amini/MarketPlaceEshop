@@ -186,7 +186,7 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
         if (query == null)
             return new CartResult();
         var cartItems = await query.ToListAsync(cancellation);
-        var totalPrice = await GetCartTotalPriceByCustomerId(customerId, cancellation);
+        var totalPrice = await GetCartTotalPriceByCustomerId(customerId, cancellation); //تفیر کرد بررسی بشه
         var totalDiscount = await GetCartTotalDiscountByCustomerId(customerId, cancellation);
         var totalAmountPaid = totalPrice - totalDiscount;
         return new CartResult

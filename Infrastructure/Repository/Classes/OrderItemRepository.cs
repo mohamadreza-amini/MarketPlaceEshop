@@ -17,7 +17,8 @@ public class OrderItemRepository : BaseRepository<OrderItem, Guid>, IOrderItemRe
     }
 
     public async Task<(List<decimal> totalSales, List<decimal> totalDiscount, List<DateTime> dateTimes)> GetDailySales(CancellationToken cancellation, Expression<Func<OrderItem, bool>> predicate = null, int DaysCount = 7)
-    {
+    {   
+
         if (predicate == null)
             predicate = x => true;
 
@@ -26,11 +27,12 @@ public class OrderItemRepository : BaseRepository<OrderItem, Guid>, IOrderItemRe
         var query = await _entitySet
             .Where(predicate)
             .Where(x => x.Order.OrderDate.Date >= startDate)
+            .Where(x=>x.Order.IsConfirmed!=3)
             .GroupBy(x => x.Order.OrderDate.Date)
             .Select(group => new
             {
                 Date = group.Key,
-                TotalSales = group.Sum(x => x.Quantity * x.ProductSupplier.Prices.Where(p => p.ExpiredTime == null).Select(p => p.PriceValue).FirstOrDefault()),
+                TotalSales = group.Sum(x => x.Quantity * x.UnitCost),
                 TotalDiscount = group.Sum(x => x.Quantity * x.UnitDiscount)
             })
             .OrderBy(x => x.Date)
@@ -51,14 +53,14 @@ public class OrderItemRepository : BaseRepository<OrderItem, Guid>, IOrderItemRe
     public async Task<decimal> GetTotalSales(CancellationToken cancellation, Expression<Func<OrderItem, bool>>? predicate = null, DateTime? start = null, DateTime? end = null)
     {
         if (start == null) start = DateTime.MinValue;
-        if(end == null) end = DateTime.MaxValue;
+        if (end == null) end = DateTime.MaxValue;
         if (predicate == null)
             predicate = x => true;
 
-       return await _entitySet
-            .Where(predicate)
-            .Where(x=>x.Order.OrderDate>=start && x.Order.OrderDate<=end)
-            .SumAsync(x=>x.Quantity*x.ProductSupplier.Prices.Where(x=>x.ExpiredTime==null).Select(x=>x.PriceValue).FirstOrDefault(),cancellation);
+        return await _entitySet
+        .Where(predicate)
+        .Where(x => x.Order.OrderDate >= start && x.Order.OrderDate <= end)
+        .SumAsync(x => x.Quantity * x.UnitCost, cancellation);
     }
 
 
@@ -70,6 +72,6 @@ public class OrderItemRepository : BaseRepository<OrderItem, Guid>, IOrderItemRe
         if (predicate == null)
             predicate = x => true;
 
-       return await _entitySet.Where(predicate).Where(x => x.Order.OrderDate >= start && x.Order.OrderDate <= end).SumAsync(x => x.UnitDiscount * x.Quantity,cancellation);
+        return await _entitySet.Where(predicate).Where(x => x.Order.OrderDate >= start && x.Order.OrderDate <= end).SumAsync(x => x.UnitDiscount * x.Quantity, cancellation);
     }
 }

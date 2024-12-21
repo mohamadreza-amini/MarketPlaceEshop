@@ -86,6 +86,12 @@ public class BaseRepository<T, KeyTypeId> : IBaseRepository<T, KeyTypeId> where 
         return false;
     }
 
+    public async Task<int> CountAsync(Expression<Func<T, bool>> predicate,CancellationToken cancellation)
+    {
+       return await _entitySet.CountAsync(predicate,cancellation);
+    }
+
+
     public async Task<bool> IsExistAsync(T data, CancellationToken cancellation) 
         => await _entitySet.AnyAsync(x => x.Id.Equals(data.Id), cancellation);
 

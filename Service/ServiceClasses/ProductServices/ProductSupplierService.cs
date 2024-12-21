@@ -223,7 +223,6 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         }
         else if (_userService.IsInRole("Supplier") && Guid.TryParse(_userService.RequesterId(), out Guid supplierId))
         {
-
             return await _productSupplierRepository.GetTotalInventoryBySupplierId(supplierId, cancellation);
         }
         throw new AccessDeniedException();

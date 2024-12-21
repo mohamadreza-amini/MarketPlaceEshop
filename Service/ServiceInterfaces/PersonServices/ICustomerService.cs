@@ -14,4 +14,5 @@ public interface ICustomerService:IServiceBase<Customer,UserResult,Guid>
 {
     Task<bool> CreateAsync(UserCommand userDTO,CancellationToken cancellationToken);
     Task<bool> SignInAsync(LoginCommand loginDto);
+    Task<int> NumberOfCustomers(CancellationToken cancellation);
 }

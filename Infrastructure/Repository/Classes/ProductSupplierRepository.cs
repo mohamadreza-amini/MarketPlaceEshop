@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Contracts.Repository;
 using Microsoft.EntityFrameworkCore;
+using Model.Entities.Person;
 using Model.Entities.Products;
 using Model.Entities.Review;
 using System;
@@ -21,16 +22,31 @@ public class ProductSupplierRepository : BaseRepository<ProductSupplier, Guid>, 
 
     public async Task<decimal> GetTotalInventory(CancellationToken cancellation)
     {
-        return await _entitySet
-            .Where(x => x.Ventory > 0)
-            .SumAsync(x => x.Ventory * x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(), cancellation);
+        var data = await _entitySet.Where(x => x.Ventory > 0).Select(x => new
+        {
+            x.Ventory,
+            PriceValue = x.Prices
+           .Where(p => p.ExpiredTime == null)
+           .Select(p => p.PriceValue)
+           .FirstOrDefault()  // مقدار پیش‌فرض در صورت null
+        }).ToListAsync(cancellation);
 
+        return data.Sum(x => x.Ventory * x.PriceValue);
     }
 
     public async Task<decimal> GetTotalInventoryBySupplierId(Guid supplierId, CancellationToken cancellation)
     {
-        return await _entitySet
+        var data = await _entitySet
             .Where(x => x.Ventory > 0 && x.SupplierId == supplierId)
-            .SumAsync(x => x.Ventory * x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(), cancellation);
+            .Select(x => new
+            {
+                x.Ventory,
+                PriceValue = x.Prices
+                .Where(p => p.ExpiredTime == null)
+                .Select(p => p.PriceValue)
+                .FirstOrDefault()  // مقدار پیش‌فرض در صورت null
+            }).ToListAsync(cancellation);
+
+        return data.Sum(x => x.Ventory * x.PriceValue);
     }
 }

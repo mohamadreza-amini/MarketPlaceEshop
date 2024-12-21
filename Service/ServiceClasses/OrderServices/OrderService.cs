@@ -1,6 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Order.Commands;
 using DataTransferObject.DTOClasses.Order.Results;
 using Infrastructure.Contracts.Repository;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Model.Entities.Orders;
@@ -201,7 +202,7 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
         });
     }
 
-     
+
 
     private static IQueryable<OrderItemResult> GetOrderItems(IQueryable<Order> orders, bool? sent = null)
     {
@@ -288,7 +289,32 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
         }
     }
 
+    public async Task<int> NumberOfOrders(ConfirmationStatus confirmation, CancellationToken cancellation)
+    {
+        if (_userService.IsAdmin())
+        {
+            return await _orderRepository.CountAsync(x => x.IsConfirmed == (byte)confirmation, cancellation);
+        }
+        else if (_userService.IsInRole("Supplier") && Guid.TryParse(_userService.RequesterId(), out Guid supplierId))
+        {
+            return await _orderRepository.CountAsync(x => x.IsConfirmed == (byte)confirmation && x.OrderItems.Any(x => x.ProductSupplier.SupplierId == supplierId), cancellation);
+        }
+        throw new AccessDeniedException();
 
+    }
+
+    public async Task<int> NumberOfOrders(bool sent, CancellationToken cancellation)
+    {
+        if (_userService.IsAdmin())
+        {
+            return await _orderRepository.CountAsync(x => x.IsConfirmed == 2 && (sent ? x.OrderItems.All(x => x.Sent == true) : x.OrderItems.Any(x => x.Sent == false)), cancellation);
+        }
+        else if (_userService.IsInRole("Supplier") && Guid.TryParse(_userService.RequesterId(), out Guid supplierId))
+        {
+            return await _orderRepository.CountAsync(x => x.IsConfirmed == 2 && (sent ? x.OrderItems.All(x => x.Sent == true) : x.OrderItems.Any(x => x.Sent == false)) && x.OrderItems.Any(x => x.ProductSupplier.SupplierId == supplierId), cancellation);
+        }
+        throw new AccessDeniedException();
+    }
 
 }
 

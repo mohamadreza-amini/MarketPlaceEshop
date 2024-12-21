@@ -1,0 +1,233 @@
+﻿@using MarketPlaceEshop.Areas.Admin.Models
+@using Shared
+
+@model ReportViewModel
+
+@section HeadContent {
+
+
+    <link rel="stylesheet" href="~/assets/vendor/libs/flatpickr/flatpickr.css">
+    <link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css">
+    <link rel="stylesheet" href="~/assets/vendor/libs/jquery-timepicker/jquery-timepicker.css">
+    <link rel="stylesheet" href="~/assets/vendor/libs/pickr/pickr-themes.css">
+
+}
+
+<div class="container my-5">
+    <h1 class="text-center mb-4">گزارش دهی</h1>
+
+
+
+    <form asp-area="admin" asp-action="Reports" asp-controller="Report" method="get" class="mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="startOfSalePeriod"  class="form-label ">تاریخ شروع بازه فروش</label>
+                <input asp-for="startOfSalePeriod" value="@Model.startOfSalePeriod" id="flatpickr-start-date" id="flatpickr-date" type="date" class="form-control flatpickr-input">
+            </div>
+            <div class="col-md-4">
+                <label for="endOfSalePeriod" class="form-label ">تاریخ پایان بازه فروش</label>
+                <input type="date" value="@Model.endOfSalePeriod" id="flatpickr-end-date" asp-for="endOfSalePeriod" class="form-control flatpickr-input">
+            </div>
+            <div class="col-md-2">
+                <label for="saleDays" class="form-label">روزهای فروش</label>
+                <input type="number" asp-for="saleDays" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label for="viewDays" class="form-label">روزهای بازدید</label>
+                <input type="number" asp-for="viewDays" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">فیلتر</button>
+            </div>
+        </div>
+    </form>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card text-bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">مجموع ارزش سبدهای خرید</h5>
+                    <p class="card-text fs-4">@((Model.TotalValueOfCarts/10).ToString("N0") )تومان</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">فروش کل</h5>
+                    <p class="card-text fs-4">@((Model.TotalSales.TotalSales/10).ToString("N0") ) تومان</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">مجموع ارزش موجودی</h5>
+                    <p class="card-text fs-4">@((Model.TotalInventory/10).ToString("N0") ) تومان</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Status Section -->
+    <!-- Order Status Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card border-primary">
+                <div class="card-header text-bg-primary  text-center">
+                    <h5 class="card-title text-white mb-0">وضعیت سفارشات</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            تایید شده
+                            <span class="badge bg-success rounded-pill">@Model.NumberOfOrderConfirmed</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            رد شده
+                            <span class="badge bg-danger rounded-pill">@Model.NumberOfOrderRejected</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            در حال بررسی
+                            <span class="badge bg-warning text-dark rounded-pill">@Model.NumberOfOrderUnchecked</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            ارسال شده
+                            <span class="badge bg-info rounded-pill">@Model.NumberOfOrderSent</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            در حال ارسال
+                            <span class="badge bg-secondary rounded-pill">@Model.NumberOfOrderSending</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-header text-bg-primary  text-center">
+                    <h5 class="card-title text-white mb-0">اطلاعات کاربران</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            تعداد تامین‌کنندگان
+                            <span class="badge bg-primary rounded-pill">@Model.NumberOfSupplier</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            تعداد مشتریان
+                            <span class="badge bg-success rounded-pill">@Model.NumberOfCustomers</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            تعداد بازدید‌ها
+                            <span class="badge bg-info rounded-pill">@Model.TotalViews</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Charts Section -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <canvas id="dailySalesChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="dailyViewsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+
+ @section FooterContent{
+    <script src="~/assets/vendor/libs/chartjs/chartjs.js"></script>
+    <script src="~/assets/vendor/libs/moment/moment.js"></script>
+    <script src="~/assets/vendor/libs/jdate/jdate.js"></script>
+    <script src="~/assets/vendor/libs/flatpickr/flatpickr-jdate.js"></script>
+    <script src="~/assets/vendor/libs/flatpickr/l10n/fa-jdate.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.js"></script>
+    <script src="~/assets/vendor/libs/jquery-timepicker/jquery-timepicker.js"></script>
+    <script src="~/assets/vendor/libs/pickr/pickr.js"></script>
+    <script src="~/assets/js/forms-pickers.js"></script>
+} 
+
+@section Scripts{
+    <script>
+        // Daily Sales Chart
+        const dailySalesCtx = document.getElementById('dailySalesChart').getContext('2d');
+        const dailySalesChart = new Chart(dailySalesCtx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.DailySales.Select(ds => ds.DateTime.ToAD().ToString("yyyy-MM-dd")))),
+                datasets: [{
+                    label: 'فروش روزانه',
+                    data: @Html.Raw(Json.Serialize(Model.DailySales.Select(ds => ds.TotalSales/10))),
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Daily Views Chart
+        const dailyViewsCtx = document.getElementById('dailyViewsChart').getContext('2d');
+        const dailyViewsChart = new Chart(dailyViewsCtx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.DailyViews.Select(vr => vr.DateTime.ToAD().ToString("yyyy-MM-dd")))),
+                datasets: [{
+                    label: 'بازدید روزانه',
+                    data: @Html.Raw(Json.Serialize(Model.DailyViews.Select(vr => vr.view))),
+                    backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+
+    <script>
+        flatpickr("#flatpickr-start-date", {
+            locale: "fa", 
+            dateFormat: "Y/m/d",
+        });
+
+        flatpickr("#flatpickr-end-date", {
+            locale: "fa",
+            dateFormat: "Y/m/d",
+        });
+
+    </script>
+
+}

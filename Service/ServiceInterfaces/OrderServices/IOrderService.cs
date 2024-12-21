@@ -18,5 +18,7 @@ public interface IOrderService : IServiceBase<Order, OrderResult, Guid>
     Task<PaginatedList<OrderItemResult>> GetAllOrderItems(CancellationToken cancellation, int pageIndex = 1, int pageSize = 20, bool? sent = null, ConfirmationStatus? confirmationStatus = null);
     Task ConfitrmOrder(Guid OrderId, ConfirmationStatus confirmation, CancellationToken cancellation);
     Task SendOrder(Guid orderId, CancellationToken cancellation);
+    Task<int> NumberOfOrders(ConfirmationStatus confirmation, CancellationToken cancellation);
+    Task<int> NumberOfOrders(bool sent, CancellationToken cancellation);
 
 }

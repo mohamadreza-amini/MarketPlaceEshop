@@ -18,6 +18,7 @@ public interface ISupplierService : IServiceBase<Supplier, UserResult, Guid>
     Task<PaginatedList<SupplierResult>> GetAllSuppliersbyStatusAsync(ConfirmationStatus status, CancellationToken cancellation, int pageIndex = 1, int pageSize = 20);
     Task<bool> ChangeSupplierStatusAsync(Guid supplierId, ConfirmationStatus confirmation, CancellationToken cancellation);
     Task<bool> SignInAsync(LoginCommand loginDto);
+    Task<int> NumberOfSupplier(ConfirmationStatus confirmation, CancellationToken cancellation);
 
 
 }

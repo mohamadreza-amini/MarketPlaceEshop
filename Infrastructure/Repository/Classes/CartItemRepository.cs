@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Contracts.Repository;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Orders;
+using Model.Entities.Person;
 using Model.Entities.Products;
 using System;
 using System.Collections.Generic;
@@ -51,14 +52,16 @@ public class CartItemRepository : BaseRepository<CartItem, Guid>, ICartItemRepos
     public async Task<decimal> GetCartTotalPriceByCustomerId(Guid customerId, CancellationToken cancellation)
     {
         var prices = await _entitySet
-     .Select(x => new
-     {
-         x.Quantity,
-         PriceValue = x.ProductSupplier.Prices
+            .Where(x=>x.CustomerId==customerId)
+            .Select(x => new
+            {
+                x.Quantity,
+                PriceValue = x.ProductSupplier.Prices
              .Where(price => price.ExpiredTime == null)
              .Select(price => price.PriceValue)
              .FirstOrDefault()
-     }).ToListAsync(cancellation);
+            }).ToListAsync(cancellation);
+
 
         var total = prices.Sum(x => x.Quantity * x.PriceValue);
         return total;
@@ -72,10 +75,19 @@ public class CartItemRepository : BaseRepository<CartItem, Guid>, ICartItemRepos
 
     public async Task<decimal> GetTotalValueOfCarts(CancellationToken cancellation)
     {
-        return await _entitySet
-            .SumAsync(x => x.Quantity * (x.ProductSupplier.Prices != null && x.ProductSupplier.Prices.Any()
-            ? x.ProductSupplier.Prices.Where(price => price.ExpiredTime == null).Select(x => x.PriceValue).DefaultIfEmpty(0).FirstOrDefault() : 0), cancellation);
-        //مثل بالاییش تفیر کنه
+        var prices = await _entitySet
+           .Select(x => new
+           {
+               x.Quantity,
+               PriceValue = x.ProductSupplier.Prices
+            .Where(price => price.ExpiredTime == null)
+            .Select(price => price.PriceValue)
+            .FirstOrDefault()
+           }).ToListAsync(cancellation);
+
+        var total = prices.Sum(x => x.Quantity * x.PriceValue);
+        return total;
+      
     }
 
 

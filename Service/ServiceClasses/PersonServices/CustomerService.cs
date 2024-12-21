@@ -3,6 +3,7 @@ using DataTransferObject.DTOClasses.Person.Results;
 using Infrastructure.Contracts.Repository;
 using Microsoft.AspNetCore.Identity;
 using Model.Entities.Person;
+using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ public class CustomerService : ServiceBase<Customer, UserResult, Guid>, ICustome
         userDTO.Id = customerId;
         var requesterId = _userService.IsAdmin() ? Guid.Parse(_userService.RequesterId()) : customerId;
 
-        if (!await _userService.CreateAsync(userDTO,requesterId))
+        if (!await _userService.CreateAsync(userDTO, requesterId))
             return false;
         var user = await _userService.GetUserbyIdAsync(customerId);
         if (user == null)
@@ -47,12 +48,18 @@ public class CustomerService : ServiceBase<Customer, UserResult, Guid>, ICustome
     }
 
     public async Task<bool> SignInAsync(LoginCommand loginDto)
-    {    
-        return await _userService.SignInAsync(loginDto,"Customer");
+    {
+        return await _userService.SignInAsync(loginDto, "Customer");
     }
 
-  
+
+    public async Task<int> NumberOfCustomers(CancellationToken cancellation)
+    {
+        if (!_userService.IsAdmin())
+            throw new AccessDeniedException();
+       return await _customerRepository.CountAsync(x => true, cancellation);
+    }
 
 
-     
+
 }

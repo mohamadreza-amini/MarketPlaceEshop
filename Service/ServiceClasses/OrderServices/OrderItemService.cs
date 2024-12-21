@@ -46,7 +46,7 @@ public class OrderItemService : ServiceBase<OrderItem, OrderItemResult, Guid>, I
     public async Task<List<ReportSalesResult>> GetDailySales(CancellationToken cancellation, int DaysCount = 7)
     {
         Expression<Func<OrderItem, bool>>? predicate = null;
-        InitializationPredicate(predicate);
+        predicate = InitializationPredicate(predicate);
 
         var result = await _orderItemRepository.GetDailySales(cancellation, predicate, DaysCount);
 
@@ -68,7 +68,7 @@ public class OrderItemService : ServiceBase<OrderItem, OrderItemResult, Guid>, I
     public async Task<ReportSalesResult> GetTotalSales(CancellationToken cancellation, DateTime? start = null, DateTime? end = null)
     {
         Expression<Func<OrderItem, bool>>? predicate = null;
-        InitializationPredicate(predicate);
+        predicate = InitializationPredicate(predicate);
 
         var result = new ReportSalesResult();
         result.TotalDiscount = await _orderItemRepository.TotalDiscount(cancellation, predicate, start, end);
@@ -80,7 +80,7 @@ public class OrderItemService : ServiceBase<OrderItem, OrderItemResult, Guid>, I
 
 
 
-    private void InitializationPredicate(Expression<Func<OrderItem, bool>>? predicate)
+    private Expression<Func<OrderItem, bool>>? InitializationPredicate(Expression<Func<OrderItem, bool>>? predicate)
     {
         if (_userService.IsAdmin())
         {
@@ -94,6 +94,7 @@ public class OrderItemService : ServiceBase<OrderItem, OrderItemResult, Guid>, I
         {
             throw new AccessDeniedException();
         }
+        return predicate;
     }
 
 
