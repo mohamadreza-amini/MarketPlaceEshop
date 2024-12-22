@@ -1,8 +1,218 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@using DataTransferObject.DTOClasses.Product.Results
+@using Service.ServiceClasses
+@model PaginatedList<ProductminiResult>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+<main class="main-content dt-sl mb-3">
+    <div class="container main-container">
+        <!-- Start Main-Slider -->
+        <div class="row mb-5">
+            <aside class="sidebar col-lg-4 hidden-md order-2 pr-0 hidden-md">
+                <!-- Start banner -->
+                <div class="sidebar-inner dt-sl">
+                    <div class="sidebar-banner">
+                        <div class="row">
+                            <div class="col-12 mb-1">
+                                <div class="widget-banner">
+                                    <a href="#">
+                                        <img style="margin-bottom: 7px;" src="~/assets/img/banner/banner-side-slider-1.jpg" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="widget-banner">
+                                    <a href="#">
+                                        <img src="~/assets/img/banner/banner-side-slider-2.jpg" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End banner -->
+            </aside>
+
+            <div class="col-lg-8 col-md-12 order-1">
+                <!-- Start main-slider -->
+                <section id="main-slider"
+                         class="main-slider main-slider-cs mt-1 carousel slide carousel-fade card hidden-sm"
+                         data-ride="carousel" data-bs-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-bs-target="#main-slider" data-bs-slide-to="0" class="active"></li>
+                        <li data-bs-target="#main-slider" data-bs-slide-to="1"></li>
+                        <li data-bs-target="#main-slider" data-bs-slide-to="2"></li>
+                        <li data-bs-target="#main-slider" data-bs-slide-to="3"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <a class="main-slider-slide" href="#">
+                                <img src="~/assets/img/main-slider/img-slider/1.jpg" alt="" class="img-fluid">
+                            </a>
+                        </div>
+                        <div class="carousel-item">
+                            <a class="main-slider-slide" href="#">
+                                <img src="~/assets/img/main-slider/img-slider/2.jpg" alt="" class="img-fluid">
+                            </a>
+                        </div>
+                        <div class="carousel-item">
+                            <a class="main-slider-slide" href="#">
+                                <img src="~/assets/img/main-slider/img-slider/3.jpg" alt="" class="img-fluid">
+                            </a>
+                        </div>
+                        <div class="carousel-item">
+                            <a class="main-slider-slide" href="#">
+                                <img src="~/assets/img/main-slider/img-slider/4.jpg" alt="" class="img-fluid">
+                            </a>
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" data-bs-slide="prev" data-bs-target="#main-slider" type="button">
+                        <i>
+                            <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.1" d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" fill="#323232"></path><path d="M11 15L13.7158 12.2842V12.2842C13.8728 12.1272 13.8728 11.8728 13.7158 11.7158V11.7158L11 9" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" stroke="#323232" stroke-width="2"></path></svg>
+                        </i>
+                    </a>
+                    <a class="carousel-control-next" data-bs-target="#main-slider" data-bs-slide="next" type="button">
+                        <i>
+                            <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.1" d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" fill="#323232" /><path d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" stroke="#323232" stroke-width="2" /><path d="M13 9L10.2625 11.7375V11.7375C10.1175 11.8825 10.1175 12.1175 10.2625 12.2625V12.2625L13 15" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </i>
+                    </a>
+                </section>
+                <section id="main-slider-res"
+                         class="mt-4 main-slider carousel slide carousel-fade card d-none show-sm" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-bs-target="#main-slider-res" data-bs-slide-to="0" class="active"></li>
+                        <li data-bs-target="#main-slider-res" data-bs-slide-to="1"></li>
+                        <li data-bs-target="#main-slider-res" data-bs-slide-to="2"></li>
+                        <li data-bs-target="#main-slider-res" data-bs-slide-to="3"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <a class="main-slider-slide" href="#">
+                                <img src="~/assets/img/main-slider/slider-responsive/1.jpg" alt=""
+                                     class="img-fluid">
+                            </a>
+                        </div>
+                        <div class="carousel-item">
+                            <a class="main-slider-slide" href="#">
+                                <img src="~/assets/img/main-slider/slider-responsive/2.jpg" alt=""
+                                     class="img-fluid">
+                            </a>
+                        </div>
+                        <div class="carousel-item">
+                            <a class="main-slider-slide" href="#">
+                                <img src="~/assets/img/main-slider/slider-responsive/3.jpg" alt=""
+                                     class="img-fluid">
+                            </a>
+                        </div>
+                        <div class="carousel-item">
+                            <a class="main-slider-slide" href="#">
+                                <img src="~/assets/img/main-slider/slider-responsive/4.jpg" alt=""
+                                     class="img-fluid">
+                            </a>
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" data-bs-target="#main-slider-res" role="button" data-bs-slide="prev">
+                        <i>
+                            <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.1" d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" fill="#323232"></path><path d="M11 15L13.7158 12.2842V12.2842C13.8728 12.1272 13.8728 11.8728 13.7158 11.7158V11.7158L11 9" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" stroke="#323232" stroke-width="2"></path></svg>
+                        </i>
+                    </a>
+                    <a class="carousel-control-next" data-bs-target="#main-slider-res" data-bs-slide="next">
+                        <i>
+                            <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.1" d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" fill="#323232" /><path d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" stroke="#323232" stroke-width="2" /><path d="M13 9L10.2625 11.7375V11.7375C10.1175 11.8825 10.1175 12.1175 10.2625 12.2625V12.2625L13 15" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </i>
+                    </a>
+                </section>
+                <!-- End main-slider -->
+            </div>
+        </div>
+        <!-- End Main-Slider -->
+    </div>
+    <!-- Start Product-Slider -->
+    <section class="slider-section mb-5 amazing-section" style="background: #ef394e">
+        <div class="container main-container">
+            <div class="row mb-3">
+                <!-- Start Product-Slider -->
+                <div class="col-12">
+                    <div class="product-carousel carousel-lg owl-carousel owl-theme">
+                        <div class="item">
+                            <div class="amazing-product text-center pt-5">
+                                <a asp-controller="product" asp-action="search">
+                                    <img src="./assets/img/theme/amazing-1.png" alt="">
+                                </a>
+                                <a asp-controller="product" asp-action="search" class="view-all-amazing-btn">
+                                    مشاهده همه
+                                </a>
+                            </div>
+                        </div>
+
+
+
+                        <!--هر محصول -->
+               
+
+
+                        @foreach (var product in Model)
+                        {
+                            <div class="item">
+                                <div class="product-card mb-3">
+                                    <div class="product-head">
+                                        <div class="rating-stars">
+
+                                            @for (var star = 1; star <= 5; star++)
+                                            {
+                                                if (product.AverageScore >= star)
+                                                {
+                                                    <i class="fa fa-star active"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa fa-star"></i>
+                                                }
+                                            }
+
+                                        </div>
+
+                                        @if (product.Discount)
+                                        {
+                                            <div class="discount">
+                                                <span>تخفیف </span>
+                                            </div>
+                                        }                                       
+                                    </div>
+                                    <a class="product-thumb" href="single-product.html">
+                                        <img src="@product.ImagePath.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")" alt="Product Thumbnail">
+                                    </a>
+                                    <div class="product-card-body" >
+                                        <h5 class="product-title">
+                                            <a asp-controller="Product" asp-action="GetProduct" asp-route-productId="@product.Id">@product.Name</a>
+                                        </h5>
+                                        <a class="product-meta" asp-controller="Product" asp-action="GetProduct" asp-route-productId="@product.Id"> @product.Titel</a>
+                                       
+
+                                        @if (product.Price == 0)
+                                        {
+                                            <span class=" product-price">ناموجود</span>
+
+                                        }
+                                        else
+                                        {
+                                            <span class="product-price">@((product.Price / 10).ToString("N0")) تومان</span>
+
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+
+                      
+                    </div>
+                </div>
+                <!-- End Product-Slider -->
+
+            </div>
+        </div>
+    </section>
+    <!-- End Product-Slider -->
+   
+</main>
