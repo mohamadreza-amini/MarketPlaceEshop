@@ -9,7 +9,7 @@ namespace Model.Entities.Reports;
 
 public class ViewLog : BaseEntity<int>
 {
-    public string IP { get; set; }
+    public string? IP { get; set; }
     public DateTime DateTime { get; set; }
     public string Url { get; set; }
     public Guid? userId { get; set; }

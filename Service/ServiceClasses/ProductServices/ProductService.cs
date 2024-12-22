@@ -5,20 +5,25 @@ using DataTransferObject.DTOClasses.Review.Results;
 using Infrastructure.Contracts.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Model.Entities.Categories;
 using Model.Entities.Products;
+using Model.Entities.Reports;
 using Model.Entities.Review;
 using Model.Exceptions;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.PersonServices;
 using Service.ServiceInterfaces.ProductServices;
+using Service.ServiceInterfaces.ReportingServices;
 using Service.ServiceInterfaces.ReviewServices;
 using Shared.Enums;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -37,6 +42,8 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
     private readonly IProductFeatureValueService _productFeatureService;
     private readonly ICommentService _commentService;
     private readonly IProductSupplierService _productSupplierService;
+    private readonly IHangfireServices _hangfireServices;
+
 
     public ProductService(IBaseRepository<Product, Guid> productRepository,
         IUserService userService,
@@ -46,7 +53,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
         IScoreService scoreService,
         IProductFeatureValueService productFeatureService,
         ICommentService commentService,
-        IProductSupplierService productSupplierService)
+        IProductSupplierService productSupplierService, IHangfireServices hangfireServices)
     {
         _productRepository = productRepository;
         _userService = userService;
@@ -58,6 +65,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
         _productFeatureService = productFeatureService;
         _commentService = commentService;
         _productSupplierService = productSupplierService;
+        _hangfireServices = hangfireServices;
     }
 
     public async Task<bool> CreateAsync(ProductCommand productDto, CancellationToken cancellation)
@@ -152,7 +160,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
             throw new BadRequestException("محصول یافت نشد");
 
         var product = await query.FirstOrDefaultAsync(cancellation);
-
+       _hangfireServices.LogProductView(productId);
         //میشد برد توی ریپازیتوری یا کلا پروداکت رو کامل اورد به جای گرفتن از سرویس های مختلف
         //بخشی از کار دیگه که میشد کرد رو پایین نوشتم کامنته
 
@@ -311,6 +319,9 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
 
         return await PaginatedList<ProductPanelResult>.CreateAsync(query, pageIndex, pageSize, cancellationToken);
     }
+
+
+  
 
 }
 

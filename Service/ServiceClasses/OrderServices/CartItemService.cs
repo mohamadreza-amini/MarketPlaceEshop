@@ -2,6 +2,7 @@
 using DataTransferObject.DTOClasses.Order.Results;
 using Infrastructure.Contracts.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Model.Entities.Orders;
 using Model.Exceptions;
 using Service.ServiceInterfaces.OrderServices;
@@ -20,11 +21,13 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
     private readonly ICartItemRepository _cartItemRepository;
     private readonly IProductSupplierService _productSupplierService;
     private readonly IUserService _userService;
-    public CartItemService(ICartItemRepository cartItemRepository, IProductSupplierService productSupplierService, IUserService userService)
+    private readonly ILogger<CartItemService> logger;
+    public CartItemService(ICartItemRepository cartItemRepository, IProductSupplierService productSupplierService, IUserService userService, ILogger<CartItemService> _logger)
     {
         _cartItemRepository = cartItemRepository;
         _productSupplierService = productSupplierService;
         _userService = userService;
+        logger = _logger;
     }
     //رفرش کردن ظرفیت تمام سبد خرید های حامل یک محصول خاص
     public async Task RefreshCartQuantitiesByIdAsync(Guid productSupplierId, int quantity, CancellationToken cancellation)
@@ -157,6 +160,7 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
                 if (expirePrice != null) expirePrice.ExpiredTime = DateTime.Now;
                 cartitem.ProductSupplier.Discount = 0;//این خط بعدا اضافه شده
             }
+            logger.LogInformation($"Reduce product [{cartitem.ProductSupplier.Id}] inventory to [{cartitem.ProductSupplier.Ventory}]  Due to customer purchase [{customerId}]");
         }
         return true;
         //اگه بعد از پیاده سازی تغیراتش اعمال نشد کامیت رو اینجا هم اضافه کن

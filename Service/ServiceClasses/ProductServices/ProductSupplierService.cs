@@ -2,6 +2,7 @@
 using DataTransferObject.DTOClasses.Product.Results;
 using Infrastructure.Contracts.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Model.Entities.Products;
 using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
@@ -21,13 +22,14 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
     private readonly IUserService _userService;
     private readonly IPriceService _priceService;
     private readonly IBaseRepository<Product, Guid> _productRepository;
-
-    public ProductSupplierService(IProductSupplierRepository productSupplierRepository, IUserService userService, IPriceService priceService, IBaseRepository<Product, Guid> productRepository)
+    private readonly ILogger<ProductSupplierService> logger;
+    public ProductSupplierService(IProductSupplierRepository productSupplierRepository, IUserService userService, IPriceService priceService, IBaseRepository<Product, Guid> productRepository, ILogger<ProductSupplierService> _logger)
     {
         _productSupplierRepository = productSupplierRepository;
         _userService = userService;
         _priceService = priceService;
         _productRepository = productRepository;
+        logger = _logger;
     }
 
 
@@ -70,6 +72,8 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
 
         await _productSupplierRepository.CreateAsync(productSupplier, cancellationToken);
         await _productSupplierRepository.CommitAsync(cancellationToken);
+        logger.LogInformation($"Add supplier [{productSupplierDto.SupplierId}] to the product [{productSupplierDto.ProductId}] with inventory [{productSupplierDto.Ventory}] " +
+           $"with price [{productSupplierDto.PriceValue}] and discount [{productSupplierDto.Discount}] by [{productSupplier.CreatorUserId}]");
     }
 
 
@@ -114,6 +118,8 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         productSupplier.Validate();
 
         await _productSupplierRepository.CommitAsync(cancellationToken);
+        logger.LogInformation($" supplier [{productSupplierDto.SupplierId}] changes for product [{productSupplierDto.ProductId}] with inventory [{productSupplierDto.Ventory}] " +
+           $"with price [{productSupplierDto.PriceValue}] and discount [{productSupplierDto.Discount}] by [{productSupplier.UpdaterUserId}]");
     }
 
     public async Task<Guid?> GetSuppierIdById(Guid ProductSupplierId, CancellationToken cancellation)
@@ -196,7 +202,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
                Ventory = x.Ventory,
                Discount = x.Discount,
                Price = x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(),
-              // Price = x.Prices !=null && x.Prices.Any() ? x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(), //اگع بالایی مشکل داشت این خط
+               // Price = x.Prices !=null && x.Prices.Any() ? x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(), //اگع بالایی مشکل داشت این خط
                StartDate = x.Product.StartDate,
                BrandName = x.Product.Brand.BrandName,
                CategoryId = x.Product.CategoryId,

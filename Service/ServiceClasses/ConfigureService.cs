@@ -51,5 +51,7 @@ public static class ConfigureService
         service.AddScoped<ICommentService, CommentService>();
         service.AddScoped<IScoreService, ScoreService>();
 
+        service.AddScoped<IExceptionLogService, ExceptionLogService>();
+
     }
 }

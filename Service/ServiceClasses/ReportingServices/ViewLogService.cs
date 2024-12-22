@@ -19,7 +19,6 @@ public class ViewLogService : IViewLogService
 {
     private readonly IViewLogRepository _viewRepository;
     private readonly IUserService _userService;
-
     public ViewLogService(IViewLogRepository viewRepository, IUserService userService)
     {
         _viewRepository = viewRepository;
@@ -36,7 +35,7 @@ public class ViewLogService : IViewLogService
     // لیست ویوی چند روز گذشته به صورت روزانه
     public async Task<List<ViewsResult>> GetDailyViews(CancellationToken cancellation, int DaysCount = 7)
     {
-        if(!_userService.IsAdmin())
+        if (!_userService.IsAdmin())
             throw new AccessDeniedException();
 
         var result = await _viewRepository.GetDailyViews(cancellation, DaysCount);

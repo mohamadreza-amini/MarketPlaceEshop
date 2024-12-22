@@ -1,6 +1,8 @@
 ﻿using DataTransferObject.DTOClasses.Order.Results;
 using Infrastructure.Contracts.Repository;
+using Microsoft.Extensions.Logging;
 using Model.Entities.Orders;
+using Model.Entities.Person;
 using Model.Exceptions;
 using Service.ServiceInterfaces.OrderServices;
 using Service.ServiceInterfaces.PersonServices;
@@ -19,11 +21,13 @@ public class OrderItemService : ServiceBase<OrderItem, OrderItemResult, Guid>, I
     private readonly IOrderItemRepository _orderItemRepository;
     private readonly IUserService _userService;
     private readonly IProductSupplierService _productSupplierService;
-    public OrderItemService(IOrderItemRepository orderItemRepository, IUserService userService, IProductSupplierService productSupplierService)
+    private readonly ILogger<OrderItemService> logger;
+    public OrderItemService(IOrderItemRepository orderItemRepository, IUserService userService, IProductSupplierService productSupplierService, ILogger<OrderItemService> _logger)
     {
         _orderItemRepository = orderItemRepository;
         _userService = userService;
         _productSupplierService = productSupplierService;
+       logger = _logger;
     }
 
     public async Task SendOrderItem(Guid orderItemId, CancellationToken cancellation)
@@ -40,6 +44,8 @@ public class OrderItemService : ServiceBase<OrderItem, OrderItemResult, Guid>, I
         orderItem.DateOfPosting = DateTime.Now;
         orderItem.UpdaterUserId = requesterId;
         await _orderItemRepository.CommitAsync(cancellation);
+        logger.LogInformation($"Change order status [{orderItem}]  to sent by [{requesterId}]");
+
     }
 
     //گزارش فروش تخفیف پرداخت روزانه بر اساس تعداد روز اگه ادمین بود همه اگه تامین کننده بود مال خودش

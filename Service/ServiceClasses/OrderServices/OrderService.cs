@@ -1,9 +1,11 @@
-﻿using DataTransferObject.DTOClasses.Order.Commands;
+﻿using Azure;
+using DataTransferObject.DTOClasses.Order.Commands;
 using DataTransferObject.DTOClasses.Order.Results;
 using Infrastructure.Contracts.Repository;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Logging;
 using Model.Entities.Orders;
 using Model.Entities.Person;
 using Model.Entities.Products;
@@ -30,18 +32,21 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
     private readonly IUserService _userService;
     private readonly ICartItemService _cartItemService;
     private readonly IProductSupplierService _productSupplierService;
+    private readonly ILogger<OrderService> logger;
 
-    public OrderService(IBaseRepository<Order, Guid> orderRepository, IUserService userService, ICartItemService cartItemService, IProductSupplierService productSupplierService)
+    public OrderService(IBaseRepository<Order, Guid> orderRepository, IUserService userService, ICartItemService cartItemService, IProductSupplierService productSupplierService, ILogger<OrderService> _logger)
     {
         _orderRepository = orderRepository;
         _userService = userService;
         _cartItemService = cartItemService;
         _productSupplierService = productSupplierService;
+        logger = _logger;
     }
 
 
     public async Task<bool> AddOrderAsync(OrderCommand orderDto, CancellationToken cancellationToken)
     {
+        logger.LogInformation($"Request customer order [{orderDto.CustomerId}]");
         if (orderDto.CustomerId == Guid.Empty)
             throw new BadRequestException("ابتدا باید لاگین کنید");
         if (!_userService.IsAdmin() && _userService.RequesterId() != orderDto.CustomerId.ToString())
@@ -60,12 +65,13 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
         {
             await _orderRepository.CreateAsync(order, cancellationToken);
             await _orderRepository.CommitAsync(cancellationToken);
+            logger.LogInformation($"Customer order registration with ID [{orderDto.CustomerId}]");
             await _cartItemService.ResetCartItem(order.CustomerId, cancellationToken);
             return true;
         }
         catch (Exception ex)
         {
-            //اینجا میشه لاگ زد
+            logger.LogError(ex, "Failed to register customer order. Customer ID: {CustomerId}", orderDto.CustomerId);
             return false;
         }
         finally
@@ -92,6 +98,8 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
             orderItem.CreatorUserId = orderItem.UpdaterUserId = requesterId;
         }
         order.Validate();
+        logger.LogInformation($"Add customer order [{orderDto.CustomerId}] by [{requesterId}]");
+
         return order;
     }
 
@@ -276,6 +284,7 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
                 x.Sent = true;
                 x.DateOfPosting = DateTime.Now;
                 x.UpdaterUserId = requesterId;
+                logger.LogInformation($"Change order status [{x.Id}]  to sent by [{requesterId}]");
             });
         }
         else
@@ -285,6 +294,7 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
                 x.Sent = true;
                 x.DateOfPosting = DateTime.Now;
                 x.UpdaterUserId = requesterId;
+                logger.LogInformation($"Change order status [{x.Id}]  to sent by [{requesterId}]");
             });
         }
     }

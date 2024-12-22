@@ -9,7 +9,7 @@ namespace Model.Entities.Reports;
 
 public class ExceptionLog : BaseEntity<int>
 {
-    public ExceptionLog(Exception ex, Guid userId)
+    public ExceptionLog(Exception ex, Guid? userId)
     {
         ExceptionType = ex.GetType().Name;
         Message = ex.Message;
