@@ -27,5 +27,12 @@ public class SaleController : Controller
         await _orderService.SendOrder(orderId, cancellation);
     }
 
-  
+
+
+    public async Task<IActionResult> Orders(CancellationToken cancellation, int pageIndex = 1)
+    {
+        var orders = await _orderService.GetAllOrders(cancellation, pageIndex, 10);
+        return View(orders);
+    }
+
 }
