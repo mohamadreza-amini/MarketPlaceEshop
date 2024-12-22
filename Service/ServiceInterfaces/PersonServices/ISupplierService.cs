@@ -20,5 +20,4 @@ public interface ISupplierService : IServiceBase<Supplier, UserResult, Guid>
     Task<bool> SignInAsync(LoginCommand loginDto);
     Task<int> NumberOfSupplier(ConfirmationStatus confirmation, CancellationToken cancellation);
 
-
 }

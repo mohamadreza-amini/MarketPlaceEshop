@@ -1,7 +1,9 @@
 ﻿using DataTransferObject.DTOClasses.Person.Commands;
 using DataTransferObject.DTOClasses.Person.Results;
 using Infrastructure.Contracts.Repository;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Model.Entities.Person;
 using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
@@ -57,9 +59,19 @@ public class CustomerService : ServiceBase<Customer, UserResult, Guid>, ICustome
     {
         if (!_userService.IsAdmin())
             throw new AccessDeniedException();
-       return await _customerRepository.CountAsync(x => true, cancellation);
+        return await _customerRepository.CountAsync(x => true, cancellation);
     }
 
+    public async Task<PaginatedList<UserResult>> GetAll(CancellationToken cancellation, int pageIndex = 1, int pageSize = 10)
+    {
+        if (!_userService.IsAdmin())
+            throw new AccessDeniedException();
+        var users = await _customerRepository.GetAllDataAsync(x => x, cancellation);
 
+        if (users == null)
+            return new PaginatedList<UserResult>(new List<UserResult>(), 0, 1, pageSize);
+
+        return await PaginatedList<UserResult>.CreateAsync(users.ProjectToType<UserResult>(), pageIndex, pageSize, cancellation);
+    }
 
 }

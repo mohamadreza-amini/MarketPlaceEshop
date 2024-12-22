@@ -3,6 +3,7 @@ using DataTransferObject.DTOClasses.Person.Results;
 using Infrastructure.Contracts.Repository;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Person;
 using Model.Exceptions;
@@ -132,4 +133,6 @@ public class SupplierService : ServiceBase<Supplier, UserResult, Guid>, ISupplie
         return await _supplierRepository.CountAsync(x=>x.IsConfirmed==(byte)confirmation,cancellation);
     }
   
+
+    
 }

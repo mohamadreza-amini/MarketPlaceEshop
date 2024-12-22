@@ -65,32 +65,38 @@ namespace Service.ServiceClasses
 
 
             TypeAdapterConfig<ProductSupplier, ProductSupplierResult>.NewConfig()
-            .Map(dest => dest.Price, src => src.Prices.Where(x=>x.ExpiredTime==null).Select(x=>x.PriceValue).FirstOrDefault());
+            .Map(dest => dest.Price, src => src.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault());
 
 
             TypeAdapterConfig<CategoryFeatureResult, ProductFeatureValueCommand>.NewConfig()
             .Map(dest => dest.CategoryFeatureId, src => src.Id);
-                 
+
+
+
+            TypeAdapterConfig<Supplier, SupplierResult>.NewConfig()
+           .Map(dest => dest.DateOfBirth, src => src.User.DateOfBirth)
+           .Map(dest => dest.Email, src => src.User.Email)
+           .Map(dest => dest.FirstName, src => src.User.FirstName)
+           .Map(dest => dest.LastName, src => src.User.LastName)
+           .Map(dest => dest.NationalCode, src => src.User.NationalCode)
+           .Map(dest => dest.MobileNumber, src => src.User.MobileNumber)
+           .Map(dest => dest.PhoneNumber, src => src.User.PhoneNumber)
+           .Map(dest => dest.NationalCode, src => src.User.NationalCode);
+
+
+
+            TypeAdapterConfig<Customer, UserResult>.NewConfig()
+           .Map(dest => dest.DateOfBirth, src => src.User.DateOfBirth)
+           .Map(dest => dest.Email, src => src.User.Email)
+           .Map(dest => dest.FirstName, src => src.User.FirstName)
+           .Map(dest => dest.LastName, src => src.User.LastName)
+           .Map(dest => dest.MobileNumber, src => src.User.MobileNumber)
+           .Map(dest => dest.PhoneNumber, src => src.User.PhoneNumber)
+           .Map(dest => dest.NationalCode, src => src.User.NationalCode);
 
 
 
 
-
-            /*TypeAdapterConfig<Order, OrderDTO>.NewConfig()
-                .Map(x => x.Cost, y => y.TotalCost)
-                .Map(x => x.Discount, y => y.TotalDiscount);*/
-
-            /* TypeAdapterConfig<Address, AddressDTO>.NewConfig()
-                 .Map(x => x.Detail, y => y.AddressDetail)
-                 .Map(x => x.unit, y => y.UnitNumber);
-
-
-             TypeAdapterConfig<User, UserDTO>.NewConfig()
-                 .Map(x => x.Email, y => y.UserName);
-
-
-             TypeAdapterConfig<UserDTO, User>.NewConfig()
-                 .Map(x => x.UserName, y => y.Email);*/
 
         }
     }

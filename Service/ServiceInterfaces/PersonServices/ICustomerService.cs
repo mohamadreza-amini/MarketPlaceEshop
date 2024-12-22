@@ -2,6 +2,7 @@
 using DataTransferObject.DTOClasses.Person.Results;
 using Microsoft.AspNetCore.Identity;
 using Model.Entities.Person;
+using Service.ServiceClasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,4 +16,5 @@ public interface ICustomerService:IServiceBase<Customer,UserResult,Guid>
     Task<bool> CreateAsync(UserCommand userDTO,CancellationToken cancellationToken);
     Task<bool> SignInAsync(LoginCommand loginDto);
     Task<int> NumberOfCustomers(CancellationToken cancellation);
+    Task<PaginatedList<UserResult>> GetAll(CancellationToken cancellation, int pageIndex = 1, int pageSize = 10);
 }
