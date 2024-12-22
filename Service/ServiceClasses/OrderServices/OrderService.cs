@@ -113,9 +113,12 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
             return new PaginatedList<OrderResult>(new List<OrderResult> { new OrderResult() { OrderItems = new List<OrderItemResult>() } }, 0, 1, pageSize) { };
 
         Expression<Func<OrderItem, bool>> sentFilter = x => true;
-        query = await FilterByPerson(query);
+        Expression<Func<OrderItem, bool>> supplierFilter = x => true;
+        query = (await FilterByPerson(query, supplierFilter, sent)).Item1;
+        supplierFilter = (await FilterByPerson(query, supplierFilter, sent)).Item2;
+
         query = SetFilters(query, sentFilter, sent, confirmationStatus);
-        var result = SelectOrders(query, sentFilter);
+        var result = SelectOrders(query, sentFilter, supplierFilter);
         return await PaginatedList<OrderResult>.CreateAsync(result, pageIndex, pageSize, cancellation);
     }
 
@@ -127,7 +130,9 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
             return new PaginatedList<OrderItemResult>(new List<OrderItemResult>(), 0, 1, pageSize) { };
 
         Expression<Func<OrderItem, bool>> sentFilter = x => true;
-        query = await FilterByPerson(query);
+        Expression<Func<OrderItem, bool>> supplierFilter = x => true;
+        query =( await FilterByPerson(query, supplierFilter,sent)).Item1;
+        supplierFilter = (await FilterByPerson(query, supplierFilter,sent)).Item2;
 
         query = SetFilters(query, sentFilter, sent, confirmationStatus);
         var result = GetOrderItems(query, sent);
@@ -151,7 +156,7 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
     }
 
 
-    private async Task<IQueryable<Order>> FilterByPerson(IQueryable<Order> query)
+    private async Task<(IQueryable<Order>, Expression<Func<OrderItem, bool>>)> FilterByPerson(IQueryable<Order> query, Expression<Func<OrderItem, bool>> supplierFilter, bool? sent = null)
     {
         if (!Guid.TryParse(_userService.RequesterId(), out Guid requesterId))
             throw new AccessDeniedException();
@@ -162,7 +167,15 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
                 break;
 
             case ("Supplier"):
-                query = query.Where(x => x.OrderItems.Any(x => x.ProductSupplier.SupplierId == requesterId));
+                if (sent != null)
+                {
+                    query = query.Where(x => x.OrderItems.Any(x => x.ProductSupplier.SupplierId == requesterId && x.Sent == sent));
+                }
+                else
+                {
+                    query = query.Where(x => x.OrderItems.Any(x => x.ProductSupplier.SupplierId == requesterId));
+                }
+                supplierFilter = x => x.ProductSupplier.SupplierId == requesterId;
                 break;
 
             case ("Customer"):
@@ -172,12 +185,12 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
             default:
                 throw new AccessDeniedException();
         }
-        return query;
+        return (query,supplierFilter);
     }
 
 
 
-    private static IQueryable<OrderResult> SelectOrders(IQueryable<Order> query, Expression<Func<OrderItem, bool>> sentFilter)
+    private static IQueryable<OrderResult> SelectOrders(IQueryable<Order> query, Expression<Func<OrderItem, bool>> sentFilter, Expression<Func<OrderItem, bool>> supplierFilter)
     {
         return query.Select(x => new OrderResult
         {
@@ -187,11 +200,11 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
             IsConfirm = (ConfirmationStatus)x.IsConfirmed,
             ShippedDate = x.ShippedDate,
             OrderDate = x.OrderDate,
-            TotalPrice = x.OrderItems.Sum(x => x.Quantity * x.UnitCost),
-            TotalDiscount = x.OrderItems.Sum(x => x.Quantity * x.UnitDiscount),
-            TotalAmountPaid = x.OrderItems.Sum(x => x.Quantity * x.UnitCost) - x.OrderItems.Sum(x => x.Quantity * x.UnitDiscount),
+            TotalPrice = x.OrderItems.AsQueryable().Where(supplierFilter).Sum(x => x.Quantity * x.UnitCost),
+            TotalDiscount = x.OrderItems.AsQueryable().Where(supplierFilter).Sum(x => x.Quantity * x.UnitDiscount),
+            TotalAmountPaid = x.OrderItems.AsQueryable().Where(supplierFilter).Sum(x => x.Quantity * x.UnitCost) - x.OrderItems.AsQueryable().Where(supplierFilter).Sum(x => x.Quantity * x.UnitDiscount),
             FullAddress = x.Address.City.Province.ProvinceName + "-" + x.Address.City.CityName + "-" + x.Address.Neighborhood + "," + x.Address.AddressDetail + " پلاک," + x.Address.HouseNumber + " واحد," + x.Address.UnitNumber + " کدپستی," + x.Address.PostalCode,
-            OrderItems = x.OrderItems.AsQueryable().Where(sentFilter).Select(x => new OrderItemResult
+            OrderItems = x.OrderItems.AsQueryable().Where(sentFilter).Where(supplierFilter).Select(x => new OrderItemResult
             {
                 Id = x.Id,
                 DateOfPosting = x.DateOfPosting,
@@ -262,7 +275,7 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
 
     public async Task SendOrder(Guid orderId, CancellationToken cancellation)
     {
-        if (!_userService.IsAdmin() && _userService.IsInRole("Supplier"))
+        if (!_userService.IsAdmin() && !_userService.IsInRole("Supplier"))
             throw new AccessDeniedException();
         var query = await _orderRepository.GetAllDataAsync(x => x, cancellation, x => x.Id == orderId, x => x.Include(x => x.OrderItems).ThenInclude(x => x.ProductSupplier), false);
         if (query == null)
