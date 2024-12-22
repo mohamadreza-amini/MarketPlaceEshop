@@ -5,8 +5,10 @@ using MarketPlaceEshop.Models;
 using Microsoft.AspNetCore.Mvc;
 using Model.Exceptions;
 using Service.ServiceInterfaces.AddressServices;
+using Service.ServiceInterfaces.OrderServices;
 using Service.ServiceInterfaces.PersonServices;
 using Shared;
+using Shared.Enums;
 using System.Security.Claims;
 
 namespace MarketPlaceEshop.Controllers
@@ -18,14 +20,15 @@ namespace MarketPlaceEshop.Controllers
         private readonly IAdressService _adressService;
         private readonly ICityService _cityService;
         private readonly IProvinceService _provinceService;
-
-        public AccountController(IUserService userService, ICustomerService customerService, IAdressService adressService, IProvinceService provinceService, ICityService cityService)
+        private readonly IOrderService _orderService;
+        public AccountController(IUserService userService, ICustomerService customerService, IAdressService adressService, IProvinceService provinceService, ICityService cityService, IOrderService orderService)
         {
             _userService = userService;
             _customerService = customerService;
             _adressService = adressService;
             _provinceService = provinceService;
             _cityService = cityService;
+            _orderService = orderService;
         }
 
         public IActionResult Index()
@@ -141,6 +144,15 @@ namespace MarketPlaceEshop.Controllers
                 await _adressService.CreateAsync(addressDto, cancellation);
             }
             return RedirectToAction("Address", "Account");
+        }
+
+
+
+
+        public async Task<IActionResult> Orders(CancellationToken cancellation, int pageIndex = 1)
+        {
+            var orders = await _orderService.GetAllOrders(cancellation, pageIndex, 5);
+            return View(orders);
         }
 
 

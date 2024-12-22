@@ -134,7 +134,7 @@ public class Program
         MapsterConfig.RegisterMapping();
 
         var app = builder.Build();
-        app.UseMiddleware<ExceptionHandler>();
+        //app.UseMiddleware<ExceptionHandler>();
 
         app.UseHangfireDashboard("/hangfire");
 

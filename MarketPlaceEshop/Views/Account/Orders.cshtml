@@ -1,0 +1,227 @@
+﻿@using DataTransferObject.DTOClasses.Order.Results
+@using Service.ServiceClasses
+@using Shared
+@using Shared.Enums
+@model PaginatedList<OrderResult>
+
+
+<main class="main-content dt-sl mb-3">
+    <div class="container main-container">
+        <div class="row" style="margin-top: 20px; margin-bottom: 20px; transform: none;">
+            @await Component.InvokeAsync("ProfileTab")
+
+
+            <!-- Start Content -->
+            <div class="col-xl-9 col-lg-8 col-md-8 col-sm-12">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="section-title text-sm-title title-wide mb-1 no-after-title-wide dt-sl mb-2 px-res-1">
+                            <h2>همه سفارش‌ها</h2>
+                        </div>
+                        <div class="dt-sl">
+                            <div class="table-responsive">
+                                <table class="table table-order">
+                                    <thead>
+                                        <tr>
+
+                                            <th>#</th>
+                                            <th> تاریخ سفارش</th>
+                                            <th>تاریخ ارسال درخواستی </th>
+                                            <th>مبلغ کل</th>
+                                            <th>تخفیف کل</th>
+                                            <th>پرداخت</th>
+                                            <th>
+                                                وضعیت سفارش
+                                            </th>
+                                            <th>جزئیات سفارش</th>
+                                            
+
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            var index = (Model.PageIndex - 1) * Model.PageSize + 1;
+                                        }
+                                        @foreach (var order in Model)
+                                        {
+                                            <tr>
+
+                                                <th>@(index++)</th>
+                                                <td>@order.OrderDate.ToAD().ToString("yyyy/MM/dd")</td>
+                                                <td>@order.ShippedDate.ToAD().ToString("yyyy/MM/dd")</td>
+                                                <td>@((order.TotalPrice / 10).ToString("N0"))</td>
+                                                <td>@((order.TotalDiscount / 10).ToString("N0"))</td>
+                                                <td>@((order.TotalAmountPaid / 10).ToString("N0"))</td>
+                                                <td>
+
+                                                    @(order.IsConfirm == ConfirmationStatus.Confirmed ? "تایید شده" : order.IsConfirm == ConfirmationStatus.Unchecked ? "در صف بررسی" : "رد شده")
+                                                </td>
+
+
+                                                <td class="details-link">
+                                                    <button type="button" class="text-nowrap btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#@string.Concat("Modal", order.Id.ToString())">
+                                                        <i>
+                                                            <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path opacity="0.1" d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" fill="#323232" />
+                                                                <path d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" stroke="#323232" stroke-width="2" />
+                                                                <path d="M13 9L10.2625 11.7375V11.7375C10.1175 11.8825 10.1175 12.1175 10.2625 12.2625V12.2625L13 15" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                            </svg>
+                                                        </i>
+                                                    </button>
+                                                </td>
+                                               
+                                            </tr>
+                                        }
+
+
+                                    </tbody>
+                                </table>
+
+                                @foreach (var order in Model)
+                                {
+                                    <!-- Modal product details -->
+
+
+
+
+                                    <div class="modal fade" id="@string.Concat("Modal", order.Id.ToString())" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title secondary-font" id="orderModalTitle">جزئیات سفارش</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!-- بخش جزئیات سفارش -->
+                                                    <div class="p-3 mb-4 border rounded shadow-sm">
+                                                        <h6 class="text-primary mb-3">اطلاعات سفارش</h6>
+                                                        <p><strong>تاریخ سفارش:</strong> @order.OrderDate.ToAD().ToString("yyyy/MM/dd")</p>
+                                                        <p><strong>تاریخ ارسال درخواستی:</strong> @order.ShippedDate.ToAD().ToString("yyyy/MM/dd")</p>
+                                                        <p><strong>آدرس کامل:</strong> @order.FullAddress</p>
+                                                        <p><strong>مبلغ کل پرداخت شده:</strong> @order.TotalAmountPaid.ToString("N0") تومان</p>
+                                                        <p><strong>مجموع تخفیف:</strong> @order.TotalDiscount.ToString("N0") تومان</p>
+                                                        <p><strong>مبلغ کل:</strong> @order.TotalPrice.ToString("N0") تومان</p>
+                                                        <p><strong>وضعیت تایید:</strong> @(order.IsConfirm == ConfirmationStatus.Confirmed ? "تایید شده" : "تایید نشده")</p>
+                                                    </div>
+
+
+                                                    <!-- لیست آیتم‌های سفارش -->
+                                                    <div >
+                                                        <h6 class="text-primary">آیتم‌های سفارش</h6>
+                                                        <ul class="list-group">
+                                                            @foreach (var item in order.OrderItems)
+                                                            {
+                                                                <li class="list-group-item d-flex align-items-start mb-2">
+                                                                    <a class="p-2" asp-area="" asp-controller="product" asp-action="GetProduct" asp-route-productId="@item.ProductId">
+                                                                        <img src="@item.ImagePath.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")"
+                                                                             class="img-thumbnail border-0 me-3" alt="@item.ProductName" style="width: 100px; height: 100px; object-fit: cover;">
+                                                                    </a>
+
+                                                                    <div class="p-2">
+                                                                        <h6>@item.ProductName</h6>
+                                                                        <p class="mb-0"><strong>تعداد:</strong> @item.Quantity</p>
+                                                                        <p class="mb-0"><strong>فروشنده:</strong> @item.CompanyName</p>
+                                                                        <p class="mb-0"><strong>قیمت :</strong> @(((item.UnitCost * item.Quantity) / 10).ToString("N0")) تومان</p>
+                                                                        <p class="mb-0"><strong>تخفیف :</strong> @(((item.UnitDiscount * item.Quantity) / 10).ToString("N0")) تومان</p>
+                                                                        <p class="mb-0"><strong>پرداختی :</strong> @((((item.UnitCost - item.UnitDiscount) / 10) * item.Quantity).ToString("N0")) تومان</p>
+                                                                        <p class="mb-0"><strong>ارسال شده:</strong> @(item.Sent ? "بله" : "خیر")</p>
+                                                                        <p><strong>تاریخ ارسال :</strong>@(item.Sent && item.DateOfPosting.HasValue ? item.DateOfPosting.Value.ToAD().ToString("yyyy/MM/dd") : " -- ") </p>
+                                                                    </div>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">بستن</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                }
+
+                               
+
+
+
+
+
+
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center mt-3">
+                            <nav>
+                                <ul class="pagination pagination-sm mb-0 d-flex">
+                                
+
+                                    @for (int i = 1; i <= Model.TotalPages; i++)
+                                    {
+                                        if (i == Model.PageIndex)
+                                        {
+                                            <li class="page-item p-2 active">
+                                                <span class="page-link">@i <span class="sr-only">(current)</span></span>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="p-2 page-item">
+                                                <a class=" page-link"
+                                                   asp-controller="account"
+                                                   asp-action="Orders"
+                                                   asp-route-PageIndex="@i">
+                                                    @i
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+
+                                
+                                </ul>
+                            </nav>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- End Content -->
+
+
+           
+
+
+        </div>
+    </div>
+</main>
+
+
+@section Scripts {
+    <script>
+        function getOrderPage(pageIndex) {
+
+            $.ajax({
+                url: "account/Orders",
+                type: "GET",
+                data: { pageIndex: pageIndex },
+                success: function (response) {
+                    var content = $(response).find('#tablecontent').html();
+
+                    $("#tablecontent").html(content);
+                },
+                error: function (xhr, status, error) {
+                    console.error("خطا در ارسال درخواست:", error);
+                }
+            });
+
+        }
+
+
+    </script>
+}

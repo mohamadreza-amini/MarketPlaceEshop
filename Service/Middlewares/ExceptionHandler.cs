@@ -33,7 +33,7 @@ public class ExceptionHandler
             {            
                 var _logger = scope.ServiceProvider.GetRequiredService<ILogger<ExceptionHandler>>();
                 _logger.LogError("program error {@Exception}", exception);
-                context.Response.Redirect("Home/error");
+                context.Response.Redirect(context.Request.PathBase + "/Home/error");
 
             }
         }
@@ -46,7 +46,7 @@ public class ExceptionHandler
                 await _exceptionLogService.SaveExceptionLog(exception);
                 var _logger = scope.ServiceProvider.GetRequiredService<ILogger<ExceptionHandler>>();
                 _logger.LogError("External error {@Exception}", exception);
-                context.Response.Redirect("Home/error");
+                context.Response.Redirect(context.Request.PathBase + "/Home/error");
             }
 
         }
