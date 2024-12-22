@@ -1,0 +1,134 @@
+﻿@using DataTransferObject.DTOClasses.Person.Commands
+@model UserCommand
+
+@section HeadContent{
+
+    <link rel="stylesheet" href="~/assets/vendor/libs/flatpickr/flatpickr.css">
+    <link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css">
+    <link rel="stylesheet" href="~/assets/vendor/libs/jquery-timepicker/jquery-timepicker.css">
+    <link rel="stylesheet" href="~/assets/vendor/libs/pickr/pickr-themes.css">
+
+}
+
+
+
+
+<div class="row align-items-center justify-content-center mt-3">
+
+
+<div class="border-2 p-2 m-2 col-8   border-dark my-auto" style="background-color: #f0f0f0; border-radius:20px border: 2px solid #333;">
+    <div class=" shadow-none">
+
+        <div class="bs-stepper-content pt-4">
+            <form asp-area="admin" asp-controller="user" asp-action="RegisterAdmin" method="post">
+                <!-- Account Details -->
+                <div id="accountDetailsValidation" class="content">
+                    <div class="content-header mb-3">
+                        <h4 class="secondary-font">ثبت نام ادمین</h4>
+                        <span>اطلاعات حساب خود را وارد کنید</span>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label">نام </label>
+                            <input type="text" asp-for="@Model.FirstName" class="form-control text-start" placeholder="johndoe" dir="ltr">
+                            <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label"> نام خانوادگی </label>
+                            <input type="text" asp-for="@Model.LastName" class="form-control text-start" placeholder="johndoe" dir="ltr">
+                            <span asp-validation-for="@Model.LastName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label">ایمیل</label>
+                            <input asp-for="@Model.Email" class="form-control text-start" autocomplete="off" placeholder="john.doe@email.com" aria-label="john.doe@email.com" dir="ltr">
+                            <span asp-validation-for="@Model.Email" class="text-danger"></span>
+
+                        </div>
+
+
+                        <div class="col-sm-6">
+                            <label class="form-label">کد ملی </label>
+                            <input type="text" asp-for="@Model.NationalCode" class="form-control text-start" placeholder="0123456789" dir="ltr">
+                            <span asp-validation-for="@Model.NationalCode" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label">موبایل </label>
+                            <input type="text" asp-for="@Model.MobileNumber" class="form-control text-start" placeholder="09120000000" dir="ltr">
+                            <span asp-validation-for="@Model.MobileNumber" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label">تلفن </label>
+                            <input type="text" asp-for="@Model.PhoneNumber" class="form-control text-start" placeholder="02188888888" dir="ltr">
+                            <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        
+
+                        <div class="col-md-6 col-12 mb-4">
+                            <label for="flatpickr-date" class="form-label">تولد</label>
+                            <input class="form-control flatpickr-input" asp-for="@Model.DateOfBirth" placeholder="YYYY/MM/DD" id="flatpickr-date">
+                            <span asp-validation-for="@Model.DateOfBirth" class="text-danger"></span>
+                        </div>
+
+                       
+
+                     
+
+                        <div class="col-sm-6 form-password-toggle">
+                            <label class="form-label">رمز عبور</label>
+                            <div class="input-group input-group-merge">
+                                <input type="password" asp-for="@Model.Password" class="form-control text-start" placeholder="············" aria-describedby="multiStepsPass2" dir="ltr">
+                                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                            </div>
+                            <span asp-validation-for="@Model.Password" class="text-danger"></span>
+
+                        </div>
+                        <div class="col-sm-6 form-password-toggle">
+                            <label class="form-label">تایید رمز عبور</label>
+                            <div class="input-group input-group-merge">
+                                <input type="password" asp-for="@Model.ConfirmPassword" class="form-control text-start" placeholder="············" aria-describedby="multiStepsConfirmPass2" dir="ltr">
+                                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                            </div>
+                            <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <!-- Personal Info -->
+                <!-- Billing Links -->
+                <div class="col-12 d-flex justify-content-between mt-4">
+
+                    <button type="submit" class="btn btn-success btn-next btn-submit">ثبت</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+@section FooterContent{
+
+    <script src="~/assets/vendor/libs/jquery/jquery.js"></script>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="~/assets/vendor/libs/moment/moment.js"></script>
+    <script src="~/assets/vendor/libs/jdate/jdate.js"></script>
+    <script src="~/assets/vendor/libs/flatpickr/flatpickr-jdate.js"></script>
+    <script src="~/assets/vendor/libs/flatpickr/l10n/fa-jdate.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.js"></script>
+    <script src="~/assets/vendor/libs/jquery-timepicker/jquery-timepicker.js"></script>
+    <script src="~/assets/vendor/libs/pickr/pickr.js"></script>
+    <script src="~/assets/js/forms-pickers.js"></script>
+
+
+
+}
+
