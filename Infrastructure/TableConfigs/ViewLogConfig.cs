@@ -16,9 +16,9 @@ public class ViewLogConfig:BaseConfig<ViewLog,int>
     public override void Configure(EntityTypeBuilder<ViewLog> builder)
     {
 
-        builder.Property(x=>x.IP).HasColumnType(SqlDbType.VarChar.ToString()).IsRequired();
+        builder.Property(x=>x.IP).HasColumnType(SqlDbType.VarChar.ToString()).HasMaxLength(100).IsRequired(false);
 
-        builder.Property(x => x.Url).HasColumnType(SqlDbType.VarChar.ToString()).IsRequired();
+        builder.Property(x => x.Url).HasColumnType(SqlDbType.NVarChar.ToString()).HasMaxLength(1000).IsRequired();
 
         builder.Property(x => x.DateTime).IsRequired();
 

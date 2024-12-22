@@ -38,6 +38,11 @@ public class ViewLogRepository : BaseRepository<ViewLog, int>, IViewLogRepositor
         return result;
     }
 
+    public async Task SaveViewLogs(List<ViewLog> viewLogs)
+    {
+        await _entitySet.AddRangeAsync(viewLogs);
+        await CommitAsync(CancellationToken.None);
+    }
 }
 
 

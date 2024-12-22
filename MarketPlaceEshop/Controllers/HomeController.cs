@@ -2,6 +2,7 @@ using MarketPlaceEshop.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model.Entities;
+using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
 using System.Diagnostics;
 

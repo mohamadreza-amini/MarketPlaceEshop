@@ -32,10 +32,8 @@ public class ChangeInterceptor:SaveChangesInterceptor
                 {
                     entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error while setting properties: {ex.Message}");
-                }
+                catch (Exception ex) { }
+               
             }
             if (entity.State == EntityState.Added)
             {
@@ -44,10 +42,8 @@ public class ChangeInterceptor:SaveChangesInterceptor
                     entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
                     entity.Property("CreateDatetime").CurrentValue = DateTime.Now;
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error while setting properties: {ex.Message}");
-                }
+                catch (Exception ex) { }
+                
             }
         }
     }

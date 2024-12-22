@@ -11,4 +11,5 @@ public interface IViewLogRepository:IBaseRepository<ViewLog,int>
 {
     Task<int> GetTotalViews(CancellationToken cancellation);
     Task<(List<int> views, List<DateTime> dateTimes)> GetDailyViews(CancellationToken cancellation, int DaysCount = 7);
+    Task SaveViewLogs(List<ViewLog> viewLogs);
 }
