@@ -51,8 +51,22 @@ namespace MarketPlaceEshop.Controllers
             productsfilter.Filter.CategoryList = await _categoryService.GetAllListSortAsync(cancellation);
             productsfilter.Filter.BrandList = await _brandService.GetAllAsync(cancellation);
             return View(productsfilter);
-
         }
+
+        public async Task<IActionResult> CategorySearch(CancellationToken cancellation, int? selectedCategoryId)
+        {
+            var filter = new ProductFilterCommand { SelectedCategoryId = selectedCategoryId };
+            var productsfilter = new ProductsFilterViewModel
+            {
+                Products = await _productService.GetAllbyFilterCommand(filter, cancellation, 1, 12),
+            };
+            productsfilter.Filter = filter;
+            productsfilter.Filter.CategoryList = await _categoryService.GetAllListSortAsync(cancellation);
+            productsfilter.Filter.BrandList = await _brandService.GetAllAsync(cancellation);
+            return View("Search",productsfilter);
+        }
+
+
 
 
 

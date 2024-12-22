@@ -9,7 +9,7 @@ namespace Shared.Enums;
 public enum SortProduct
 {
     Newest = 1,
-    Oldest = 2,
+    MostVisited = 2,
     Cheapest = 3,
     MostExpensive = 4
 }

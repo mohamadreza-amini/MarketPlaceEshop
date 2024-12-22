@@ -126,18 +126,14 @@
             <!-- End Sidebar -->
             <!-- Start Content -->
             <div class="col-lg-9 col-md-12 col-sm-12 search-card-res mt-3">
-                <div class="d-md-none">
-                    <button class="btn-filter-sidebar">
-                        جستجوی پیشرفته <i class="fad fa-sliders-h"></i>
-                    </button>
-                </div>
+              
 
                 <div class="dt-sl dt-sn px-0 search-amazing-tab">
                     <div class="ah-tab-wrapper dt-sl">
                         <div class="ah-tab dt-sl sorting-links">
                             <a class="ah-tab-item" @(Model.Filter.SortProduct == 0 ? "data-ah-tab-active=true" : "") href="javascript:void(0);" onclick="ChangeSortPage(0)">پیش فرض</a>
                             <a class="ah-tab-item" @(Model.Filter.SortProduct == SortProduct.Newest ? "data-ah-tab-active=true" : "") href="javascript:void(0);" onclick="ChangeSortPage(1)">جدید ترین</a>
-                            <a class="ah-tab-item" @(Model.Filter.SortProduct == SortProduct.Oldest ? "data-ah-tab-active=true" : "") href="javascript:void(0);" onclick="ChangeSortPage(2)">قدیمی ترین</a>
+                            <a class="ah-tab-item" @(Model.Filter.SortProduct == SortProduct.MostVisited ? "data-ah-tab-active=true" : "") href="javascript:void(0);" onclick="ChangeSortPage(2)">پربازدید ترین</a>
                             <a class="ah-tab-item" @(Model.Filter.SortProduct == SortProduct.Cheapest ? "data-ah-tab-active=true" : "") href="javascript:void(0);" onclick="ChangeSortPage(3)">ارزان ترین</a>
                             <a class="ah-tab-item" @(Model.Filter.SortProduct == SortProduct.MostExpensive ? "data-ah-tab-active=true" : "") href="javascript:void(0);" onclick="ChangeSortPage(4)">گران ترین</a>
 

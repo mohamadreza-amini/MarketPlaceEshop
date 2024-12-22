@@ -265,8 +265,8 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
             case SortProduct.Newest:
                 query = query.OrderByDescending(x => x.CreateDatetime);
                 break;
-            case SortProduct.Oldest:
-                query = query.OrderBy(x => x.CreateDatetime);
+            case SortProduct.MostVisited:
+                query = query.OrderByDescending(x => x.View);
                 break;
             case SortProduct.Cheapest:
                 query = query.OrderBy(x => x.productSuppliers.Where(ps => ps.Prices != null && ps.Prices.Any()).SelectMany(x => x.Prices)
