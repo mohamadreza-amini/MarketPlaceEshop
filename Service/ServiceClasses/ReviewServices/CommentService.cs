@@ -1,6 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Review.Commands;
 using DataTransferObject.DTOClasses.Review.Results;
 using Infrastructure.Contracts.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Products;
 using Model.Entities.Review;
@@ -82,51 +83,26 @@ public class CommentService : ServiceBase<Comment, CommentResult, Guid>, ICommen
     }
 
 
-
-
-
-
     public async Task<PaginatedList<CommentResult>> GetAllUnConfirmComments(int pageIndex, int pageSize, CancellationToken cancellation)
     {
         if (!_userService.IsAdmin())
             throw new AccessDeniedException();
 
-        var unConfirmComments = await _commentRepository.GetAllDataAsync(
-            x => new CommentResult
-            {
-                DateOfRegistration = x.DateOfRegistration,
-                CustomerId = x.CustomerId,
-                CommentText = x.CommentText,
-                FullName = x.Customer.User.FirstName + " " + x.Customer.User.LastName,
-                Id = x.Id,
-                ProductId = x.ProductId,
-                ProductName = x.Product.Name
-            }, cancellation,
-            x => x.IsConfirmed == 1,
-            x => x.Include(x => x.Customer).ThenInclude(x => x.User).Include(x => x.Product));
+        var unConfirmComments = await _commentRepository.GetAllDataAsync(x => x, cancellation, x => x.IsConfirmed == 1);
 
-        return await PaginatedList<CommentResult>.CreateAsync(unConfirmComments, pageIndex, pageSize, cancellation);
+        if (unConfirmComments == null)
+            return new PaginatedList<CommentResult>(new List<CommentResult>(),0,1,pageSize);
+
+        return await PaginatedList<CommentResult>.CreateAsync(unConfirmComments.ProjectToType<CommentResult>(), pageIndex, pageSize, cancellation);
     }
 
     public async Task<List<CommentResult>> GetAllCommentByProductId(Guid productId, CancellationToken cancellation)
     {
-        var confirmComments = await _commentRepository.GetAllDataAsync(
-            x => new CommentResult
-            {
-                CommentText = x.CommentText,
-                CustomerId = x.CustomerId,
-                DateOfRegistration = x.DateOfRegistration,
-                FullName = x.Customer.User.FirstName + " " + x.Customer.User.LastName,
-                Id = x.Id,
-                ProductId = x.ProductId,
-                ProductName = x.Product.Name
-            },
-            cancellation,
-            x => x.IsConfirmed == 2 && x.ProductId == productId,
-            x => x.Include(x => x.Customer).ThenInclude(x => x.User).Include(x => x.Product));
+        var confirmComments = await _commentRepository.GetAllDataAsync( x =>x,cancellation, x => x.IsConfirmed == 2 && x.ProductId == productId);
+
         if (confirmComments == null)
             return new List<CommentResult>();
-        return await confirmComments.ToListAsync(cancellation);
+        return await confirmComments.ProjectToType<CommentResult>().ToListAsync(cancellation);
     }
 }
 

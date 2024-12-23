@@ -7,7 +7,10 @@
             <path opacity="0.15" d="M3 10H21L19 20H5L3 10Z" fill="#000000" />
             <path d="M3 10H21M3 10L5 20H19L21 10M3 10L9 4M21 10L15 4" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-        <span class="bag-items-number">@Model.CartItems?.Count()</span>
+        @if (Model?.CartItems != null)
+        {
+            <span class="bag-items-number">@Model.CartItems?.Count()</span>
+        }
     </a>
     <ul>
         <li class="cart-items">
@@ -46,8 +49,6 @@
 
                     }
                 }
-               
-                
 
 
 
@@ -62,15 +63,17 @@
 
 
 
-                
+
+
+
             </ul>
         </li>
         <li class="cart-footer">
             <span class="d-block text-center mb-3">
-                تخفیف کل: <span class="total">@((Model.TotalDiscount/10).ToString("N0"))</span>
+                تخفیف کل: <span class="total">@((Model.TotalDiscount / 10).ToString("N0"))</span>
             </span>
             <span class="d-block text-center mb-3">
-                مبلغ کل: <span class="total">@((Model.TotalAmountPaid/10).ToString("N0"))</span>
+                مبلغ کل: <span class="total">@((Model.TotalAmountPaid / 10).ToString("N0"))</span>
             </span>
             <span class="d-block text-center px-2">
                 <a asp-controller="Cart" asp-action="GetCart" class="btn-cart">

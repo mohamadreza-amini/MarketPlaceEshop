@@ -12,6 +12,4 @@ public class OrderItemCommand
     public decimal UnitDiscount { get; set; }
     public int Quantity { get; set; }
     public Guid ProductSupplierId { get; set; }
-
-    //برای انتقال از سبد خرید به اردر ایتم
 }

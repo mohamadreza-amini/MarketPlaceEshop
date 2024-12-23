@@ -10,6 +10,4 @@ public class ViewsResult
 {
     public DateTime DateTime { get; set; }
     public int view {  get; set; }
-
-    //به صورت لیستی گزارش روزانه میشه
 }

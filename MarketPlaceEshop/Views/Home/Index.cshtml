@@ -178,7 +178,7 @@
                                             </div>
                                         }                                       
                                     </div>
-                                    <a class="product-thumb" href="single-product.html">
+                                    <a class="product-thumb" asp-controller="Product" asp-action="GetProduct" asp-route-productId="@product.Id">
                                         <img src="@product.ImagePath.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")" alt="Product Thumbnail">
                                     </a>
                                     <div class="product-card-body" >

@@ -4,17 +4,11 @@ using Infrastructure.Contracts.Repository;
 using Model.Entities.Person;
 using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.PersonServices;
 
 public class AdminService : ServiceBase<Admin, UserResult, Guid>, IAdminService
 {
-
     private readonly IBaseRepository<Admin, Guid> _adminRepository;
     private readonly IUserService _userService;
     public AdminService(IBaseRepository<Admin, Guid> baseRepository, IUserService userService)
@@ -46,16 +40,10 @@ public class AdminService : ServiceBase<Admin, UserResult, Guid>, IAdminService
 
        var addedToRole = await _userService.AddToRoleAsync(user, "Admin");
         return addedToRole && (await _adminRepository.CommitAsync(cancellationToken)) == 1;
-
     }
 
     public async Task<bool> SignInAsync(LoginCommand loginDto)
     {
         return await _userService.SignInAsync(loginDto, "Admin");
     }
-
-
-
-
-
 }

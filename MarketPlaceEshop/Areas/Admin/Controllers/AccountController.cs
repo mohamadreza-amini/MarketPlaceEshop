@@ -1,7 +1,7 @@
 ﻿using DataTransferObject.DTOClasses.Person.Commands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model.Exceptions;
-using Service.ServiceClasses.PersonServices;
 using Service.ServiceInterfaces.PersonServices;
 
 namespace MarketPlaceEshop.Areas.Admin.Controllers;
@@ -16,7 +16,7 @@ public class AccountController : Controller
         _adminService = adminService;
         _userService = userService;
     }
-
+    [Authorize(Roles ="Admin")]
     public IActionResult Index()
     {
         return View();
@@ -50,14 +50,11 @@ public class AccountController : Controller
             {
                 return LocalRedirect(returnUrl);
             }
-
         }
-
         return View();
     }
 
-
-
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> LogOut()
     {
         await _userService.LogOutAsync();

@@ -1,28 +1,15 @@
-﻿using Azure;
-using DataTransferObject.DTOClasses.Order.Commands;
+﻿using DataTransferObject.DTOClasses.Order.Commands;
 using DataTransferObject.DTOClasses.Order.Results;
 using Infrastructure.Contracts.Repository;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Model.Entities.Orders;
-using Model.Entities.Person;
-using Model.Entities.Products;
 using Model.Exceptions;
-using Service.ServiceClasses.PersonServices;
 using Service.ServiceInterfaces.OrderServices;
 using Service.ServiceInterfaces.PersonServices;
 using Service.ServiceInterfaces.ProductServices;
 using Shared.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Service.ServiceClasses.OrderServices;
 
@@ -42,7 +29,6 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
         _productSupplierService = productSupplierService;
         logger = _logger;
     }
-
 
     public async Task<bool> AddOrderAsync(OrderCommand orderDto, CancellationToken cancellationToken)
     {
@@ -271,8 +257,7 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
     }
 
 
-    //براساس ایننکه ادمین یا تامین کننده فراخوانی کنه میره اردرایتم های اردر را ارسال میکنه
-
+    //براساس اینکه ادمین یا تامین کننده فراخوانی کنه میره اردرایتم های اردر را ارسال میکنه
     public async Task SendOrder(Guid orderId, CancellationToken cancellation)
     {
         if (!_userService.IsAdmin() && !_userService.IsInRole("Supplier"))
@@ -323,18 +308,24 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
             return await _orderRepository.CountAsync(x => x.IsConfirmed == (byte)confirmation && x.OrderItems.Any(x => x.ProductSupplier.SupplierId == supplierId), cancellation);
         }
         throw new AccessDeniedException();
-
     }
 
     public async Task<int> NumberOfOrders(bool sent, CancellationToken cancellation)
     {
         if (_userService.IsAdmin())
         {
-            return await _orderRepository.CountAsync(x => x.IsConfirmed == 2 && (sent ? x.OrderItems.All(x => x.Sent == true) : x.OrderItems.Any(x => x.Sent == false)), cancellation);
+            return await _orderRepository
+                .CountAsync(x => x.IsConfirmed == 2 
+                && (sent ? x.OrderItems.All(x => x.Sent == true) : x.OrderItems.Any(x => x.Sent == false))
+                , cancellation);
         }
         else if (_userService.IsInRole("Supplier") && Guid.TryParse(_userService.RequesterId(), out Guid supplierId))
         {
-            return await _orderRepository.CountAsync(x => x.IsConfirmed == 2 && (sent ? x.OrderItems.All(x => x.Sent == true) : x.OrderItems.Any(x => x.Sent == false)) && x.OrderItems.Any(x => x.ProductSupplier.SupplierId == supplierId), cancellation);
+            return await _orderRepository
+                .CountAsync(x => x.IsConfirmed == 2 
+                && (sent ? x.OrderItems.All(x => x.Sent == true) : x.OrderItems.Any(x => x.Sent == false)) 
+                && x.OrderItems.Any(x => x.ProductSupplier.SupplierId == supplierId)
+                , cancellation);
         }
         throw new AccessDeniedException();
     }

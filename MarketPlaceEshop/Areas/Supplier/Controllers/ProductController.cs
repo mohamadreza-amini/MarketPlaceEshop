@@ -1,5 +1,6 @@
 ﻿using DataTransferObject.DTOClasses.Product.Commands;
 using MarketPlaceEshop.Areas.Supplier.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Entities.Addresses;
@@ -13,8 +14,7 @@ using System.Security.Claims;
 
 namespace MarketPlaceEshop.Areas.Supplier.Controllers;
 [Area("Supplier")]
-
-
+[Authorize(Roles = "Supplier")]
 public class ProductController : Controller
 {
     private readonly IProductService _productService;
@@ -31,7 +31,6 @@ public class ProductController : Controller
         _productSupplierService = productSupplierService;
     }
 
-    //create product
     [HttpGet]
     public async Task<IActionResult> CreateProductCategory(CancellationToken cancellation)
     {
@@ -124,9 +123,6 @@ public class ProductController : Controller
     }
 
 
-
-
-
     //اضافه شدن تامین کننده به محصول
     public async Task<IActionResult> GetAllProducts(CancellationToken cancellation, string? serachText = null, int pageIndex = 1,int pageSize = 10)
     {
@@ -161,12 +157,6 @@ public class ProductController : Controller
     }
 
 
-
-
-
-
-
-
     //دیدن و تغیر محصولات تامین کننده
     public async Task<IActionResult> GetAllProductSuppliers(CancellationToken cancellation, string? serachText = null, int pageIndex = 1, int pageSize = 10)
     {
@@ -176,7 +166,6 @@ public class ProductController : Controller
         };
         return View(productSupplier);
     }
-
 
 
     [HttpPost]
@@ -199,8 +188,6 @@ public class ProductController : Controller
         }
         return RedirectToAction("GetAllProductSuppliers", "Product", new { area = "Supplier" });
     }
-
-
 
 }
 

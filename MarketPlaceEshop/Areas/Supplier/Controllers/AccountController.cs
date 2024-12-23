@@ -1,4 +1,5 @@
 ﻿using DataTransferObject.DTOClasses.Person.Commands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model.Exceptions;
 using Service.ServiceClasses.PersonServices;
@@ -18,12 +19,11 @@ public class AccountController : Controller
         _userService = userService;
     }
 
+    [Authorize(Roles = "Supplier")]
     public IActionResult Index()
     {
         return View();
     }
-
-
 
 
     [HttpGet]
@@ -31,6 +31,7 @@ public class AccountController : Controller
     {
         return View();
     }
+
     [HttpPost]
     public async Task<IActionResult> Register(SupplierCommand SupplierDto,CancellationToken cancellation)
     {
@@ -53,14 +54,11 @@ public class AccountController : Controller
     }
 
 
-
-
-
-
-
     [HttpGet]
     public IActionResult Login(string returnUrl = null)
     {
+        if (User.IsInRole("Supplier"))
+            return RedirectToAction("index", "Home", new { area = "Supplier" });
         ViewData["returnurl"] = returnUrl;
         return View();
     }
@@ -91,15 +89,11 @@ public class AccountController : Controller
     }
 
 
-
+    [Authorize(Roles = "Supplier")]
     public async Task<IActionResult> LogOut()
     {
         await _userService.LogOutAsync();
         return LocalRedirect("/");
     }
-
-
-
-
 
 }

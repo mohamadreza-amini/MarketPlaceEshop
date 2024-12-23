@@ -7,12 +7,7 @@ using Model.Entities.Products;
 using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
 using Service.ServiceInterfaces.ProductServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.ProductServices;
 
@@ -32,7 +27,6 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         logger = _logger;
     }
 
-
     public async Task AddSupplierToProduct(ProductSupplierCommand productSupplierDto, CancellationToken cancellationToken)
     {
         if (!_userService.IsAdmin() && (!_userService.IsRequesterUser(productSupplierDto.SupplierId) || !_userService.IsInRole("Supplier")))
@@ -46,14 +40,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         productSupplier = Translate<ProductSupplierCommand, ProductSupplier>(productSupplierDto);
         productSupplier.Id = Guid.NewGuid();
 
-        if (await IsDisableProduct(productSupplier.ProductId, cancellationToken))
-            throw new BadRequestException("product is Disable");
-        if (!await IsConfirmedProduct(productSupplier.ProductId, cancellationToken))
-            throw new BadRequestException("product isn't confirmed");
-
-        if (productSupplierDto.PriceValue <= productSupplierDto.Discount)
-            throw new BadRequestException("تخفیف از قیمت بزرگتر وارد شده");
-
+        await VerifyProductStatus(productSupplier, productSupplierDto, cancellationToken);
         if (productSupplier.Ventory > 0)
         {
             var priceresult = await _priceService.AddPriceAsync(new PriceCommand
@@ -92,14 +79,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         productSupplier.IsDisable = productSupplierDto.IsDisable;
         productSupplier.Discount = productSupplierDto.Discount;
 
-        if (await IsDisableProduct(productSupplier.ProductId, cancellationToken))
-            throw new BadRequestException("product is Disable");
-        if (!await IsConfirmedProduct(productSupplier.ProductId, cancellationToken))
-            throw new BadRequestException("product isn't confirmed");
-
-        if (productSupplierDto.PriceValue <= productSupplierDto.Discount)
-            throw new BadRequestException("تخفیف از قیمت بزرگتر وارد شده");
-
+        await VerifyProductStatus(productSupplier, productSupplierDto, cancellationToken);
         if (productSupplier.Ventory > 0)
         {
             var priceresult = await _priceService.AddPriceAsync(new PriceCommand
@@ -113,13 +93,24 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
             await _priceService.ExpireLastPrice(productSupplier.Id, cancellationToken);
             productSupplier.Discount = 0;
         }
-
         productSupplier.UpdaterUserId = Guid.Parse(_userService.RequesterId() ?? Guid.Empty.ToString());
         productSupplier.Validate();
 
         await _productSupplierRepository.CommitAsync(cancellationToken);
         logger.LogInformation($" supplier [{productSupplierDto.SupplierId}] changes for product [{productSupplierDto.ProductId}] with inventory [{productSupplierDto.Ventory}] " +
            $"with price [{productSupplierDto.PriceValue}] and discount [{productSupplierDto.Discount}] by [{productSupplier.UpdaterUserId}]");
+    }
+
+
+    private async Task VerifyProductStatus(ProductSupplier productSupplier, ProductSupplierCommand productSupplierDto, CancellationToken cancellationToken)
+    {
+        if (await IsDisableProduct(productSupplier.ProductId, cancellationToken))
+            throw new BadRequestException("product is Disable");
+        if (!await IsConfirmedProduct(productSupplier.ProductId, cancellationToken))
+            throw new BadRequestException("product isn't confirmed");
+
+        if (productSupplierDto.PriceValue <= productSupplierDto.Discount)
+            throw new BadRequestException("تخفیف از قیمت بزرگتر وارد شده");
     }
 
     public async Task<Guid?> GetSuppierIdById(Guid ProductSupplierId, CancellationToken cancellation)
@@ -152,7 +143,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
     {
         return await _productSupplierRepository.GetByIdAsync(productSupplierId, cancellation) != null;
     }
-    //اینو اضاضه کن تامین کننده الان در وضعبت تایید شده باشه در گرفتن قیمت ها هم ببین جاهای دیگه اگه بعدا تامین کننده غیرفعال شد
+
     public async Task<List<ProductSupplierResult>> GetAllSupplierByProductId(Guid productId, CancellationToken cancellation)
     {
         var query = await _productSupplierRepository.GetAllDataAsync(
@@ -166,16 +157,14 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
                 Discount = x.Discount,
                 Price = x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault()
             }
-        , cancellation, x => x.ProductId == productId && x.Ventory > 0, x => x.Include(x => x.Supplier).Include(x => x.Prices));  // && x.Ventory > 0 یعدا اضافه شد
+        , cancellation, x => x.ProductId == productId && x.Ventory > 0, x => x.Include(x => x.Supplier).Include(x => x.Prices));
         if (query == null)
             return new List<ProductSupplierResult>();
         return await query.OrderBy(x => x.Price).ToListAsync(cancellation);
     }
 
 
-
     //لیست محصول-تامین کننده برای دیدن ادمین و تامین کننده نه بقیه
-
     public async Task<PaginatedList<ProductSupplierFullResult>> GetAllProductSupplierByPerson(CancellationToken cancellation, int pageIndex = 1, int pageSize = 20)
     {
         Expression<Func<ProductSupplier, bool>> predicate;
@@ -202,7 +191,6 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
                Ventory = x.Ventory,
                Discount = x.Discount,
                Price = x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(),
-               // Price = x.Prices !=null && x.Prices.Any() ? x.Prices.Where(x => x.ExpiredTime == null).Select(x => x.PriceValue).FirstOrDefault(), //اگع بالایی مشکل داشت این خط
                StartDate = x.Product.StartDate,
                BrandName = x.Product.Brand.BrandName,
                CategoryId = x.Product.CategoryId,

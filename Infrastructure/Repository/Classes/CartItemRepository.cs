@@ -24,15 +24,6 @@ public class CartItemRepository : BaseRepository<CartItem, Guid>, ICartItemRepos
         return affectedItems;
     }
 
-   /* public async Task<int> UpdateAllQuantities(CancellationToken cancellation)
-    {
-            var affectedItems = await _entitySet
-                .Where(x => x.ProductSupplier.Ventory < x.Quantity)
-                .ExecuteUpdateAsync(x => x.SetProperty(cartitem => cartitem.Quantity, cartitem => cartitem.ProductSupplier.Ventory), cancellation);
-            await RemoveWithoutCapacity(cancellation);
-            return affectedItems;
-    }*/
-
     public async Task<int> RemoveWithoutCapacity(CancellationToken cancellation)
     {
         return await _entitySet

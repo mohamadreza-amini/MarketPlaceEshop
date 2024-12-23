@@ -5,15 +5,8 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Categories;
 using Model.Exceptions;
-using Service.ServiceInterfaces;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.PersonServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.CategoryServices;
 
@@ -56,7 +49,6 @@ public class CategoryFeatureService : ServiceBase<CategoryFeature, CategoryFeatu
             CategoryFeatureResultList.AddRange(await _categoryFeatureRepository
                 .GetAll(x => x.CategoryId == category).ProjectToType<CategoryFeatureResult>().ToListAsync(cancellation));
         }
-
         return CategoryFeatureResultList;
     }
 
@@ -65,5 +57,4 @@ public class CategoryFeatureService : ServiceBase<CategoryFeature, CategoryFeatu
         var productFeatures = await GetAllByCategoryId(categoryId, cancellation);
         return Translate<List<CategoryFeatureResult>, List<ProductFeatureValueCommand>>(productFeatures);
     }
-
 }

@@ -8,5 +8,4 @@ public class CreateProductViewModel
 {
     public List<BrandResult> Brands { get; set; }
     public List<CategoryResult> Categories { get; set; }
-
 }

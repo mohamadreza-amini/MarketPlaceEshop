@@ -72,20 +72,22 @@
                 <div class="bottom-page-header">
                     <div class="d-flex align-items-center">
                         <div class="site-logo">
-                            <a href="#">
+                            <a asp-controller="Home" asp-action="index">
                                 <img src="~/assets/img/svg/logo.svg" alt="logo">
                             </a>
                         </div>
                         <div class="search-box">
-                            <form action="#">
-                                <input type="text" placeholder="نام محصول یا برند را جستجو کنید...">
+                            <form asp-controller="Product" asp-action="SearchText" method="get">
+                                <input name="search" type="text" placeholder="نام محصول یا برند را جستجو کنید...">
+                                <button type="submit">
                                 <i>
                                     <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path opacity="0.1" d="M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" fill="#323232" />
                                         <path d="M15 15L21 21" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         <path d="M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#323232" stroke-width="2" />
                                     </svg>
-                                </i>
+                                    </i>
+                                </button>
                             </form>
                             <div class="search-result">
                                 <ul class="search-result-list">
@@ -205,7 +207,7 @@
                          
                         </li>
                         <li>
-                            <a href="#">
+                            <a asp-area="Supplier" asp-action="Login" asp-controller="account">
                                 <i>
                                     <svg width="25px" height="25px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                          viewBox="0 0 512 512" xml:space="preserve">
@@ -258,7 +260,7 @@
                                     V234.288c11.415,7.851,25.225,12.459,40.096,12.459c1.034,0,2.06-0.03,3.084-0.074V348.53
                                     C74.024,353.642,78.166,357.783,83.277,357.783z" />
                             </svg>
-                                </i>سوپرمارکت
+                                </i>تامین کنندگان
                             </a>
                         </li>
                         <li class="mega-menu mega-menu-3-columns">

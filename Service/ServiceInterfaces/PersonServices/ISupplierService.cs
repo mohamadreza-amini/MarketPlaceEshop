@@ -19,5 +19,5 @@ public interface ISupplierService : IServiceBase<Supplier, UserResult, Guid>
     Task<bool> ChangeSupplierStatusAsync(Guid supplierId, ConfirmationStatus confirmation, CancellationToken cancellation);
     Task<bool> SignInAsync(LoginCommand loginDto);
     Task<int> NumberOfSupplier(ConfirmationStatus confirmation, CancellationToken cancellation);
-
+    Task<SupplierResult> GetSupplier(CancellationToken cancellation);
 }

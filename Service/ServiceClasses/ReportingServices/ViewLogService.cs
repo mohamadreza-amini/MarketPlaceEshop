@@ -40,15 +40,14 @@ public class ViewLogService : IViewLogService
 
         var result = await _viewRepository.GetDailyViews(cancellation, DaysCount);
 
-        return result.dateTimes.Select((datetime, index) =>
-         new ViewsResult
-         {
-             DateTime = datetime,
-             view = result.views[index]
-         }).ToList();
-
+        return result.dateTimes
+            .Select((datetime, index) =>
+             new ViewsResult
+             {
+                 DateTime = datetime,
+                 view = result.views[index]
+             }).ToList();
     }
-
 }
 
 

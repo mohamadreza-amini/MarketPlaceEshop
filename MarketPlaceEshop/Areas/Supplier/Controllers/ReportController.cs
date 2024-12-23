@@ -1,4 +1,5 @@
 ﻿using MarketPlaceEshop.Areas.Admin.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.ServiceInterfaces.OrderServices;
 using Service.ServiceInterfaces.PersonServices;
@@ -11,6 +12,7 @@ using System.Composition;
 namespace MarketPlaceEshop.Areas.Supplier.Controllers;
 
 [Area("Supplier")]
+[Authorize(Roles = "Supplier")]
 public class ReportController : Controller
 {
     private readonly ICartItemService _cartItemService;
@@ -31,7 +33,6 @@ public class ReportController : Controller
         _viewLogService = viewLogService;
     }
 
-
     public async Task<IActionResult> Index(CancellationToken cancellation, ReportViewModel report)
     {
         var reports = new ReportViewModel();
@@ -49,5 +50,4 @@ public class ReportController : Controller
 
         return View("Reports",reports);
     }
-
 }

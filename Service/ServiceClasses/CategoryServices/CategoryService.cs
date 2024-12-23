@@ -6,14 +6,8 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Categories;
 using Model.Exceptions;
-using Service.ServiceInterfaces;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.PersonServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.CategoryServices;
 
@@ -35,7 +29,6 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
             throw new AccessDeniedException();
 
         var category = Translate<CategoryCommand, Category>(CategoryDto);
-
         if (category.ParentCategoryId == 0)
         {
             category.Level = 1;
@@ -59,7 +52,6 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         if (categories == null)
         {
             var categoryresultlist = await _categoryRepository.GetAll().ProjectToType<CategoryResult>().ToListAsync(cancellation);
-
             categories = new Dictionary<int, List<CategoryResult>>();
 
             var list = new List<CategoryResult>();
@@ -81,22 +73,23 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         var categories = _cachedData.Get<List<CategoryResult>>("AllCategoriesList");
         if (categories == null)
         {
-            var query = await _categoryRepository
-                .GetAllDataAsync(
-                x => new CategoryResult
-                {
-                    Id = x.Id,
-                    CategoryName = x.CategoryName,
-                    Level = x.Level,
-                    ParentCategoryId = x.ParentCategoryId,
-                    ParentCategoryName = x.ParentCategory == null ? "root" : x.ParentCategory.CategoryName
-                }, cancellation);
+            var query = await _categoryRepository.GetAllDataAsync(
+                 x => new CategoryResult
+                 {
+                     Id = x.Id,
+                     CategoryName = x.CategoryName,
+                     Level = x.Level,
+                     ParentCategoryId = x.ParentCategoryId,
+                     ParentCategoryName = x.ParentCategory == null ? "root" : x.ParentCategory.CategoryName
+                 }, cancellation);
+
             if (query != null)
             {
                 categories = await query.ToListAsync(cancellation);
             }
-            else {
-                categories = new List<CategoryResult>(); 
+            else
+            {
+                categories = new List<CategoryResult>();
             }
             _cachedData.Set("AllCategoriesList", categories);
         }
@@ -141,7 +134,6 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         ParentCategoryId(parentsCategory, parent.ParentCategoryId, categories);
     }
 
-
     //کنگوری رو میگیره فرزنداشو میده
     public async Task<List<int>> GetAllSubCategoryIdbyCategoryId(int categoryId, CancellationToken cancellation)
     {
@@ -161,6 +153,5 @@ public class CategoryService : ServiceBase<Category, CategoryResult, int>, ICate
         }
         return childCategories;
     }
-
 
 }

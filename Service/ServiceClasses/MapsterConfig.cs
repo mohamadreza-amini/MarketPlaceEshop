@@ -59,7 +59,6 @@ namespace Service.ServiceClasses
                .Map(dest => dest.BrandName, src => src.Brand.BrandName);
 
 
-
             TypeAdapterConfig<ProductFeatureValue, ProductFeatureValueResult>.NewConfig()
              .Map(dest => dest.FeatureName, src => src.CategoryFeature.FeatureName);
 
@@ -70,7 +69,6 @@ namespace Service.ServiceClasses
 
             TypeAdapterConfig<CategoryFeatureResult, ProductFeatureValueCommand>.NewConfig()
             .Map(dest => dest.CategoryFeatureId, src => src.Id);
-
 
 
             TypeAdapterConfig<Supplier, SupplierResult>.NewConfig()
@@ -84,7 +82,6 @@ namespace Service.ServiceClasses
            .Map(dest => dest.NationalCode, src => src.User.NationalCode);
 
 
-
             TypeAdapterConfig<Customer, UserResult>.NewConfig()
            .Map(dest => dest.DateOfBirth, src => src.User.DateOfBirth)
            .Map(dest => dest.Email, src => src.User.Email)
@@ -95,8 +92,9 @@ namespace Service.ServiceClasses
            .Map(dest => dest.NationalCode, src => src.User.NationalCode);
 
 
-
-
+            TypeAdapterConfig<Comment, CommentResult>.NewConfig()
+            .Map(dest => dest.FullName, src => src.Customer.User.FirstName + " " + src.Customer.User.LastName)
+            .Map(dest => dest.ProductName, src => src.Product.Name);
 
         }
     }

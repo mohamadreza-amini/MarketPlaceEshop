@@ -16,9 +16,7 @@ public class ViewLogRepository : BaseRepository<ViewLog, int>, IViewLogRepositor
     public ViewLogRepository(AppDbContext appDbContext) : base(appDbContext)
     {
     }
-
     public async Task<int> GetTotalViews(CancellationToken cancellation)
-
         => await _entitySet.CountAsync(cancellation);
 
     public async Task<(List<int> views, List<DateTime> dateTimes)> GetDailyViews(CancellationToken cancellation, int DaysCount = 7)

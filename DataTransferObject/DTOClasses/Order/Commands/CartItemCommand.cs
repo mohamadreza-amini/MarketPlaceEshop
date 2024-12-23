@@ -17,7 +17,6 @@ public class CartItemCommand
     public Guid ProductSupplierId { get; set; }
 }
 
-//برای تعداد دیفالت مقداردهی کنم یک بزارم برای حالت دیفالت یک باشه وقتی دکمه خرید بدون تعداد زده میشه
 
 
 

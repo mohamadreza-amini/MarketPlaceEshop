@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Service.ServiceInterfaces.OrderServices;
 using Shared.Enums;
 
 namespace MarketPlaceEshop.Areas.Admin.Controllers;
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class SaleController : Controller
 {
     private readonly IOrderService _orderService;
-
     public SaleController(IOrderService orderService)
     {
         _orderService = orderService;
@@ -19,7 +20,6 @@ public class SaleController : Controller
         return View(orders);
     }
 
-
     public async Task ConfirmOrder(Guid orderId, CancellationToken cancellation)
     {
         await _orderService.ConfitrmOrder(orderId,ConfirmationStatus.Confirmed,cancellation);
@@ -29,8 +29,6 @@ public class SaleController : Controller
     {
         await _orderService.ConfitrmOrder(orderId, ConfirmationStatus.Rejected, cancellation);
     }
-
-
 
     public async Task<IActionResult> Orders(CancellationToken cancellation, int pageIndex = 1)
     {

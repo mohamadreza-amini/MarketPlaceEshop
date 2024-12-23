@@ -6,11 +6,12 @@ using Service.ServiceInterfaces.ProductServices;
 using Service.ServiceInterfaces.ReportingServices;
 using Shared.Enums;
 using Shared;
-using System.Composition;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MarketPlaceEshop.Areas.Admin;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class ReportController : Controller
 {
     private readonly ICartItemService _cartItemService;

@@ -22,11 +22,8 @@ public class CachedData : ICachedData
         {
             options = new MemoryCacheEntryOptions()
             {
-                /* AbsoluteExpiration = DateTimeOffset.Now.AddHours(1),
-                 SlidingExpiration = TimeSpan.FromMinutes(10)*/
-
-
-                SlidingExpiration = TimeSpan.FromSeconds(5)
+                 AbsoluteExpiration = DateTimeOffset.Now.AddHours(1),
+                 SlidingExpiration = TimeSpan.FromMinutes(10)
             };
         }
 

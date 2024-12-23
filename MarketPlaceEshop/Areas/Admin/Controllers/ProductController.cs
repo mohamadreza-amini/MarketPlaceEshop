@@ -3,18 +3,18 @@ using DataTransferObject.DTOClasses.Category.Results;
 using DataTransferObject.DTOClasses.Product.Commands;
 using MarketPlaceEshop.Areas.Admin.Models;
 using MarketPlaceEshop.Areas.Supplier.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Model.Entities.Categories;
 using Model.Exceptions;
-using Service.ServiceClasses.ProductServices;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.ProductServices;
 using Shared.Enums;
-using System.Security.Claims;
+
 
 namespace MarketPlaceEshop.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class ProductController : Controller
 {
     private readonly IBrandService _brandService;
@@ -31,13 +31,6 @@ public class ProductController : Controller
         _productSupplierService = productSupplierService;
     }
 
-    public IActionResult Index()
-    {
-        return View();
-    }
-
-
-    //brand
     [HttpGet]
     public async Task<IActionResult> Brands(CancellationToken cancellation)
     {
@@ -60,11 +53,6 @@ public class ProductController : Controller
         return View("Brands", brands);
     }
 
-
-
-
-
-    //category
     public async Task<IActionResult> Category(CancellationToken cancellation)
     {
         var categories = await _categoryService.GetAllListSortAsync(cancellation);
@@ -86,11 +74,6 @@ public class ProductController : Controller
     }
 
 
-
-
-
-
-    //category Feature
     public async Task<IActionResult> CategoryFeature(CancellationToken cancellation, int? categoryId)
     {
         var atr = await PrepareCategoryFeature(cancellation, categoryId);
@@ -111,7 +94,6 @@ public class ProductController : Controller
         return View("CategoryFeature", atr);
     }
 
-
     private async Task<CategoryFeatureViewModel> PrepareCategoryFeature(CancellationToken cancellation, int? categoryId)
     {
         var atr = new CategoryFeatureViewModel()
@@ -131,14 +113,6 @@ public class ProductController : Controller
         }
         return atr;
     }
-
-
-
-
-
-
-
-    //add product
 
     [HttpGet]
     public async Task<IActionResult> CreateProductCategory(CancellationToken cancellation)
@@ -234,12 +208,6 @@ public class ProductController : Controller
         }
     }
 
-
-
-
-
-
-    //confirm product
     public async Task<IActionResult> ProductRequest(CancellationToken cancellation, int pageIndex = 1, int pageSize = 10)
     {
         var productsDto = await _productService.GetAllProductPanelsAsync(cancellation, null, ConfirmationStatus.Unchecked, pageIndex, pageSize);
@@ -257,21 +225,6 @@ public class ProductController : Controller
         await _productService.ChangeProductStatus(productId, ConfirmationStatus.Rejected, cancellation);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //دیدن محصولات
     public async Task<IActionResult> GetAllProducts(CancellationToken cancellation, string? serachText = null, int pageIndex = 1, int pageSize = 10)
     {
         var products = new ProductSupplierViewModel
@@ -282,13 +235,7 @@ public class ProductController : Controller
         return View(products);
     }
 
-   
-
-
-
-
-
-    //دیدن و تغیر محصولات تامین کننده
+  
     public async Task<IActionResult> GetAllProductSuppliers(CancellationToken cancellation, string? serachText = null, int pageIndex = 1, int pageSize = 10)
     {
         var productSupplier = new ProductSupplierViewModel
@@ -297,7 +244,6 @@ public class ProductController : Controller
         };
         return View(productSupplier);
     }
-
 
 
     [HttpPost]
@@ -319,7 +265,5 @@ public class ProductController : Controller
         }
         return RedirectToAction("GetAllProductSuppliers", "Product", new { area = "admin" });
     }
-
-
 
 }

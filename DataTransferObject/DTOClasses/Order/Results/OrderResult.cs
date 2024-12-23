@@ -19,6 +19,4 @@ public class OrderResult : BaseDTO<Guid>
     public decimal TotalAmountPaid { get; set; }
     public decimal TotalDiscount {  get; set; }
     public decimal TotalPrice { get; set; }
-
-    //کامل اوردم بعضی اضافیه
 }

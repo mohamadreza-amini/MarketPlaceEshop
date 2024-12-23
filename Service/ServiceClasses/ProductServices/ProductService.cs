@@ -1,15 +1,9 @@
 ﻿using DataTransferObject.DTOClasses.Category.Results;
 using DataTransferObject.DTOClasses.Product.Commands;
 using DataTransferObject.DTOClasses.Product.Results;
-using DataTransferObject.DTOClasses.Review.Results;
 using Infrastructure.Contracts.Repository;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Model.Entities.Categories;
 using Model.Entities.Products;
-using Model.Entities.Reports;
-using Model.Entities.Review;
 using Model.Exceptions;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.PersonServices;
@@ -17,16 +11,7 @@ using Service.ServiceInterfaces.ProductServices;
 using Service.ServiceInterfaces.ReportingServices;
 using Service.ServiceInterfaces.ReviewServices;
 using Shared.Enums;
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Service.ServiceClasses.ProductServices;
 
@@ -160,11 +145,9 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
             throw new BadRequestException("محصول یافت نشد");
 
         var product = await query.FirstOrDefaultAsync(cancellation);
-       _hangfireServices.LogProductView(productId);
-        //میشد برد توی ریپازیتوری یا کلا پروداکت رو کامل اورد به جای گرفتن از سرویس های مختلف
-        //بخشی از کار دیگه که میشد کرد رو پایین نوشتم کامنته
+        _hangfireServices.LogProductView(productId);
 
-        product.AverageScore = await _scoreService.GetProductAverageRating(productId, cancellation);
+        product!.AverageScore = await _scoreService.GetProductAverageRating(productId, cancellation);
         product.ProductFeatureValues = await _productFeatureValueService.GetAllByProductId(productId, cancellation);
         product.Comments = await _commentService.GetAllCommentByProductId(productId, cancellation);
         product.Images = await _imageService.GetAllByProductId(productId, cancellation);
@@ -175,50 +158,14 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
     }
 
 
-
-
-    /*    public async Task<ProductResult> GetByIdss(Guid productId, CancellationToken cancellation)
-        {
-            var query = await _productRepository.GetAllDataAsync(
-                x => new ProductResult
-                {
-                    Comments = Translate<List<Comment>, List<CommentResult>>(x.Comments.ToList()),
-                    AverageScore = x.Scores.Average(x => x.StarRating),
-                    Images = Translate<List<Image>, List<ImageResult>>(x.Images.ToList()),
-                    ProductFeatureValues = Translate<List<ProductFeatureValue>, List<ProductFeatureValueResult>>(x.ProductFeatureValues.ToList()),
-                    productSuppliers = Translate<List<ProductSupplier>, List<ProductSupplierResult>>(x.productSuppliers.ToList()),
-
-                },
-                cancellation,
-                x => x.Id == productId && x.IsConfirmed == 2,
-                x => x.Include(x => x.Category).Include(x => x.Brand).Include(x => x.Images).Include(x => x.ProductFeatureValues).ThenInclude(x => x.CategoryFeature).Include(x => x.Comments).Include(x => x.Scores));
-            var product = await query?.FirstOrDefaultAsync(cancellation);
-
-
-            if (product == null)
-                throw new BadRequestException("محصول یافت نشد");
-
-            product.CommentCount = product.Comments?.Count() ?? 0;
-
-            product.ScoreCount = await _scoreService.NumberOfScore(productId, cancellation);
-
-            //  اینو همینجوری نوشتم به عنوان راهی دیگه برای نوشتن بالایی  کامل ننوشتم و همون بالایی اصلیه و کامله
-            //حس میکنم این روش بهتره بعدا وقت بود بررسی کن یا تغیر بده
-            return product;
-        }*/
-
-
-
-
     public async Task<PaginatedList<ProductminiResult>> GetAllbyFilterCommand(ProductFilterCommand filterDto, CancellationToken cancellation, int pageIndex = 1, int pageSize = 20)
     {
         var query = await _productRepository.GetAllDataAsync(x => x, cancellation, x => x.IsConfirmed == 2);
 
         if (query == null)
             return new PaginatedList<ProductminiResult>(new List<ProductminiResult>(), 0, 1, pageSize);
-        //اینجوری مشکل داره نمیتونه لیست برند و کتگوری پر بشه کلا روش خوبی نیست
-        query = await FilterProducts(query, filterDto, cancellation);
 
+        query = await FilterProducts(query, filterDto, cancellation);
         query = SortProducts(query, filterDto.SortProduct);
 
         var products = query.Select((x => new ProductminiResult
@@ -227,17 +174,13 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
             Name = x.Name,
             Titel = x.Titel,
             ImagePath = x.Images.Select(x => x.Path).FirstOrDefault()!,
-            /*Price = x.productSuppliers != null && x.productSuppliers.Any(ps => ps.Prices != null && ps.Prices.Any()) ?
-             x.productSuppliers.Where(ps => ps.Prices != null && ps.Prices.Any()).SelectMany(ps => ps.Prices).Where(p => p.ExpiredTime == null).Select(p => (decimal?)p.PriceValue).Min() ?? 0 : 0, حالت دیگر*/
             Price = x.productSuppliers.Where(ps => ps.Prices != null && ps.Prices.Any()).SelectMany(ps => ps.Prices).Where(p => p.ExpiredTime == null).Select(p => (decimal?)p.PriceValue).Min() ?? 0,
-            AverageScore = x.Scores != null && x.Scores.Any() ? x.Scores.Select(s => s.StarRating).Average() : 0,//این خط بعدا اضافه شده
+            AverageScore = x.Scores != null && x.Scores.Any() ? x.Scores.Select(s => s.StarRating).Average() : 0,
             Discount = x.productSuppliers.Any(x => x.Discount > 0 && x.Ventory > 0)
         }));
-
         return await PaginatedList<ProductminiResult>.CreateAsync(products, pageIndex, pageSize, cancellation);
-        //مقادیر فیلتر ها باید در اندپوینت همراه خروجی این سرویس در یه مدل ویو ترکیب بشن و برگردانده بشن و وظیفه سرویس نیست فیلتر رو پر کنه برگردانه برای ویو
-        //در اون مدل ویو باید فیلترها  پر بشن مقادیر لیست برند و کتگوری از سرویس گرفته بشن و همراه خروجی این لیست محصولات صقحه بندی شده برگشت داده بشن
     }
+
 
     private async Task<IQueryable<Product>> FilterProducts(IQueryable<Product> query, ProductFilterCommand filterDto, CancellationToken cancellation)
     {
@@ -257,6 +200,7 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
         }
         return query;
     }
+
 
     private IQueryable<Product> SortProducts(IQueryable<Product> query, SortProduct sortProduct)
     {
@@ -280,8 +224,6 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
         }
         return query;
     }
-
-
 
 
     public async Task<PaginatedList<ProductPanelResult>> GetAllProductPanelsAsync(CancellationToken cancellationToken, string? searchText = null, ConfirmationStatus? confirmation = null, int pageIndex = 1, int pageSize = 20)
@@ -319,9 +261,6 @@ public class ProductService : ServiceBase<Product, ProductResult, Guid>, IProduc
 
         return await PaginatedList<ProductPanelResult>.CreateAsync(query, pageIndex, pageSize, cancellationToken);
     }
-
-
-  
 
 }
 

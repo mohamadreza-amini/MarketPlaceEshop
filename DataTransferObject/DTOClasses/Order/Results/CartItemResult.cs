@@ -18,8 +18,4 @@ public class CartItemResult:BaseDTO<Guid>
     public string CompanyName { get; set; }
     public Guid ProductId { get; set; }
     public string ProductName { get; set; }
-
-
-
-    // امکانات بیشتری اورده شد مثل عکس محصول موجودی محصول 
 }

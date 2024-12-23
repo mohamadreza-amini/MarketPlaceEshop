@@ -12,6 +12,4 @@ public class ReportSalesResult
     public decimal TotalAmountPaid { get; set; }
     public decimal TotalDiscount { get; set; }
     public decimal TotalSales { get; set; }
-
-    //به صورت لیستی گزارش روزانه میشه
 }

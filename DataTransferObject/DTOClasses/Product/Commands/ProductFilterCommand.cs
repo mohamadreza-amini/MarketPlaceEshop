@@ -18,5 +18,5 @@ public class ProductFilterCommand
     public bool OnlyAvailable { get; set; }
     public List<CategoryResult> CategoryList { get; set; }
     public List<BrandResult> BrandList { get; set; }
-    public int? PageIndex {  get; set; }//بعدا اضافه شده
+    public int? PageIndex {  get; set; }
 }

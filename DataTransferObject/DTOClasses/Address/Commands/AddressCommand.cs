@@ -48,8 +48,3 @@ public class AddressCommand
     public string? CityName { get; set; }
 
 }
-//هم برای نمایش هم برای ساخت اوکیه
-
-// مشکل پیش نیاد برای هردو بخاطر ولیدیت ها
-
-//گذاشتن ولیدیت روی اینا

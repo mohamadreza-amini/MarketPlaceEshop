@@ -28,7 +28,7 @@ public class ProductSupplierRepository : BaseRepository<ProductSupplier, Guid>, 
             PriceValue = x.Prices
            .Where(p => p.ExpiredTime == null)
            .Select(p => p.PriceValue)
-           .FirstOrDefault()  // مقدار پیش‌فرض در صورت null
+           .FirstOrDefault() 
         }).ToListAsync(cancellation);
 
         return data.Sum(x => x.Ventory * x.PriceValue);
@@ -44,7 +44,7 @@ public class ProductSupplierRepository : BaseRepository<ProductSupplier, Guid>, 
                 PriceValue = x.Prices
                 .Where(p => p.ExpiredTime == null)
                 .Select(p => p.PriceValue)
-                .FirstOrDefault()  // مقدار پیش‌فرض در صورت null
+                .FirstOrDefault()  
             }).ToListAsync(cancellation);
 
         return data.Sum(x => x.Ventory * x.PriceValue);

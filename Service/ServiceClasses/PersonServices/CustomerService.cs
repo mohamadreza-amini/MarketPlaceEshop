@@ -2,16 +2,9 @@
 using DataTransferObject.DTOClasses.Person.Results;
 using Infrastructure.Contracts.Repository;
 using Mapster;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Model.Entities.Person;
 using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.PersonServices;
 

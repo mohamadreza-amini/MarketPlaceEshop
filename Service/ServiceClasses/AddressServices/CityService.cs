@@ -2,15 +2,10 @@
 using Infrastructure.Contracts.Cache;
 using Infrastructure.Contracts.Repository;
 using Mapster;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Model.Entities.Addresses;
 using Service.ServiceInterfaces.AddressServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Service.ServiceClasses.AddressServices;
 

@@ -7,11 +7,6 @@ using Model.Entities.Products;
 using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
 using Service.ServiceInterfaces.ProductServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.ProductServices;
 
@@ -19,7 +14,6 @@ public class BrandService : ServiceBase<Brand, BrandResult, int>, IBrandService
 {
     private readonly IBaseRepository<Brand, int> _brandRepository;
     private readonly IUserService _userService;
-
     public BrandService(IBaseRepository<Brand, int> brandRepository, IUserService userService)
     {
         _brandRepository = brandRepository;

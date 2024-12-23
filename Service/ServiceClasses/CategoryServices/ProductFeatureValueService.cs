@@ -6,11 +6,6 @@ using Model.Entities.Categories;
 using Model.Exceptions;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.PersonServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.CategoryServices;
 

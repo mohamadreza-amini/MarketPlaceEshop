@@ -1,13 +1,10 @@
-using Infrastructure;
+﻿using Infrastructure;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using Service.ServiceInterfaces;
 using Service.ServiceClasses;
 using Model.Entities.Person;
-using NuGet.Protocol;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Infrastructure.SeedData;
 using Infrastructure.Repository;
 using Infrastructure.ChangeInterceptors;
@@ -20,19 +17,19 @@ using Hangfire;
 using Hangfire.SqlServer;
 using Service.ServiceInterfaces.ReportingServices;
 using Service.Middlewares;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-
 
 namespace MarketPlaceEshop;
-
 public class Program
 {
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddDbContext<DbContext, AppDbContext>(opt => opt.AddInterceptors(new ChangeInterceptor()));
+        builder.Services.AddDbContext<DbContext, AppDbContext>(opt =>
+        {
+            opt.AddInterceptors(new ChangeInterceptor());
+            opt.UseSqlServer(builder.Configuration.GetConnectionString("AppDbContextConnection"));
+        });
 
         builder.Services.AddMemoryCache();
         builder.Services.AddSingleton<ICachedData, CachedData>();
@@ -51,29 +48,36 @@ public class Program
 
         builder.Services.AddScoped<ClaimsPrincipal>();
 
-        builder.Services.ConfigureApplicationCookie(opt =>
+
+        builder.Services.ConfigureApplicationCookie(options =>
         {
-            opt.LoginPath = "/Identity/Account/Login";
-
+            options.LoginPath = "/account/login";
+            options.AccessDeniedPath = "/Home/error";
+            options.Events.OnRedirectToLogin = context =>
+            {
+                var path = context.Request.Path;
+                if (path.StartsWithSegments("/admin"))
+                {
+                    context.Response.Redirect("/admin/account/login");
+                }
+                else if (path.StartsWithSegments("/supplier"))
+                {
+                    context.Response.Redirect("/supplier/account/login");
+                }
+                else
+                {
+                    context.Response.Redirect("/account/login");
+                }
+                return Task.CompletedTask;
+            };
         });
-
-
-
 
 
         builder.Services.AddHttpContextAccessor();
 
-        builder.Services.AddScoped(typeof(IBaseRepository<,>), typeof(BaseRepository<,>));
-
-        // Add services to the container.
-        //builder.Services.AddControllersWithViews();
-
-
         builder.Services.AddMvc();
         builder.Services.AddControllers();
         builder.Services.AddRazorPages();
-
-
 
         builder.Services.AddAuthentication();
 
@@ -89,28 +93,22 @@ public class Program
 
         builder.Services.AddSingleton<IHangfireServices, HangfireServices>();
 
-        //log
+
         builder.Host.ConfigureLogging((context, logger) =>
         {
 
             logger.ClearProviders();
-            logger.AddConsole();    
+            logger.AddConsole();
 
 
         }).UseSerilog((context, logger) =>
         {
-            //logger.MinimumLevel.Error();
+            logger.MinimumLevel.Information();
             logger.Enrich.WithThreadId();
             logger.Enrich.WithEnvironmentName();
             logger.WriteTo.Console();
             logger.WriteTo.Seq("http://localhost:5341/");
         });
-
-
-
-
-
-  
 
 
 
@@ -134,7 +132,7 @@ public class Program
         MapsterConfig.RegisterMapping();
 
         var app = builder.Build();
-        //app.UseMiddleware<ExceptionHandler>();
+        app.UseMiddleware<ExceptionHandler>();
 
         app.UseHangfireDashboard("/hangfire");
 
@@ -151,12 +149,10 @@ public class Program
 
 
         RecurringJob.AddOrUpdate<IHangfireServices>(
-service => service.SavePrpductViewLogs(),
-"*/10 * * * *",
-    options: options
-);
-
-
+            service => service.SavePrpductViewLogs(),
+            "*/10 * * * *",
+                options: options
+        );
 
 
         app.UseMiddleware<RequestLogger>();
@@ -167,11 +163,9 @@ service => service.SavePrpductViewLogs(),
             await IdentitySeedData.AddIdentityData(scope.ServiceProvider);
         }
 
-        // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 
@@ -190,19 +184,12 @@ service => service.SavePrpductViewLogs(),
         app.UseAuthentication();
         app.UseAuthorization();
 
-        /* app.MapControllerRoute(
-             name: "default",
-             pattern: "{controller=Home}/{action=Index}/{id?}");*/
-
-
         app.UseEndpoints(endpoint =>
         {
             endpoint.MapControllerRoute(name: "areas", pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
             endpoint.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
             endpoint.MapRazorPages();
         });
-
-
 
         app.Run();
     }

@@ -50,59 +50,14 @@ namespace Infrastructure
         public DbSet<ViewLog> ViewLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=MarketPlace1;TrustServerCertificate=True;Integrated Security=SSPI;");
+        {           
             optionsBuilder.AddInterceptors(new ChangeInterceptor());
-
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-
-        }
-
-        /* public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-         {
-             PrepareEntity();
-             return base.SaveChangesAsync(cancellationToken);
-         }
-         public override int SaveChanges()
-         {
-             PrepareEntity();
-             return base.SaveChanges();
-         }
-
-         private void PrepareEntity()
-         {
-             foreach (var entity in ChangeTracker.Entries())
-             {
-                 if (entity.State == EntityState.Modified || entity.State == EntityState.Deleted)
-                 {
-                     try
-                     {
-                         entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
-                     }
-                     catch (Exception ex)
-                     {
-                         Console.WriteLine($"Error while setting properties: {ex.Message}");
-                     }
-                 }
-                 if (entity.State == EntityState.Added)
-                 {
-                     try
-                     {
-                         entity.Property("UpdateDatetime").CurrentValue = DateTime.Now;
-                         entity.Property("CreateDatetime").CurrentValue = DateTime.Now;
-                     }
-                     catch (Exception ex)
-                     {
-                         Console.WriteLine($"Error while setting properties: {ex.Message}");
-                     }
-                 }
-             }
-         }*/
+        } 
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Service.ServiceInterfaces.ReviewServices;
 using Shared.Enums;
@@ -6,6 +7,7 @@ using Shared.Enums;
 namespace MarketPlaceEshop.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class FeedBackController : Controller
 {
     private readonly ICommentService _commentService;
@@ -17,7 +19,7 @@ public class FeedBackController : Controller
 
     public async Task<IActionResult> Comments(CancellationToken cancellation, int pageIndex=1)
     {
-        var comments = await _commentService.GetAllUnConfirmComments(pageIndex, 1, cancellation);
+        var comments = await _commentService.GetAllUnConfirmComments(pageIndex, 5, cancellation);
         return View(comments);
     }
 
@@ -31,6 +33,4 @@ public class FeedBackController : Controller
         await _commentService.ConfirmCommentAsync(commentId, ConfirmationStatus.Rejected, cancellation);
     }
 
-
-   
 }

@@ -1,17 +1,10 @@
 ﻿using DataTransferObject.DTOClasses.Product.Commands;
 using DataTransferObject.DTOClasses.Product.Results;
 using Infrastructure.Contracts.Repository;
-using Infrastructure.Repository.Classes;
-using Microsoft.EntityFrameworkCore;
 using Model.Entities.Products;
 using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
 using Service.ServiceInterfaces.ProductServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.ProductServices;
 

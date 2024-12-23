@@ -17,4 +17,3 @@ public class ProductminiResult:BaseDTO<Guid>
     public bool Discount { get; set; }
     public decimal Price { get; set; }
 }
-//حذف شدن کامنت ها

@@ -2,13 +2,13 @@
 using DataTransferObject.DTOClasses.Address.Results;
 using DataTransferObject.DTOClasses.Person.Commands;
 using MarketPlaceEshop.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model.Exceptions;
 using Service.ServiceInterfaces.AddressServices;
 using Service.ServiceInterfaces.OrderServices;
 using Service.ServiceInterfaces.PersonServices;
 using Shared;
-using Shared.Enums;
 using System.Security.Claims;
 
 namespace MarketPlaceEshop.Controllers
@@ -31,14 +31,11 @@ namespace MarketPlaceEshop.Controllers
             _orderService = orderService;
         }
 
+        [Authorize(Roles = "Customer")]
         public IActionResult Index()
         {
             return View();
         }
-
-
-
-
 
 
         [HttpGet]
@@ -46,6 +43,8 @@ namespace MarketPlaceEshop.Controllers
         {
             return View();
         }
+
+
         [HttpPost]
         public async Task<IActionResult> Register(UserCommand userDto, CancellationToken cancellation)
         {
@@ -58,7 +57,6 @@ namespace MarketPlaceEshop.Controllers
             try
             {
                 await _customerService.CreateAsync(userDto, cancellation);
-
             }
             catch (RegisterException ex)
             {
@@ -69,13 +67,9 @@ namespace MarketPlaceEshop.Controllers
         }
 
 
-
-
-
-
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
-        {
+        {           
             ViewData["returnurl"] = returnUrl;
             return View();
         }
@@ -101,13 +95,11 @@ namespace MarketPlaceEshop.Controllers
                 {
                     return LocalRedirect(returnUrl);
                 }
-
             }
-
             return View();
         }
 
-
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> LogOut()
         {
             await _userService.LogOutAsync();
@@ -115,10 +107,7 @@ namespace MarketPlaceEshop.Controllers
         }
 
 
-
-
-
-
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Address(CancellationToken cancellation, int? provinceId)
         {
             Guid.TryParse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString(), out Guid user);
@@ -133,6 +122,7 @@ namespace MarketPlaceEshop.Controllers
         }
 
 
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CreateAddress(AddressCommand addressDto, CancellationToken cancellation)
         {
             if (!ModelState.IsValid)
@@ -147,14 +137,11 @@ namespace MarketPlaceEshop.Controllers
         }
 
 
-
-
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Orders(CancellationToken cancellation, int pageIndex = 1)
         {
             var orders = await _orderService.GetAllOrders(cancellation, pageIndex, 5);
             return View(orders);
         }
-
-
     }
 }

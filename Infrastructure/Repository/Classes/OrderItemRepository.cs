@@ -15,14 +15,13 @@ public class OrderItemRepository : BaseRepository<OrderItem, Guid>, IOrderItemRe
     public OrderItemRepository(AppDbContext appDbContext) : base(appDbContext)
     {
     }
-
     public async Task<(List<decimal> totalSales, List<decimal> totalDiscount, List<DateTime> dateTimes)> GetDailySales(CancellationToken cancellation, Expression<Func<OrderItem, bool>> predicate = null, int DaysCount = 7)
     {   
 
         if (predicate == null)
             predicate = x => true;
 
-        var startDate = DateTime.Now.AddDays(-DaysCount);
+        var startDate = DateTime.Now.AddDays(-DaysCount).Date;
 
         var query = await _entitySet
             .Where(predicate)
@@ -46,9 +45,8 @@ public class OrderItemRepository : BaseRepository<OrderItem, Guid>, IOrderItemRe
         );
 
         return result;
-        //
+        
     }
-
 
     public async Task<decimal> GetTotalSales(CancellationToken cancellation, Expression<Func<OrderItem, bool>>? predicate = null, DateTime? start = null, DateTime? end = null)
     {

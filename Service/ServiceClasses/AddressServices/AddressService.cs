@@ -1,20 +1,11 @@
-﻿using DataTransferObject.DTOClasses;
-using DataTransferObject.DTOClasses.Address.Commands;
+﻿using DataTransferObject.DTOClasses.Address.Commands;
 using DataTransferObject.DTOClasses.Address.Results;
 using Infrastructure.Contracts.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Model.Entities.Addresses;
 using Model.Exceptions;
 using Service.ServiceInterfaces.AddressServices;
 using Service.ServiceInterfaces.PersonServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.AddressServices;
 
@@ -32,7 +23,7 @@ public class AddressService : ServiceBase<Address, AddressResult, Guid>, IAdress
     {
         var address = Translate<AddressCommand, Address>(addressDTO);
         if (!_userService.IsAdmin())
-            address.CustomerId = _userService.RequesterId() == null ? throw new AccessDeniedException() : Guid.Parse(_userService.RequesterId());
+            address.CustomerId = _userService.RequesterId() == null ? throw new AccessDeniedException() : Guid.Parse(_userService.RequesterId()!);
         else
             address.CustomerId = customerid;
 
@@ -64,7 +55,7 @@ public class AddressService : ServiceBase<Address, AddressResult, Guid>, IAdress
 
         if (query == null)
             return new List<AddressResult>(); 
-        var addresses = await query?.ToListAsync(cancellation);     
+        var addresses = await query.ToListAsync(cancellation);     
         return Translate<List<Address>,List<AddressResult>>(addresses);
     }
 
@@ -76,7 +67,6 @@ public class AddressService : ServiceBase<Address, AddressResult, Guid>, IAdress
             return TranslateToDTO(address);
 
         throw new AccessDeniedException();
-
     }
 
     public async Task<int> UpdateAsync(AddressCommand addressDTO, CancellationToken cancellation)
@@ -90,6 +80,5 @@ public class AddressService : ServiceBase<Address, AddressResult, Guid>, IAdress
         address.validate();
         _addressRepository.Update(address);
         return await _addressRepository.CommitAsync(cancellation);
-
     }
 }

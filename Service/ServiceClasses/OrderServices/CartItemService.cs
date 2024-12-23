@@ -8,11 +8,6 @@ using Model.Exceptions;
 using Service.ServiceInterfaces.OrderServices;
 using Service.ServiceInterfaces.PersonServices;
 using Service.ServiceInterfaces.ProductServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.ServiceClasses.OrderServices;
 
@@ -44,8 +39,6 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
         carts.ForEach(x => x.Quantity = x.ProductSupplier.Ventory);
         await _cartItemRepository.CommitAsync(cancellation);
         await _cartItemRepository.RemoveWithoutCapacity(cancellation);
-        //await _cartItemRepository.UpdateAllQuantities(cancellation); //این متد قابل پیاده سازی سمت دیتابیس نبود باید
-                                                                       // sql خام بنویسی
     }
 
     //بررسی بودن یک ایتم در سبد خرید
@@ -158,12 +151,11 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
             {
                 var expirePrice = cartitem.ProductSupplier.Prices.Where(x => x.ExpiredTime == null).FirstOrDefault();
                 if (expirePrice != null) expirePrice.ExpiredTime = DateTime.Now;
-                cartitem.ProductSupplier.Discount = 0;//این خط بعدا اضافه شده
+                cartitem.ProductSupplier.Discount = 0;
             }
             logger.LogInformation($"Reduce product [{cartitem.ProductSupplier.Id}] inventory to [{cartitem.ProductSupplier.Ventory}]  Due to customer purchase [{customerId}]");
         }
         return true;
-        //اگه بعد از پیاده سازی تغیراتش اعمال نشد کامیت رو اینجا هم اضافه کن
     }
 
     //گرفتن سبد خرید یک شخص
@@ -190,7 +182,7 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
         if (query == null)
             return new CartResult();
         var cartItems = await query.ToListAsync(cancellation);
-        var totalPrice = await GetCartTotalPriceByCustomerId(customerId, cancellation); //تفیر کرد بررسی بشه
+        var totalPrice = await GetCartTotalPriceByCustomerId(customerId, cancellation); 
         var totalDiscount = await GetCartTotalDiscountByCustomerId(customerId, cancellation);
         var totalAmountPaid = totalPrice - totalDiscount;
         return new CartResult
@@ -218,8 +210,5 @@ public class CartItemService : ServiceBase<CartItem, CartItemResult, Guid>, ICar
             return await _cartItemRepository.GetTotalValueOfCarts(cancellation);
         throw new AccessDeniedException();
     }
-
-
-
 
 }

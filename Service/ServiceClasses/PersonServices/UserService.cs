@@ -1,30 +1,16 @@
 ﻿using DataTransferObject.DTOClasses.Person.Commands;
 using DataTransferObject.DTOClasses.Person.Results;
-using Infrastructure.Contracts.Repository;
-using Mapster;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Model.Entities.Orders;
 using Model.Entities.Person;
 using Model.Exceptions;
 using Service.ServiceInterfaces.PersonServices;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace Service.ServiceClasses.PersonServices;
-//امکان اینترنال کردن این سرویس برای اینکه جای دیگه استفاده نشه
 public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
 {
     private readonly UserManager<User> _userManager;
-
     private readonly SignInManager<User> _signInManager;
-
     private readonly ClaimsPrincipal _claimsPrincipal;
     public UserService(UserManager<User> userManager, SignInManager<User> signInManager, ClaimsPrincipal claimsPrincipal)
     {
@@ -32,15 +18,11 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
         _signInManager = signInManager;
         _claimsPrincipal = claimsPrincipal;
     }
-
     public async Task<User?> GetRequesterUserAsync() => await _userManager.GetUserAsync(_claimsPrincipal);
-
     public async Task<UserResult> GetRequesterUserResult() => TranslateToDTO(await GetRequesterUserAsync() ?? new User());
     public string? RequesterId() => _claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
     public bool IsInRole(string role) => _claimsPrincipal.IsInRole(role);
     public bool IsAdmin() => IsInRole("Admin");
-
 
     public async Task<string?> GetRole()
     {
@@ -94,7 +76,6 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
             return false;
 
         var signInResult = await _signInManager.PasswordSignInAsync(loginDTO.Email, loginDTO.Password, loginDTO.RememberMe, false);
-
         return signInResult.Succeeded;
     }
 
@@ -106,7 +87,6 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
 
         return null;
     }
-
 
     public async Task<User?> GetUserbyIdAsync(Guid userId)
     {
@@ -130,9 +110,6 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
 
         return result.Succeeded;
     }
-
-
-
 
     public async Task UpdateUser(UserCommand userDto, Guid userId, CancellationToken cancellationToken)
     {
@@ -160,26 +137,14 @@ public class UserService : ServiceBase<User, UserResult, Guid>, IUserService
     }
 
 
-
-    //public async Task DeleteUser(Guid userId, CancellationToken cancellationToken)
-    //{
-    //    if (!IsAdmin() && IsRequesterUser(userId))
-    //        throw new AccessDeniedException();
-    //    var user = await _userManager.FindByIdAsync(userId.ToString());
-    //    if (user == null)
-    //        throw new BadRequestException("کاربر نامعتبر");
-
-    //    await _userManager.DeleteAsync(user); // اگه سافت دیلیت داری نباید اینکارو کنی و پایینی رو بزار 
-      
-        
-    //    user.IsDeleted = true;
-    //    await _userManager.UpdateAsync(user);
-    //}
-
-
-
-
-
-
-
+    public async Task DeleteUser(Guid userId, CancellationToken cancellationToken)
+    {
+        if (!IsAdmin() && IsRequesterUser(userId))
+            throw new AccessDeniedException();
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            throw new BadRequestException("کاربر نامعتبر");
+        user.IsDeleted = true;
+        await _userManager.UpdateAsync(user);
+    }
 }

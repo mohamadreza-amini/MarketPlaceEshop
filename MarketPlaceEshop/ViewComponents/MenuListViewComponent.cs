@@ -1,6 +1,5 @@
 ﻿using DataTransferObject.DTOClasses.Category.Results;
 using Microsoft.AspNetCore.Mvc;
-using Model.Entities.Reports;
 using Service.ServiceInterfaces.CategoryServices;
 using System.Text;
 
@@ -15,8 +14,7 @@ public class MenuListViewComponent:ViewComponent
     }
     public async Task<IViewComponentResult> InvokeAsync(CancellationToken cancellation)
     {
-
-        var categories = await _categoryService.GetAllListAsync(cancellation); // داده‌ها را دریافت کنید
+        var categories = await _categoryService.GetAllListAsync(cancellation); 
         var categoryDictionary = categories.GroupBy(c => c.Level).ToDictionary(g => g.Key, g => g.ToList());
 
         var menuHtml = GenerateCategoryMenuHtml(categoryDictionary);
@@ -24,11 +22,7 @@ public class MenuListViewComponent:ViewComponent
         ViewBag.MenuHtml = menuHtml;
 
         return View();
-
-
     }
-
-
 
     public static string GenerateCategoryMenuHtml(Dictionary<int, List<CategoryResult>> categoryDict, int? parentId = null, int currentLevel = 1)
     {
@@ -44,7 +38,6 @@ public class MenuListViewComponent:ViewComponent
 
         var htmlBuilder = new StringBuilder();
 
-        // سطح اول شامل کلاس category-list می‌شود
         if (currentLevel == 1)
         {
             htmlBuilder.Append("<ul class=\"category-list\">");
@@ -56,7 +49,6 @@ public class MenuListViewComponent:ViewComponent
 
         foreach (var category in categories)
         {
-            // اگر زیردسته‌ای داشته باشد، کلاس has-children اضافه می‌شود
             bool hasChildren = categoryDict.ContainsKey(currentLevel + 1) &&
                                categoryDict[currentLevel + 1].Any(c => c.ParentCategoryId == category.Id);
 
@@ -66,9 +58,6 @@ public class MenuListViewComponent:ViewComponent
             var url = $"/product/categorysearch?selectedCategoryId={category.Id}";
             htmlBuilder.AppendFormat("<a href=\"{0}\">{1}</a>", url, category.CategoryName);
 
-
-
-            // بازگشتی برای ساخت زیردسته‌ها
             if (hasChildren)
             {
                 var subMenu = GenerateCategoryMenuHtml(categoryDict, category.Id, currentLevel + 1);
@@ -77,12 +66,9 @@ public class MenuListViewComponent:ViewComponent
                     htmlBuilder.Append(subMenu);
                 }
             }
-
             htmlBuilder.Append("</li>");
         }
-
         htmlBuilder.Append("</ul>");
-
         return htmlBuilder.ToString();
     }
 

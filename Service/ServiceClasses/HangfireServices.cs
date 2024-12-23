@@ -21,13 +21,10 @@ public class HangfireServices : IHangfireServices
 
     public HangfireServices(IServiceProvider serviceProvider)
     {
-
         _serviceProvider = serviceProvider;
     }
 
-
     public void AddViewLog(ViewLog log) => _views.Add(log);
-
 
     public async Task SaveViewLogs()
     {
@@ -37,10 +34,7 @@ public class HangfireServices : IHangfireServices
             await viewLogRepository.SaveViewLogs(_views);
             _views = new();
         }
-
     }
-
-
 
     public void LogProductView(Guid ProductId)
     {
@@ -70,10 +64,6 @@ public class HangfireServices : IHangfireServices
         }
 
     }
-
-
-
-
 }
 
 

@@ -17,11 +17,9 @@ public class ExceptionLogService: IExceptionLogService
         _exceptionRepository = exceptionRepository;
     }
 
-
     public async Task SaveExceptionLog(ExceptionLog log)
     {
         await _exceptionRepository.CreateAsync(log, CancellationToken.None);
         await _exceptionRepository.CommitAsync(CancellationToken.None);
     }
-
 }

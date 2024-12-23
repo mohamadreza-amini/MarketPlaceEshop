@@ -1,12 +1,13 @@
 ﻿using DataTransferObject.DTOClasses.Person.Commands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Service.ServiceInterfaces.AddressServices;
 using Service.ServiceInterfaces.PersonServices;
 using Shared;
 using Shared.Enums;
 
 namespace MarketPlaceEshop.Areas.Admin;
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class UserController : Controller
 {
     private readonly ISupplierService _supplierService;
@@ -42,8 +43,6 @@ public class UserController : Controller
     }
 
 
-
-
     [HttpGet]
     public IActionResult RegisterAdmin()
     {      
@@ -67,14 +66,11 @@ public class UserController : Controller
         return View();
     }
 
-
-
     public async Task<IActionResult> Suppliers(CancellationToken cancellation, int pageIndex = 1, int pageSize = 10)
     {
         var suppliers = await _supplierService.GetAllSuppliersbyStatusAsync(ConfirmationStatus.Confirmed, cancellation, pageIndex, pageSize);
         return View(suppliers);
     }
-
 
     public async Task<IActionResult> Customers(CancellationToken cancellation, int pageIndex = 1, int pageSize = 10)
     {
