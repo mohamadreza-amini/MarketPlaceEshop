@@ -23,11 +23,11 @@
         <div class="row g-3 align-items-end">
             <div class="col-md-4">
                 <label for="startOfSalePeriod" class="form-label ">تاریخ شروع بازه فروش</label>
-                <input asp-for="startOfSalePeriod"  id="flatpickr-start-date" id="flatpickr-date" type="date" class="form-control flatpickr-input">
+                <input name="startOfSalePeriod" id="flatpickr-start-date" type="text" value="@Model.startOfSalePeriod.ToString("yyyy-MM-dd")" class="form-control flatpickr-input">
             </div>
             <div class="col-md-4">
                 <label for="endOfSalePeriod" class="form-label ">تاریخ پایان بازه فروش</label>
-                <input type="date"  id="flatpickr-end-date" asp-for="endOfSalePeriod" class="form-control flatpickr-input">
+                <input id="flatpickr-end-date" name="endOfSalePeriod" value="@Model.endOfSalePeriod.ToString("yyyy-MM-dd")" type="text" class="form-control flatpickr-input">
             </div>
             <div class="col-md-2">
                 <label for="saleDays" class="form-label">روزهای فروش</label>

@@ -35,7 +35,7 @@ public class ReportController : Controller
 
     public async Task<IActionResult> Index(CancellationToken cancellation, ReportViewModel report)
     {
-        var reports = new ReportViewModel();
+        var reports = new ReportViewModel() { startOfSalePeriod = report.startOfSalePeriod, endOfSalePeriod = report.endOfSalePeriod }; 
 
         reports.DailySales = await _orderItemService.GetDailySales(cancellation, report.saleDays);
         reports.TotalSales = await _orderItemService.GetTotalSales(cancellation, report.startOfSalePeriod.ToSolar(), report.endOfSalePeriod.ToSolar());

@@ -22,12 +22,12 @@
     <form asp-area="admin" asp-action="index" asp-controller="Report" method="get" class="mb-4">
         <div class="row g-3 align-items-end">
             <div class="col-md-4">
-                <label for="startOfSalePeriod"  class="form-label ">تاریخ شروع بازه فروش</label>
-                <input asp-for="startOfSalePeriod" id="flatpickr-start-date" id="flatpickr-date" type="date" class="form-control flatpickr-input">
+                <label for="startOfSalePeriod"  class="form-label ">تاریخ شروع بازه فروش</label>              
+                <input name="startOfSalePeriod" id="flatpickr-start-date" type="text" value="@Model.startOfSalePeriod.ToString("yyyy-MM-dd")" class="form-control flatpickr-input">
             </div>
             <div class="col-md-4">
                 <label for="endOfSalePeriod" class="form-label ">تاریخ پایان بازه فروش</label>
-                <input type="date"  id="flatpickr-end-date" asp-for="endOfSalePeriod" class="form-control flatpickr-input">
+                <input id="flatpickr-end-date" name="endOfSalePeriod" type="text" value="@Model.endOfSalePeriod.ToString("yyyy-MM-dd")" class="form-control flatpickr-input">
             </div>
             <div class="col-md-2">
                 <label for="saleDays" class="form-label">روزهای فروش</label>
@@ -42,16 +42,6 @@
             </div>
         </div>
     </form>
-
-
-
-
-
-
-
-
-
-
 
     <!-- Summary Cards -->
     <div class="row g-4 mb-5">
@@ -217,7 +207,7 @@
     </script>
 
 
-    <script>
+     <script>
         flatpickr("#flatpickr-start-date", {
             locale: "fa", 
             dateFormat: "Y/m/d",
@@ -228,6 +218,6 @@
             dateFormat: "Y/m/d",
         });
 
-    </script>
+    </script> 
 
 }

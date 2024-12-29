@@ -87,7 +87,6 @@ public class Program
 
         builder.Services.AddMvc();
         builder.Services.AddControllers();
-        builder.Services.AddRazorPages();
 
         //Register Repositories
         builder.Services.RegisterRepositories();
@@ -109,7 +108,7 @@ public class Program
         });
         #endregion
 
-        #region Configure background tasks 
+        #region Background Tasks Configuration
 
         builder.Services.AddSingleton<IHangfireServices, HangfireServices>();
 
@@ -141,7 +140,7 @@ public class Program
 
         app.UseMiddleware<RequestLogger>();
 
-        #region Add background work
+        #region background job
         app.UseHangfireDashboard("/hangfire");
 
         var options = new RecurringJobOptions
@@ -200,8 +199,6 @@ public class Program
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
-
-        app.MapRazorPages();
 
         app.Run();
     }

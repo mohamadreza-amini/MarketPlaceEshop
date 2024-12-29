@@ -1,120 +1,169 @@
+# 📦 Marketplace Project
 
-# 📦 پروژه مارکت‌پلیس
+A complete e-commerce platform project with admin management, supplier sales, and customer purchases. This project includes the following features:
 
-یک پروژه فروشگاه اینترنتی کامل با امکان مدیریت توسط ادمین، فروش توسط تأمین‌کنندگان و خرید توسط مشتریان. این پروژه شامل قابلیت‌های زیر است:
+## 🚀 Main Features of the Project
+- **Multi-vendor System:** Each product can have multiple vendors with different prices and discounts.
+- **Report Management:** Includes reports related to sales and product views.
+- **Multi-level Access:**
+  - `/supplier` for suppliers.
+  - `/admin` is hidden and can only be accessed through a direct link.
+  - `Customer` is the main store for users.
 
-- **سیستم چند فروشنده‌ای:** هر محصول می‌تواند چندین فروشنده با قیمت‌ها و تخفیف‌های متفاوت داشته باشد.
-- **مدیریت گزارش‌ها:** شامل گزارش‌های مربوط به فروش و بازدید محصولات.
-- **دسترسی چند سطحی:**
-  - **Admin Area:** مخفی و فقط برای ادمین قابل دسترسی است.
-  - **Supplier Area:** از طریق تب بالا برای فروشندگان قابل دسترسی است.
-  - **Customer Area:** فروشگاه اصلی برای کاربران.
+- **Technologies Used:**
+   - **ASP.NET Core 8** for building the application.
+  - **SQL Server** for database management.
+  - **Entity Framework Core** for database management and migrations.
+  - **Identity** for user management and authentication.
+  - **Hangfire** for scheduled task management.
+  - **In-Memory Cache** for performance improvement and reducing database requests.
+  - **Serilog** for logging.
+  - **Seq** for log viewing.
+
+
+
+## 📸 Sample Images for Quick Overview
+
+To help you get a quicker understanding of the project, sample images of different sections are provided below, followed by further explanations of the project.
+
+
+<div style="display: flex; justify-content: space-between;">
+       <img src="./MarketPlaceEshop/wwwroot/upload/readme/Screenshot (57).png" alt="Image 3" style="width: 49%;">
+       <img src="./MarketPlaceEshop/wwwroot/upload/readme/Screenshot (70).png" alt="Image 3" style="width: 49%;">  
+  </div>
+
+ <div style="display: flex; justify-content: space-between;">
+     <img src="./MarketPlaceEshop/wwwroot/upload/readme/Screenshot (48).png" alt="Image 3" style="width: 49%;">
+     <img src="./MarketPlaceEshop/wwwroot/upload/readme/Screenshot (60).png" alt="Image 3" style="width: 49%;">  
+  </div>
+
+<div style="display: flex; justify-content: space-between;">
+     <img src="./MarketPlaceEshop/wwwroot/upload/readme/Screenshot (79).png" alt="Image 3" style="width: 49%;">
+     <img src="./MarketPlaceEshop/wwwroot/upload/readme/Screenshot (77).png" alt="Image 3" style="width: 49%;">  
+ </div>
 
 ---
 
-## 🚀 ویژگی‌های اصلی پروژه
+<div align="center">
 
-- **چندین Area:**
-  - `/supplier` برای فروشندگان.
-  - `/admin` که مخفی بوده و لینک مستقیم ندارد.
-- **قابلیت‌های گزارش‌گیری:**
-  - گزارش بازدید هر محصول.
-  - گزارش فروش محصولات.
-- **فناوری‌های استفاده‌شده:**
-  - **Entity Framework Core** برای مدیریت پایگاه داده و مایگریشن‌ها.
-  - **Identity** برای مدیریت کاربران و احراز هویت.
-  - **Hangfire** برای مدیریت وظایف زمان‌بندی‌شده.
-  - **Serilog** برای ثبت لاگ‌ها.
-  - **Seq** برای مشاهده لاگ‌ها.
-  - **In-Memory Cache** برای بهبود عملکرد و کاهش درخواست‌های پایگاه داده.
+  <img src="./MarketPlaceEshop/wwwroot/upload/readme/Screenshot (31).png" alt="Image 3" style="width: 75%;">
+  <img src="./MarketPlaceEshop/wwwroot/upload/readme/Screenshot (36).png" alt="Image 3" style="width: 75%;">
+  <img src="./MarketPlaceEshop/wwwroot/upload/readme/Screenshot (45).png" alt="Image 3" style="width: 75%;">
+  <img src="./MarketPlaceEshop/wwwroot/upload/readme/Screenshot (68).png" alt="Image 3" style="width: 75%;">
+  <img src="./MarketPlaceEshop/wwwroot/upload/readme/Screenshot (38).png" alt="Image 3" style="width: 75%;">
+
+</div>
+
+
+---
+## 🛒 Features for Different Roles
+- **For Sellers:**
+  - Add products.
+  - Modify product stock and prices.
+  - Manage orders and shipments.
+  - View inventory and sales reports.
+  - Add product to a vendor list after admin approval.
+  - Price adjustments, stock quantity, and discounts for products.
+  - View orders once approved by admin, mark them as sent once dispatched.
+  
+- **For Buyers:**
+  - Shopping cart.
+  - Product reviews and ratings.
+  - Order history and tracking.
+  - View order status and stage.
+
+- **For Products:**
+  - Product specifications.
+  - Product reviews and ratings.
+  - Product features.
+  - Categorization and brand details.
+  - **Category Management:** Ability to create new categories with hierarchical parent-child features and attributes.
+
+- **For Admin:**
+  - Manage sellers and products.
+  - Manage product reviews (approve or reject).
+  - View sales and inventory reports.
+  - Monitor daily view statistics.
+  - Approve new suppliers before they can start selling.
+  - Generate sales reports for specified time frames, daily sales charts, and daily site visit charts.
 
 ---
 
-## 🛠 راهنمای راه‌اندازی
+## 📊 Additional Features
+- **Comments & Ratings:**  
+  Sellers and customers can leave comments and rate products. Admins must approve comments before they appear publicly.
+  
+- **Supplier Approval:**  
+  Suppliers can add products and start selling only after being approved by the admin.
+  
+- **Order Management:**  
+  Suppliers can view orders after approval by the admin and mark them as sent once dispatched.
 
-### پیش‌نیازها
+- **Order Tracking for Customers:**  
+  Customers can view the history and status of their orders at any time.
+
+- **Category Hierarchy:**  
+  Admins can create categories in a hierarchical structure, with features and attributes that can be applied to parent and child categories.
+
+- **Sales and Report Management:**  
+  Admins and suppliers can generate sales reports for specific periods, and view daily sales and site visit charts.
+
+
+
+---
+
+## 🖥 Access Areas
+- **Admin Area:**  
+  This area is hidden and can only be accessed by admins through a direct link.
+- **Supplier Area:**  
+  Visible to suppliers through the top tab.
+- **Customer Area:**  
+  The regular store for users.
+
+---
+
+## 📊 Additional Features
+- **Hangfire:**  
+  For scheduling tasks like processing reports.
+- **Serilog & Seq:**  
+  For advanced log viewing and error tracking.
+- **Caching:**  
+  Use In-Memory Cache to improve speed and reduce load on the database.
+
+---
+
+
+
+## 🛠 Setup Guide
+
+### Prerequisites
 1. **SQL Server**
-   - ایجاد دو دیتابیس:
-     - دیتابیس اصلی برای پروژه.
-     - دیتابیس جداگانه برای **Hangfire**.
-2. **.NET 8 SDK** یا نسخه بالاتر.
-3. ابزارهای مدیریتی مانند **Visual Studio** یا **VS Code**.
+   - Create two databases:
+     - The main database for the project.
+     - A separate database for **Hangfire**.
+2. **.NET 8 SDK** or higher.
 
 ---
 
-### مراحل راه‌اندازی
-1. **تنظیمات اتصال به پایگاه داده:**
-   فایل `appsettings.json` را باز کنید و کانکشن‌استرینگ دیتابیس‌ها را در قسمت‌های زیر قرار دهید:
+### Setup Steps
+1. **Database Connection Settings:**
+   Open the `appsettings.json` file and add the connection strings for the databases in the following sections:
    ```json
    "ConnectionStrings": {
      "AppDbContextConnection": "Your_Main_Database_Connection_String",
      "HangfireConnection": "Your_Hangfire_Database_Connection_String"
    }
-   ```
 
-2. **اجرای مایگریشن‌ها:**
-   در ترمینال، دستور زیر را اجرا کنید:
+2. **Run Migrations:**
+   In the terminal, run the following command:
    ```bash
    dotnet ef database update
    ```
-   این دستور دیتابیس را با استفاده از مایگریشن‌های پروژه به‌روز می‌کند.
+   This command will update the database using the project's migrations.
 
-3. **اجرای فایل SQL (اختیاری):**
-   یک فایل SQL جداگانه برای نمونه داده‌ها (Seed Data) در پروژه قرار داده شده است.
-   این فایل را می‌توانید در **SQL Server Management Studio** یا ابزار مشابه اجرا کنید.
+3. **Run SQL File (Optional):**
+   A separate SQL file for sample data (Seed Data) is provided in the project.  
+   You can run this file in **SQL Server Management Studio** or a similar tool.
 
-4. **اجرای پروژه:**
-   پروژه را با دستور زیر اجرا کنید:
-   ```bash
-   dotnet run
-   ```
-   یا در محیط Visual Studio با فشردن `F5`.
-
----
-
-## 🖥 دسترسی‌ها
-- **Admin Area:**  
-  دسترسی مخفی بوده و فقط برای ادمین‌ها از طریق لینک مستقیم امکان‌پذیر است.
-- **Supplier Area:**  
-  از طریق تب بالا برای تأمین‌کنندگان قابل مشاهده است.
-- **Customer Area:**  
-  فروشگاه عادی برای کاربران.
-
----
-
-## 📊 ویژگی‌های پیشرفته
-- **Hangfire:**  
-  برای زمان‌بندی وظایف مانند پردازش گزارش‌ها.
-- **Serilog & Seq:**  
-  مشاهده لاگ‌ها و خطاها به صورت پیشرفته.
-- **Caching:**  
-  استفاده از In-Memory Cache برای بهبود سرعت و کاهش بار روی دیتابیس.
-
----
-
-## 📂 ساختار پروژه
-- `Controllers`: کنترلرهای مربوط به مدیریت مناطق مختلف.
-- `Areas`: شامل مناطق **Admin** و **Supplier**.
-- `Views`: شامل صفحات Razor.
-- `Migrations`: فایل‌های مایگریشن برای مدیریت پایگاه داده.
-- `Scripts`: فایل SQL برای Seed Data.
-
----
-
-## 🤝 مشارکت
-اگر علاقه‌مند به مشارکت در توسعه این پروژه هستید، مراحل زیر را دنبال کنید:
-1. پروژه را Fork کنید.
-2. تغییرات مورد نظر را اعمال کنید.
-3. Pull Request ایجاد کنید.
-
----
-
-## 🛡 مجوز
-این پروژه تحت مجوز [MIT](LICENSE) منتشر شده است.
-
----
-
-### 📧 تماس
-اگر سوالی دارید یا به مشکلی برخورد کردید، لطفاً با ما در ارتباط باشید:
-- **ایمیل:** support@marketplace.com
-- **گیت‌هاب:** [MarketPlace Repository](#)
+4. **Run the Project:**
+   Execute the project.
