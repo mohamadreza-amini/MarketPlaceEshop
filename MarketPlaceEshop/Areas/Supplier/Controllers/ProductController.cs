@@ -101,7 +101,7 @@ public class ProductController : Controller
             var address = Path.Combine(root, newFileName);
             product.ProductDto.Images.Add(new ImageCommand
             {
-                Path = address,
+                Path = "\\upload\\" + newFileName,
                 FileSize = (int)image.Length / 1000,
                 MimeType = image.ContentType
             });

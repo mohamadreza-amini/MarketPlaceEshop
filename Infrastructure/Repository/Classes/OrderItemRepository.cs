@@ -21,11 +21,11 @@ public class OrderItemRepository : BaseRepository<OrderItem, Guid>, IOrderItemRe
         if (predicate == null)
             predicate = x => true;
 
-        var startDate = DateTime.Now.AddDays(-DaysCount).Date;
+        var startDate = DateTime.Now.AddDays(-DaysCount + 1).Date;
 
         var query = await _entitySet
             .Where(predicate)
-            .Where(x => x.Order.OrderDate.Date >= startDate)
+            .Where(x => x.Order.OrderDate > startDate)
             .Where(x=>x.Order.IsConfirmed!=3)
             .GroupBy(x => x.Order.OrderDate.Date)
             .Select(group => new
@@ -58,6 +58,7 @@ public class OrderItemRepository : BaseRepository<OrderItem, Guid>, IOrderItemRe
         return await _entitySet
         .Where(predicate)
         .Where(x => x.Order.OrderDate >= start && x.Order.OrderDate <= end)
+        .Where(x=>x.Order.IsConfirmed != 3)
         .SumAsync(x => x.Quantity * x.UnitCost, cancellation);
     }
 
@@ -70,6 +71,6 @@ public class OrderItemRepository : BaseRepository<OrderItem, Guid>, IOrderItemRe
         if (predicate == null)
             predicate = x => true;
 
-        return await _entitySet.Where(predicate).Where(x => x.Order.OrderDate >= start && x.Order.OrderDate <= end).SumAsync(x => x.UnitDiscount * x.Quantity, cancellation);
+        return await _entitySet.Where(x => x.Order.IsConfirmed != 3).Where(predicate).Where(x => x.Order.OrderDate >= start && x.Order.OrderDate <= end).SumAsync(x => x.UnitDiscount * x.Quantity, cancellation);
     }
 }

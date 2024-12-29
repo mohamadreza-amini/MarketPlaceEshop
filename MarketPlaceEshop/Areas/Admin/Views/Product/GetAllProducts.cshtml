@@ -129,8 +129,8 @@
                                 <!-- تصاویر به صورت داینامیک اینجا اضافه می‌شوند -->
                                 @foreach (var image in product.Images)
                                 {
-                                    <a href="@Url.Content( @image.Path.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\"))" target="_blank">
-                                        <img src="@image.Path.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")" alt="تصویر محصول" class="" style="width: 150px; height: 150px;">
+                                    <a href="@Url.Content( @image.Path)" target="_blank">
+                                        <img src="@image.Path" alt="تصویر محصول" class="" style="width: 150px; height: 150px;">
                                     </a>
                                 }
                             </div>

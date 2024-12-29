@@ -1,6 +1,7 @@
 ﻿@using DataTransferObject.DTOClasses.Review.Results
 @using Microsoft.Extensions.Internal
 @using Service.ServiceClasses
+@using Shared
 @model PaginatedList<CommentResult>
 
 
@@ -35,7 +36,7 @@
                             <th scope="row">@(index++)</th>
                             <td>@comment.ProductName</td>
                             <td>@comment.FullName</td>
-                            <td>@comment.DateOfRegistration</td>
+                            <td>@comment.DateOfRegistration.ToAD().ToString("yyyy/MM/dd")</td>
                             <td> 
                                 <button type="button" class="text-nowrap btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#@string.Concat("Modal", comment.Id.ToString())">
                                     نظر

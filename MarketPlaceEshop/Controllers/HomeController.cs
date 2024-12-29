@@ -1,5 +1,6 @@
 ﻿using DataTransferObject.DTOClasses.Product.Commands;
 using MarketPlaceEshop.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.PersonServices;

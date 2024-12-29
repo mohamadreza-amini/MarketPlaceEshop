@@ -5,10 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Service.ServiceClasses;
 using Model.Entities.Person;
-using Infrastructure.SeedData;
-using Infrastructure.Repository;
 using Infrastructure.ChangeInterceptors;
-using Infrastructure.Contracts.Repository;
 using Infrastructure.Contracts.Cache;
 using Infrastructure.Cache;
 using Microsoft.Extensions.FileProviders;
@@ -21,20 +18,24 @@ using Service.Middlewares;
 namespace MarketPlaceEshop;
 public class Program
 {
-    public static async Task Main(string[] args)
+    public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        #region DbContext Configuration
         builder.Services.AddDbContext<DbContext, AppDbContext>(opt =>
         {
             opt.AddInterceptors(new ChangeInterceptor());
             opt.UseSqlServer(builder.Configuration.GetConnectionString("AppDbContextConnection"));
         });
+        #endregion
 
+        #region Cache configuration
         builder.Services.AddMemoryCache();
         builder.Services.AddSingleton<ICachedData, CachedData>();
+        #endregion
 
-
+        #region Identity configuration
         builder.Services.AddIdentity<User, Role>(option =>
         {
             option.Password.RequireDigit = false;
@@ -72,36 +73,33 @@ public class Program
             };
         });
 
-
         builder.Services.AddHttpContextAccessor();
 
-        builder.Services.AddMvc();
-        builder.Services.AddControllers();
-        builder.Services.AddRazorPages();
-
-        builder.Services.AddAuthentication();
-
-        builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<ClaimsPrincipal>(x =>
         {
             var httpContextAccessor = x.GetService<IHttpContextAccessor>();
             return httpContextAccessor?.HttpContext?.User ?? new ClaimsPrincipal();
         });
 
+        builder.Services.AddAuthentication();
+
+        #endregion
+
+        builder.Services.AddMvc();
+        builder.Services.AddControllers();
+        builder.Services.AddRazorPages();
+
+        //Register Repositories
         builder.Services.RegisterRepositories();
+        //Register Services
         builder.Services.RegisterServices();
 
-        builder.Services.AddSingleton<IHangfireServices, HangfireServices>();
+        #region Logging configuration
+        
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
 
-
-        builder.Host.ConfigureLogging((context, logger) =>
-        {
-
-            logger.ClearProviders();
-            logger.AddConsole();
-
-
-        }).UseSerilog((context, logger) =>
+        builder.Host.UseSerilog((context, logger) =>
         {
             logger.MinimumLevel.Information();
             logger.Enrich.WithThreadId();
@@ -109,8 +107,11 @@ public class Program
             logger.WriteTo.Console();
             logger.WriteTo.Seq("http://localhost:5341/");
         });
+        #endregion
 
+        #region Configure background tasks 
 
+        builder.Services.AddSingleton<IHangfireServices, HangfireServices>();
 
         builder.Services.AddHangfire(config =>
         {
@@ -127,13 +128,20 @@ public class Program
         builder.Services.AddHangfireServer();
 
 
+        #endregion
 
+        #region Mapster configuration
         TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
         MapsterConfig.RegisterMapping();
+        #endregion
 
         var app = builder.Build();
+
         app.UseMiddleware<ExceptionHandler>();
 
+        app.UseMiddleware<RequestLogger>();
+
+        #region Add background work
         app.UseHangfireDashboard("/hangfire");
 
         var options = new RecurringJobOptions
@@ -142,26 +150,19 @@ public class Program
         };
 
         RecurringJob.AddOrUpdate<IHangfireServices>(
+            "SaveViewLogsJob",
             service => service.SaveViewLogs(),
             "*/10 * * * *",
             options: options
         );
 
-
         RecurringJob.AddOrUpdate<IHangfireServices>(
-            service => service.SavePrpductViewLogs(),
+            "SaveProductViewLogs",
+            service => service.SaveProductViewLogs(),
             "*/10 * * * *",
                 options: options
         );
-
-
-        app.UseMiddleware<RequestLogger>();
-
-
-        using (var scope = app.Services.CreateScope())
-        {
-            await IdentitySeedData.AddIdentityData(scope.ServiceProvider);
-        }
+        #endregion
 
         if (!app.Environment.IsDevelopment())
         {
@@ -172,24 +173,35 @@ public class Program
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 
+        #region Static File Configuration
+
+        var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "bin", "Debug", "net8.0", "upload");
+        if (!Directory.Exists(uploadPath))
+        {
+            Directory.CreateDirectory(uploadPath);
+        }
+
         app.UseStaticFiles(new StaticFileOptions
         {
-            FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "bin", "Debug", "net8.0", "upload")),
+            FileProvider = new PhysicalFileProvider(uploadPath),
             RequestPath = "/upload"
         });
-
+        #endregion
 
         app.UseRouting();
 
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseEndpoints(endpoint =>
-        {
-            endpoint.MapControllerRoute(name: "areas", pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-            endpoint.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
-            endpoint.MapRazorPages();
-        });
+        app.MapControllerRoute(
+             name: "areas",
+             pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        app.MapRazorPages();
 
         app.Run();
     }

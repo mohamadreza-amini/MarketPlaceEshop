@@ -13,5 +13,5 @@ public interface IHangfireServices
     Task SaveViewLogs();
 
     void LogProductView(Guid ProductId);
-    Task SavePrpductViewLogs();
+    Task SaveProductViewLogs();
 }

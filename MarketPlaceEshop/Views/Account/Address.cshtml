@@ -6,6 +6,12 @@
 <!--------------------------------- Main Content -->
 <main class="main-content dt-sl mb-3">
     <div class="container main-container">
+        @if (TempData["ToastError"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["ToastError"]
+            </div>
+        }
         <div class="row" style="margin-top: 20px; margin-bottom: 20px; transform: none;">
             @await Component.InvokeAsync("ProfileTab")
             <!-- Start Content -->
@@ -87,6 +93,8 @@
                         <div class="form-ui dt-sl">
                             <form class="form-account" asp-controller="account" asp-action="CreateAddress" method="post" style="max-width: 100%;">
                                 <div class="row">
+
+
                                     <div class="col-md-6 col-sm-12 mb-2">
                                         <div class="form-row-title">
                                             <h4>
@@ -107,6 +115,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+
                                     <div class="col-md-6 col-sm-12 mb-2">
                                         <div class="form-row-title">
                                             <h4>
@@ -117,7 +127,7 @@
                                             <div id="cityoptions" class="custom-select-ui">
 
 
-                                                <select asp-for="AddressDto.CityId" class="right ">
+                                                <select asp-for="AddressDto.CityId" class="right form-select">
                                                     <option value="" selected>انتخاب کنید</option>
                                                     @foreach (var city in Model.Cities)
                                                     {
@@ -128,6 +138,9 @@
                                             </div>
                                         </div>
                                     </div>
+
+
+
                                     <div class="col-md-6 col-sm-12 mb-2">
                                         <div class="form-row-title">
                                             <h4>
@@ -235,6 +248,9 @@
                             var content = $(response).find('#cityoptions').html();
 
                             $("#cityoptions").html(content);
+
+                            $("#cityoptions select").addClass("right form-select").niceSelect(); // مجدداً پلاگین را اعمال کنید
+                               
                         },
                         error: function (xhr, status, error) {
                             console.error("خطا:", error);

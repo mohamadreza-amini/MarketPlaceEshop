@@ -49,7 +49,7 @@ public class HangfireServices : IHangfireServices
     }
 
 
-    public async Task SavePrpductViewLogs()
+    public async Task SaveProductViewLogs()
     {
         using (var scope = _serviceProvider.CreateScope())
         {

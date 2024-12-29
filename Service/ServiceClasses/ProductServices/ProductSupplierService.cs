@@ -204,7 +204,7 @@ public class ProductSupplierService : ServiceBase<ProductSupplier, ProductSuppli
         if (query == null)
             return await PaginatedList<ProductSupplierFullResult>.CreateAsync(query, 1, pageSize, cancellation);
 
-        return await PaginatedList<ProductSupplierFullResult>.CreateAsync(query, pageIndex, pageSize, cancellation);
+        return await PaginatedList<ProductSupplierFullResult>.CreateAsync(query.OrderBy(x=>x.ProductId), pageIndex, pageSize, cancellation);
     }
 
 

@@ -21,10 +21,10 @@ public class ViewLogRepository : BaseRepository<ViewLog, int>, IViewLogRepositor
 
     public async Task<(List<int> views, List<DateTime> dateTimes)> GetDailyViews(CancellationToken cancellation, int DaysCount = 7)
     {
-        var startDate = DateTime.Now.AddDays(-DaysCount);
+        var startDate = DateTime.Now.AddDays(-DaysCount+1).Date;
 
         var query = await _entitySet
-            .Where(x => x.DateTime >= startDate)
+            .Where(x => x.DateTime > startDate)
             .GroupBy(x => x.DateTime.Date)
             .Select(group => new
             {

@@ -24,7 +24,7 @@
                         <li class="cart-item">
                             <span class="d-flex align-items-center mb-2">
                                 <a asp-controller="Product" asp-action="GetProduct" asp-route-productId="@cart.ProductId">
-                                    <img src="@cart.ImagePath.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")" alt="">
+                                    <img src="@cart.ImagePath" alt="">
                                 </a>
                                 <span>
                                     <a asp-controller="Product" asp-action="GetProduct" asp-route-productId="@cart.ProductId">

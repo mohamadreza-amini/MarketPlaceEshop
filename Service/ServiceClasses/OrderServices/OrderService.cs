@@ -96,7 +96,7 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
     {
         var query = await _orderRepository.GetAllDataAsync(x => x, cancellation);
         if (query == null)
-            return new PaginatedList<OrderResult>(new List<OrderResult> { new OrderResult() { OrderItems = new List<OrderItemResult>() } }, 0, 1, pageSize) { };
+            return new PaginatedList<OrderResult>(new List<OrderResult>(), 0, 1, pageSize) { };
 
         Expression<Func<OrderItem, bool>> sentFilter = x => true;
         Expression<Func<OrderItem, bool>> supplierFilter = x => true;
@@ -117,8 +117,8 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
 
         Expression<Func<OrderItem, bool>> sentFilter = x => true;
         Expression<Func<OrderItem, bool>> supplierFilter = x => true;
-        query =( await FilterByPerson(query, supplierFilter,sent)).Item1;
-        supplierFilter = (await FilterByPerson(query, supplierFilter,sent)).Item2;
+        query = (await FilterByPerson(query, supplierFilter, sent)).Item1;
+        supplierFilter = (await FilterByPerson(query, supplierFilter, sent)).Item2;
 
         query = SetFilters(query, sentFilter, sent, confirmationStatus);
         var result = GetOrderItems(query, sent);
@@ -171,7 +171,7 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
             default:
                 throw new AccessDeniedException();
         }
-        return (query,supplierFilter);
+        return (query, supplierFilter);
     }
 
 
@@ -315,16 +315,15 @@ public class OrderService : ServiceBase<Order, OrderResult, Guid>, IOrderService
         if (_userService.IsAdmin())
         {
             return await _orderRepository
-                .CountAsync(x => x.IsConfirmed == 2 
+                .CountAsync(x => x.IsConfirmed == 2
                 && (sent ? x.OrderItems.All(x => x.Sent == true) : x.OrderItems.Any(x => x.Sent == false))
                 , cancellation);
         }
         else if (_userService.IsInRole("Supplier") && Guid.TryParse(_userService.RequesterId(), out Guid supplierId))
         {
             return await _orderRepository
-                .CountAsync(x => x.IsConfirmed == 2 
-                && (sent ? x.OrderItems.All(x => x.Sent == true) : x.OrderItems.Any(x => x.Sent == false)) 
-                && x.OrderItems.Any(x => x.ProductSupplier.SupplierId == supplierId)
+                .CountAsync(x => x.IsConfirmed == 2
+                && x.OrderItems.Any(x => x.ProductSupplier.SupplierId == supplierId && x.Sent == sent)
                 , cancellation);
         }
         throw new AccessDeniedException();

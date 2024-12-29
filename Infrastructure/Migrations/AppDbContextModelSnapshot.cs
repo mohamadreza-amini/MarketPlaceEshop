@@ -104,6 +104,13 @@ namespace Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca"),
+                            RoleId = new Guid("fc961ce4-16c1-4566-ac3f-08dd25de10f8")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -8283,6 +8290,17 @@ namespace Infrastructure.Migrations
                     b.HasIndex("UpdaterUserId");
 
                     b.ToTable("Admins");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca"),
+                            CreateDatetime = new DateTime(2024, 12, 29, 10, 17, 13, 563, DateTimeKind.Local).AddTicks(4362),
+                            CreatorUserId = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca"),
+                            IsDeleted = false,
+                            UpdateDatetime = new DateTime(2024, 12, 29, 10, 17, 13, 563, DateTimeKind.Local).AddTicks(4479),
+                            UpdaterUserId = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca")
+                        });
                 });
 
             modelBuilder.Entity("Model.Entities.Person.Customer", b =>
@@ -8382,6 +8400,44 @@ namespace Infrastructure.Migrations
                     b.HasIndex("UpdaterUserId");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6fe25e76-e02f-42d2-ac41-08dd25de10f8"),
+                            CreateDatetime = new DateTime(2024, 12, 29, 10, 17, 13, 563, DateTimeKind.Local).AddTicks(7202),
+                            CreatorUserId = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca"),
+                            IsDeleted = false,
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER",
+                            RoleDescription = "Customer products",
+                            UpdateDatetime = new DateTime(2024, 12, 29, 10, 17, 13, 563, DateTimeKind.Local).AddTicks(7205),
+                            UpdaterUserId = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca")
+                        },
+                        new
+                        {
+                            Id = new Guid("f9e1f0b3-a9c4-4eeb-ac40-08dd25de10f8"),
+                            CreateDatetime = new DateTime(2024, 12, 29, 10, 17, 13, 563, DateTimeKind.Local).AddTicks(7245),
+                            CreatorUserId = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca"),
+                            IsDeleted = false,
+                            Name = "Supplier",
+                            NormalizedName = "SUPPLIER",
+                            RoleDescription = "Seller of products",
+                            UpdateDatetime = new DateTime(2024, 12, 29, 10, 17, 13, 563, DateTimeKind.Local).AddTicks(7246),
+                            UpdaterUserId = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca")
+                        },
+                        new
+                        {
+                            Id = new Guid("fc961ce4-16c1-4566-ac3f-08dd25de10f8"),
+                            CreateDatetime = new DateTime(2024, 12, 29, 10, 17, 13, 563, DateTimeKind.Local).AddTicks(7250),
+                            CreatorUserId = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca"),
+                            IsDeleted = false,
+                            Name = "Admin",
+                            NormalizedName = "ADMIN",
+                            RoleDescription = "Site Manager",
+                            UpdateDatetime = new DateTime(2024, 12, 29, 10, 17, 13, 563, DateTimeKind.Local).AddTicks(7250),
+                            UpdaterUserId = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca")
+                        });
                 });
 
             modelBuilder.Entity("Model.Entities.Person.Supplier", b =>
@@ -8577,6 +8633,35 @@ namespace Infrastructure.Migrations
                         .HasFilter("[UserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d967ee1a-2e8f-40dd-8d54-c66a750477b7",
+                            CreateDatetime = new DateTime(2024, 12, 29, 10, 17, 13, 564, DateTimeKind.Local).AddTicks(416),
+                            CreatorUserId = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca"),
+                            DateOfBirth = new DateTime(1999, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "mohamadreza@gmail.com",
+                            EmailConfirmed = true,
+                            FirstName = "محمدرضا",
+                            IsDeleted = false,
+                            LastName = "امینی",
+                            LockoutEnabled = false,
+                            MobileNumber = "09111111111",
+                            NationalCode = "1234567890",
+                            NormalizedEmail = "MOHAMADREZA@GMAIL.COM",
+                            NormalizedUserName = "MOHAMADREZA@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBDRwJ61I32XRL2hXgwavhyaPEKksrshLVQWBlMgu+W9RNaMXeQvJalv7HoqHYhfdA==",
+                            PhoneNumber = "88888888",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "UYUOUWWKOLK3SIPRMHLRRAOSETBXTJVH",
+                            TwoFactorEnabled = false,
+                            UpdateDatetime = new DateTime(2024, 12, 29, 10, 17, 13, 564, DateTimeKind.Local).AddTicks(424),
+                            UpdaterUserId = new Guid("d80d9352-0889-4b7a-ac71-2ae385ec05ca"),
+                            UserName = "mohamadreza@gmail.com"
+                        });
                 });
 
             modelBuilder.Entity("Model.Entities.Products.Brand", b =>

@@ -100,7 +100,7 @@
                             {
                                 <div class="item">
 
-                                    <img src="@image.Path.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")" alt="Product">
+                                    <img src="@image.Path" alt="Product">
 
                                 </div>
                             }
@@ -114,8 +114,8 @@
                                 @foreach (var image in Model.Images)
                                 {
                                     <li class="owl-thumb-item active">
-                                        <a href="@image.Path.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")">
-                                            <img src="@image.Path.Replace(@"C:\Users\m\source\repos\start\MarketPlaceEshop\MarketPlaceEshop\bin\Debug\net8.0\", @"\")" alt="Product">
+                                        <a href="@image.Path">
+                                            <img src="@image.Path" alt="Product">
                                         </a>
                                     </li>
                                 }
@@ -484,6 +484,9 @@
                                     <i class="fad fa-shield-check"></i>
                                     <span>@(((productSupplier.Discount) / 10).ToString("N0")) تومان تخفیف</span>
                                 }
+                                else{
+                                    <span style="display: inline-block; width: 25ch;">&nbsp;</span>
+                                    }
 
                             </div>
                         </div>

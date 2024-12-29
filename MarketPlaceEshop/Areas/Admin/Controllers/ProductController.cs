@@ -9,6 +9,7 @@ using Model.Exceptions;
 using Service.ServiceInterfaces.CategoryServices;
 using Service.ServiceInterfaces.ProductServices;
 using Shared.Enums;
+using System.Security.Policy;
 
 
 namespace MarketPlaceEshop.Areas.Admin.Controllers;
@@ -109,7 +110,14 @@ public class ProductController : Controller
         else
         {
             atr.Category = atr.CategoryResults.FirstOrDefault()!;
-            atr.CategoryFeatures = await _categoryFeatureService.GetAllByCategoryId(atr.Category.Id, cancellation);
+            if (atr.Category != null)
+            {
+                atr.CategoryFeatures = await _categoryFeatureService.GetAllByCategoryId(atr.Category.Id, cancellation);
+            }
+            else
+            {
+                atr.Category=new CategoryResult();
+            }
         }
         return atr;
     }
@@ -186,7 +194,7 @@ public class ProductController : Controller
             var address = Path.Combine(root, newFileName);
             product.ProductDto.Images.Add(new ImageCommand
             {
-                Path = address,
+                Path = "\\upload\\"+newFileName,
                 FileSize = (int)image.Length / 1000,
                 MimeType = image.ContentType
             });
